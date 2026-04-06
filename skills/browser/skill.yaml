@@ -9,7 +9,7 @@ dependencies:
   - name: playwright
     version: "^1.40.0"
     optional: true
-    description: Required for browser automation. Install with: npm install playwright && npx playwright install chromium
+    description: "Required for browser automation. Install with: npm install playwright && npx playwright install chromium"
 
 config_schema:
   BROWSER_HEADLESS:
