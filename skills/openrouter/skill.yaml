@@ -1,0 +1,78 @@
+id: openrouter
+name: openrouter
+description: OpenRouter AI — image generation with Nano Banana, chat completions, model routing
+version: 1.0.0
+author: Kai
+config_schema:
+  OPENROUTER_API_KEY:
+    type: string
+    description: OpenRouter API key from https://openrouter.ai/keys
+    required: true
+    env: OPENROUTER_API_KEY
+  OPENROUTER_MODEL:
+    type: string
+    description: Default model for chat completions
+    default: anthropic/claude-3.5-sonnet
+    env: OPENROUTER_MODEL
+dependencies:
+  - name: openai
+    version: "^4.0.0"
+    optional: true
+    description: Required for OpenRouter API client
+tools:
+  - name: generate_image
+    description: Generate images using Nano Banana or other image models via OpenRouter
+    parameters:
+      prompt:
+        type: string
+        description: Detailed description of the image to generate
+        required: true
+      width:
+        type: number
+        description: Image width in pixels
+        default: 1280
+      height:
+        type: number
+        description: Image height in pixels
+        default: 720
+      model:
+        type: string
+        description: Image generation model to use
+        default: google/gemma-3-27b-it
+      output_dir:
+        type: string
+        description: Directory to save generated images
+      reference_image:
+        type: string
+        description: Path to reference photo to include person in scene
+  - name: chat_completion
+    description: Generate text completions using any model via OpenRouter
+    parameters:
+      prompt:
+        type: string
+        description: The prompt or message to send
+        required: true
+      model:
+        type: string
+        description: Model to use (defaults to config or claude-3.5-sonnet)
+      temperature:
+        type: number
+        description: Sampling temperature (0-2)
+        default: 0.7
+      max_tokens:
+        type: number
+        description: Maximum tokens to generate
+        default: 2048
+  - name: list_models
+    description: List available models on OpenRouter with pricing and capabilities
+    parameters:
+      filter:
+        type: string
+        description: Filter by capability (image, text, etc.)
+  - name: get_generation_status
+    description: Check status of an asynchronous image generation
+    parameters:
+      generation_id:
+        type: string
+        description: The generation ID to check
+        required: true

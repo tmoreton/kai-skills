@@ -337,6 +337,26 @@
         "BLUESKY_HANDLE": { "type": "string", "description": "Bluesky handle (e.g., user.bsky.social)", "required": true },
         "BLUESKY_PASSWORD": { "type": "string", "description": "Bluesky app password", "required": true }
       }
+    },
+    {
+      "id": "openrouter",
+      "name": "openrouter",
+      "version": "1.0.0",
+      "description": "OpenRouter AI — image generation, chat completions, model routing",
+      "author": "Kai",
+      "tags": ["ai", "openrouter", "images", "llm"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/openrouter.tar.gz",
+      "npmPackage": "@kai-skills/openrouter",
+      "tools": [
+        { "name": "generate_image", "description": "Generate images using Nano Banana or other models" },
+        { "name": "chat_completion", "description": "Generate text completions using any model" },
+        { "name": "list_models", "description": "List available models on OpenRouter" },
+        { "name": "get_generation_status", "description": "Check status of async image generation" }
+      ],
+      "configSchema": {
+        "OPENROUTER_API_KEY": { "type": "string", "description": "OpenRouter API key from https://openrouter.ai/keys", "required": true },
+        "OPENROUTER_MODEL": { "type": "string", "description": "Default model for chat completions", "default": "anthropic/claude-3.5-sonnet" }
+      }
     }
   ]
 }
