@@ -1,0 +1,169 @@
+id: slack
+name: Slack
+version: 1.0.0
+description: Slack notifications — send messages, upload files, create threads
+author: Kai
+icon: https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4ac.svg
+config_schema:
+  # Slack Bot Token (xoxb- prefix)
+  bot_token:
+    type: string
+    required: true
+    env: SLACK_BOT_TOKEN
+    description: Slack Bot User OAuth Token (starts with xoxb-). Get from api.slack.com/apps > Your App > OAuth & Permissions
+dependencies:
+  - name: "@slack/web-api"
+    version: "^7.0.0"
+    required: true
+    description: Official Slack Web API client for Node.js
+tools:
+  # === MESSAGING ===
+  - name: send_message
+    description: Send a direct message to a Slack user by email or user ID
+    parameters:
+      email:
+        type: string
+        required: false
+        description: User email address to send DM to (optional if user_id provided)
+      user_id:
+        type: string
+        required: false
+        description: Slack user ID (U12345678 format, optional if email provided)
+      text:
+        type: string
+        required: false
+        description: Message text content (required unless blocks provided)
+      blocks:
+        type: string
+        required: false
+        description: JSON array of Slack Block Kit blocks for rich formatting
+      unfurl_links:
+        type: boolean
+        required: false
+        description: Whether to unfurl links in the message (default true)
+        default: true
+
+  - name: send_to_channel
+    description: Post a message to a Slack channel
+    parameters:
+      channel:
+        type: string
+        required: true
+        description: Channel name (e.g., #general) or channel ID (C12345678)
+      text:
+        type: string
+        required: false
+        description: Message text content (required unless blocks provided)
+      blocks:
+        type: string
+        required: false
+        description: JSON array of Slack Block Kit blocks for rich formatting
+      thread_ts:
+        type: string
+        required: false
+        description: Parent message timestamp to reply in thread
+      unfurl_links:
+        type: boolean
+        required: false
+        description: Whether to unfurl links in the message (default true)
+        default: true
+
+  # === FILE UPLOAD ===
+  - name: upload_file
+    description: Upload a file to a channel or send as DM with optional message
+    parameters:
+      file_path:
+        type: string
+        required: false
+        description: Local file path or URL to upload (required unless content provided)
+      content:
+        type: string
+        required: false
+        description: File content as string for text files (required unless file_path provided)
+      channel:
+        type: string
+        required: false
+        description: Channel name or ID to upload to (required unless user_id/email provided)
+      user_id:
+        type: string
+        required: false
+        description: User ID to send file as DM (optional)
+      email:
+        type: string
+        required: false
+        description: User email to send file as DM (optional)
+      filename:
+        type: string
+        required: false
+        description: Name of the file (default "file")
+        default: file
+      title:
+        type: string
+        required: false
+        description: Title for the file (defaults to filename)
+      initial_comment:
+        type: string
+        required: false
+        description: Initial comment to include with the file
+      thread_ts:
+        type: string
+        required: false
+        description: Thread timestamp to upload file in thread
+      filetype:
+        type: string
+        required: false
+        description: Slack file type identifier (e.g., text, csv, pdf)
+
+  # === THREADS ===
+  - name: create_thread
+    description: Reply in a thread to an existing message
+    parameters:
+      channel:
+        type: string
+        required: true
+        description: Channel name or ID containing the parent message
+      thread_ts:
+        type: string
+        required: true
+        description: Parent message timestamp (ts) to reply to
+      text:
+        type: string
+        required: false
+        description: Reply text content (required unless blocks provided)
+      blocks:
+        type: string
+        required: false
+        description: JSON array of Slack Block Kit blocks for rich formatting
+      broadcast:
+        type: boolean
+        required: false
+        description: Broadcast reply to the main channel as well (default false)
+        default: false
+      unfurl_links:
+        type: boolean
+        required: false
+        description: Whether to unfurl links in the message (default true)
+        default: true
+
+  # === UTILITY ===
+  - name: get_info
+    description: Get bot connection info and authentication status
+    parameters: {}
+
+  - name: list_channels
+    description: List channels the bot has access to
+    parameters:
+      limit:
+        type: number
+        required: false
+        description: Maximum channels to return (default 100, max 200)
+        default: 100
+      cursor:
+        type: string
+        required: false
+        description: Pagination cursor for fetching more results
+      exclude_archived:
+        type: boolean
+        required: false
+        description: Exclude archived channels from results (default true)
+        default: true

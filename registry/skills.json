@@ -357,6 +357,61 @@
         "OPENROUTER_API_KEY": { "type": "string", "description": "OpenRouter API key from https://openrouter.ai/keys", "required": true },
         "OPENROUTER_MODEL": { "type": "string", "description": "Default model for chat completions", "default": "anthropic/claude-3.5-sonnet" }
       }
+    },
+    {
+      "id": "google-sheets",
+      "name": "google-sheets",
+      "version": "1.0.0",
+      "description": "Google Sheets — create spreadsheets, export data, share reports",
+      "author": "Kai",
+      "tags": ["google", "sheets", "spreadsheets", "export"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/google-sheets.tar.gz",
+      "npmPackage": "@kai-skills/google-sheets",
+      "tools": [
+        { "name": "create_spreadsheet", "description": "Create a new Google Sheets spreadsheet" },
+        { "name": "append_rows", "description": "Append rows of data to a sheet" },
+        { "name": "update_cell", "description": "Update a specific cell or range" },
+        { "name": "get_values", "description": "Read values from a spreadsheet range" },
+        { "name": "share_spreadsheet", "description": "Share spreadsheet with permissions" }
+      ],
+      "configSchema": {
+        "GOOGLE_SERVICE_ACCOUNT_JSON": { "type": "string", "description": "Google Service Account JSON key", "required": false }
+      }
+    },
+    {
+      "id": "slack",
+      "name": "slack",
+      "version": "1.0.0",
+      "description": "Slack notifications — send messages, upload files, create threads",
+      "author": "Kai",
+      "tags": ["slack", "notifications", "messaging", "alerts"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/slack.tar.gz",
+      "npmPackage": "@kai-skills/slack",
+      "tools": [
+        { "name": "send_message", "description": "Send DM to a user" },
+        { "name": "send_to_channel", "description": "Post message to a channel" },
+        { "name": "upload_file", "description": "Upload file to Slack" },
+        { "name": "create_thread", "description": "Reply in a thread" }
+      ],
+      "configSchema": {
+        "SLACK_BOT_TOKEN": { "type": "string", "description": "Slack Bot User OAuth Token (xoxb-)", "required": true }
+      }
+    },
+    {
+      "id": "webhook",
+      "name": "webhook",
+      "version": "1.0.0",
+      "description": "Webhook triggers — POST to Zapier, Make, custom endpoints",
+      "author": "Kai",
+      "tags": ["webhook", "automation", "zapier", "http"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/webhook.tar.gz",
+      "npmPackage": "@kai-skills/webhook",
+      "tools": [
+        { "name": "send_webhook", "description": "POST JSON payload to any URL" },
+        { "name": "send_with_auth", "description": "POST with Bearer token or API key" },
+        { "name": "test_endpoint", "description": "Test connectivity to endpoint" }
+      ],
+      "configSchema": {}
     }
   ]
 }

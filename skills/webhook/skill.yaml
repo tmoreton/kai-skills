@@ -1,0 +1,67 @@
+id: webhook
+name: Webhook
+version: 1.0.0
+description: Webhook triggers — POST to Zapier, Make, custom endpoints
+author: Kai
+tags: ["webhook", "automation", "zapier", "make", "api", "integration"]
+config_schema:
+  # No required configuration - all params passed per-action
+dependencies:
+  # No npm dependencies - uses native fetch
+tools:
+  - name: send_webhook
+    description: Send a POST request with JSON payload to any webhook URL
+    parameters:
+      url:
+        type: string
+        required: true
+        description: Webhook URL to send the request to
+      payload:
+        type: object
+        description: JSON payload to send (default empty object)
+      headers:
+        type: object
+        description: Additional HTTP headers to include
+
+  - name: send_with_auth
+    description: Send a POST request with Bearer token or API key authentication
+    parameters:
+      url:
+        type: string
+        required: true
+        description: Webhook URL to send the request to
+      auth_type:
+        type: string
+        required: true
+        description: Authentication type
+        enum: [bearer, api_key]
+      auth_token:
+        type: string
+        description: Bearer token (use this or api_key)
+      api_key:
+        type: string
+        description: API key (alternative to auth_token, sent as X-API-Key header)
+      payload:
+        type: object
+        description: JSON payload to send (default empty object)
+      headers:
+        type: object
+        description: Additional HTTP headers to include
+
+  - name: test_endpoint
+    description: Test connectivity to an endpoint with GET or other HTTP method
+    parameters:
+      url:
+        type: string
+        required: true
+        description: URL to test
+      method:
+        type: string
+        description: HTTP method to use (default GET)
+        enum: [GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS]
+      headers:
+        type: object
+        description: Additional HTTP headers to include
+      timeout:
+        type: number
+        description: Request timeout in milliseconds (default 10000)
