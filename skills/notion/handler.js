@@ -7,12 +7,7 @@
 
 const NOTION_API_BASE = "https://api.notion.com/v1";
 
-interface NotionConfig {
-  apiKey: string;
-  version: string;
-}
-
-let config: NotionConfig | null = null;
+let config = null;
 
 function getHeaders() {
   if (!config) throw new Error("Notion not configured. Set NOTION_API_KEY.");
@@ -23,7 +18,7 @@ function getHeaders() {
   };
 }
 
-async function notionFetch(endpoint: string, options: RequestInit = {}) {
+async function notionFetch(endpoint, options = {}) {
   const url = `${NOTION_API_BASE}${endpoint}`;
   const response = await fetch(url, {
     ...options,
@@ -42,7 +37,7 @@ async function notionFetch(endpoint: string, options: RequestInit = {}) {
 }
 
 // Format a Notion page for display
-function formatPage(page: any) {
+function formatPage(page) {
   const title = page.properties?.title?.title?.[0]?.plain_text || 
                 page.properties?.Name?.title?.[0]?.plain_text ||
                 "Untitled";
@@ -56,12 +51,12 @@ function formatPage(page: any) {
 }
 
 // Format a database for display
-function formatDatabase(db: any) {
+function formatDatabase(db) {
   return {
     id: db.id,
     title: db.title?.[0]?.plain_text || "Untitled",
     url: db.url,
-    properties: Object.entries(db.properties).map(([name, prop]: [string, any]) => ({
+    properties: Object.entries(db.properties).map(([name, prop]) => ({
       name,
       type: prop.type,
     })),
@@ -69,13 +64,13 @@ function formatDatabase(db: any) {
 }
 
 // Format block content
-function formatBlock(block: any, indent = 0) {
+function formatBlock(block, indent = 0) {
   const type = block.type;
   const content = block[type];
   
   let text = "";
   if (content?.rich_text) {
-    text = content.rich_text.map((t: any) => t.plain_text).join("");
+    text = content.rich_text.map((t) => t.plain_text).join("");
   } else if (content?.title) {
     text = content.title;
   }
@@ -116,7 +111,7 @@ function formatBlock(block: any, indent = 0) {
 }
 
 export default {
-  install: async (inputConfig: Record<string, any>) => {
+  install: async (inputConfig) => {
     config = {
       apiKey: inputConfig.NOTION_API_KEY || process.env.NOTION_API_KEY || "",
       version: inputConfig.NOTION_VERSION || process.env.NOTION_VERSION || "2022-06-28",
@@ -132,8 +127,8 @@ export default {
   },
 
   actions: {
-    search: async (params: { query: string; filter?: "page" | "database" | "object"; page_size?: number }) => {
-      const body: any = { query: params.query };
+    search: async (params) => {
+      const body = { query: params.query };
       if (params.filter && params.filter !== "object") {
         body.filter = { value: params.filter, property: "object" };
       }
@@ -146,7 +141,7 @@ export default {
         body: JSON.stringify(body),
       });
 
-      const results = data.results.map((r: any) => {
+      const results = data.results.map((r) => {
         if (r.object === "page") return formatPage(r);
         if (r.object === "database") return formatDatabase(r);
         return { id: r.id, object: r.object };
@@ -160,31 +155,31 @@ export default {
       };
     },
 
-    get_page: async (params: { page_id: string }) => {
+    get_page: async (params) => {
       const page = await notionFetch(`/pages/${params.page_id}`);
       return formatPage(page);
     },
 
-    get_page_content: async (params: { page_id: string; page_size?: number }) => {
+    get_page_content: async (params) => {
       const data = await notionFetch(`/blocks/${params.page_id}/children?page_size=${params.page_size || 100}`);
       
-      const blocks = data.results.map((b: any) => ({
+      const blocks = data.results.map((b) => ({
         id: b.id,
         type: b.type,
         formatted: formatBlock(b),
-      })).filter((b: any) => b.formatted);
+      })).filter((b) => b.formatted);
 
       return {
         page_id: params.page_id,
         total: data.results.length,
         has_more: data.has_more,
         blocks,
-        content: blocks.map((b: any) => b.formatted).join("\n"),
+        content: blocks.map((b) => b.formatted).join("\n"),
       };
     },
 
-    create_page: async (params: { parent: string; title: string; properties?: Record<string, any>; content?: any[] }) => {
-      const body: any = {
+    create_page: async (params) => {
+      const body = {
         parent: {},
         properties: {
           title: {
@@ -226,7 +221,7 @@ export default {
       };
     },
 
-    update_page: async (params: { page_id: string; properties: Record<string, any> }) => {
+    update_page: async (params) => {
       const page = await notionFetch(`/pages/${params.page_id}`, {
         method: "PATCH",
         body: JSON.stringify({ properties: params.properties }),
@@ -239,8 +234,8 @@ export default {
       };
     },
 
-    query_database: async (params: { database_id: string; filter?: any; sorts?: any[]; page_size?: number }) => {
-      const body: any = {
+    query_database: async (params) => {
+      const body = {
         page_size: Math.min(params.page_size || 100, 100),
       };
       
@@ -262,12 +257,12 @@ export default {
       };
     },
 
-    get_database: async (params: { database_id: string }) => {
+    get_database: async (params) => {
       const db = await notionFetch(`/databases/${params.database_id}`);
       return formatDatabase(db);
     },
 
-    append_blocks: async (params: { block_id: string; blocks: any[] }) => {
+    append_blocks: async (params) => {
       const data = await notionFetch(`/blocks/${params.block_id}/children`, {
         method: "PATCH",
         body: JSON.stringify({ children: params.blocks }),
@@ -276,11 +271,11 @@ export default {
       return {
         block_id: params.block_id,
         appended: data.results.length,
-        results: data.results.map((r: any) => ({ id: r.id, type: r.type })),
+        results: data.results.map((r) => ({ id: r.id, type: r.type })),
       };
     },
 
-    delete_block: async (params: { block_id: string }) => {
+    delete_block: async (params) => {
       await notionFetch(`/blocks/${params.block_id}`, {
         method: "DELETE",
       });

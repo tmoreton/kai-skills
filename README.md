@@ -2,6 +2,8 @@
 
 A portable skill library that works with **Kai**, **Claude Desktop**, **ChatGPT**, and any MCP-compatible AI assistant.
 
+**Distribution Format:** All skills are **pre-compiled to plain JavaScript** — no build step needed. Just install and use.
+
 ## Quick Start: Social Media Dashboard
 
 Build a cross-platform analytics dashboard in 5 minutes:
@@ -140,7 +142,7 @@ npx kai-skills install --all
 |-------|-------------|-----------------|
 | **git** | Smart commits, PR workflows, branch management | None |
 | **docker** | Container management, compose operations | None |
-| **browser** | Web browsing with Playwright | Optional |
+| **browser** | Web browsing with Playwright | None |
 | **database** | Migrations, queries, schema inspection | `DATABASE_URL` |
 
 ### Productivity & Communication
@@ -153,6 +155,26 @@ npx kai-skills install --all
 | **data-storage** | Read/write JSON, Markdown, text files | None |
 
 All skills work with **Kai**, **Claude Desktop (MCP)**, and **Standalone** usage.
+
+### NPM Dependencies (Optional)
+
+Some skills benefit from npm packages for enhanced functionality:
+
+```bash
+# For Browser skill (if you want to run Playwright)
+cd ~/.kai/skills/browser && npm install playwright
+
+# For Database skill (already included in most Node projects)
+cd ~/.kai/skills/database && npm install glob
+
+# For Email skill (for SMTP/IMAP functionality)
+cd ~/.kai/skills/email && npm install nodemailer
+
+# Or install globally in Kai's directory
+cd /path/to/kai && npm install playwright glob nodemailer
+```
+
+Skills **work without these** — they'll throw clear error messages telling users exactly what to install if a specific feature needs it.
 
 ---
 

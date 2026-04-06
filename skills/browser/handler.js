@@ -11,14 +11,14 @@ import fs from "fs";
 import path from "path";
 import { homedir } from "os";
 
-let browser: any = null;
-let page: any = null;
-let config: Record<string, any> = {};
+let browser = null;
+let page = null;
+let config = {};
 
 /**
  * Load configuration from environment or defaults
  */
-function loadConfig(): void {
+function loadConfig() {
   config = {
     headless: process.env.BROWSER_HEADLESS !== "false",
     timeoutMs: parseInt(process.env.BROWSER_TIMEOUT_MS || "30000", 10),
@@ -42,7 +42,7 @@ async function ensureBrowser() {
   return page;
 }
 
-function extractReadableText(html: string): string {
+function extractReadableText(html) {
   return html
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
@@ -59,7 +59,7 @@ function extractReadableText(html: string): string {
 }
 
 export default {
-  install: async (inputConfig?: Record<string, any>) => {
+  install: async (inputConfig) => {
     if (inputConfig) {
       config = { ...config, ...inputConfig };
     }
@@ -87,7 +87,7 @@ export default {
   },
 
   actions: {
-    open: async (params: { url: string; wait_for?: string }) => {
+    open: async (params) => {
       const p = await ensureBrowser();
       await p.goto(params.url, {
         waitUntil: "domcontentloaded",
@@ -114,7 +114,7 @@ export default {
       };
     },
 
-    click: async (params: { selector?: string; text?: string }) => {
+    click: async (params) => {
       const p = await ensureBrowser();
       const CLICK_TIMEOUT = 5000;
 
@@ -126,11 +126,11 @@ export default {
         } else {
           throw new Error("Provide either 'selector' or 'text' to identify the element to click");
         }
-      } catch (err: any) {
+      } catch (err) {
         // On timeout, return visible clickable elements to help the model pick the right one
         const clickables = await p.evaluate(() => {
           const els = document.querySelectorAll("a, button, input, select, textarea, [role='button'], [onclick]");
-          return [...els].slice(0, 30).map((el: Element) => ({
+          return [...els].slice(0, 30).map((el) => ({
             tag: el.tagName.toLowerCase(),
             type: el.getAttribute("type"),
             text: (el.textContent || "").trim().substring(0, 80),
@@ -153,16 +153,16 @@ export default {
       return { clicked: true, title, url };
     },
 
-    fill: async (params: { selector: string; value: string }) => {
+    fill: async (params) => {
       const p = await ensureBrowser();
       await p.fill(params.selector, params.value);
       return { filled: true, selector: params.selector };
     },
 
-    screenshot: async (params: { full_page?: boolean; selector?: string; return_type?: "path" | "base64" }) => {
+    screenshot: async (params) => {
       const p = await ensureBrowser();
 
-      let buffer: Buffer;
+      let buffer;
       if (params.selector) {
         const element = p.locator(params.selector);
         buffer = await element.screenshot({ type: "png" });
@@ -202,7 +202,7 @@ export default {
       };
     },
 
-    evaluate: async (params: { script: string }) => {
+    evaluate: async (params) => {
       const p = await ensureBrowser();
       let result;
       try {

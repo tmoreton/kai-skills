@@ -7,17 +7,14 @@
 
 import { execFileSync, execSync } from "child_process";
 
-/**
- * Execute a git command securely (no shell injection)
- */
-function execGit(args: string[], options: { timeout?: number } = {}): { success: boolean; output: string; error?: string } {
+function execGit(args, options = {}) {
   try {
     const output = execFileSync("git", args, {
       encoding: "utf-8",
       timeout: options.timeout || 30000,
     });
     return { success: true, output };
-  } catch (e: any) {
+  } catch (e) {
     return {
       success: false,
       output: e.stdout || "",
@@ -26,10 +23,7 @@ function execGit(args: string[], options: { timeout?: number } = {}): { success:
   }
 }
 
-/**
- * Check if a command exists in PATH
- */
-function commandExists(cmd: string): boolean {
+function commandExists(cmd) {
   try {
     execSync(`which ${cmd}`, { stdio: "pipe" });
     return true;
@@ -38,10 +32,7 @@ function commandExists(cmd: string): boolean {
   }
 }
 
-/**
- * Generate a conventional commit message from git diff
- */
-function generateCommitMessage(scope?: string): string {
+function generateCommitMessage(scope) {
   const result = execGit(["diff", "--staged", "--stat"]);
   if (!result.success) return "update";
 
@@ -53,7 +44,7 @@ function generateCommitMessage(scope?: string): string {
   return scopePart ? `${type}(${scope}): ${message}` : `${type}: ${message}`;
 }
 
-function detectCommitType(files: string): string {
+function detectCommitType(files) {
   if (files.includes("test") || files.includes("spec")) return "test";
   if (files.includes("doc") || files.includes("README")) return "docs";
   if (files.includes("fix") || files.includes("bug")) return "fix";
@@ -61,7 +52,7 @@ function detectCommitType(files: string): string {
   return "feat";
 }
 
-function generateSimpleMessage(files: string): string {
+function generateSimpleMessage(files) {
   const lines = files.split("\n").filter(l => l.includes("|") && !l.includes("files changed"));
 
   if (lines.length === 0) return "update";
@@ -78,8 +69,8 @@ function generateSimpleMessage(files: string): string {
   return `update ${categories.join(", ")}`;
 }
 
-function categorizeFiles(lines: string[]): string[] {
-  const categories = new Set<string>();
+function categorizeFiles(lines) {
+  const categories = new Set();
 
   for (const line of lines) {
     const file = line.split("|")[0].trim();
@@ -93,7 +84,7 @@ function categorizeFiles(lines: string[]): string[] {
   return [...categories];
 }
 
-function suggestBranchName(description: string, prefix = "feature/"): string {
+function suggestBranchName(description, prefix = "feature/") {
   let slug = (description || "changes")
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, "")
@@ -105,17 +96,15 @@ function suggestBranchName(description: string, prefix = "feature/"): string {
   return `${prefix}${slug}-${timestamp}`;
 }
 
-// Skill handler export
 export default {
   actions: {
-    git_smart_commit: (params: { message?: string; scope?: string; push?: boolean; dry_run?: boolean }) => {
+    git_smart_commit: (params) => {
       if (!commandExists("git")) {
         return { error: "Git is not installed or not in PATH", success: false };
       }
 
-      // Check for staged changes
       const statusResult = execGit(["diff", "--cached", "--quiet"]);
-      const hasStaged = !statusResult.success; // diff returns error code 1 if there are changes
+      const hasStaged = !statusResult.success;
 
       if (!hasStaged) {
         const unstagedResult = execGit(["diff", "--quiet"]);
@@ -140,7 +129,6 @@ export default {
         };
       }
 
-      // Commit using secure execution
       const commitResult = execGit(["commit", "-m", commitMessage]);
 
       let output = commitResult.success
@@ -155,7 +143,7 @@ export default {
       return { content: output, message: commitMessage, pushed: params.push };
     },
 
-    git_pr_create: (params: { title: string; body?: string; base?: string; branch_name?: string; draft?: boolean }) => {
+    git_pr_create: (params) => {
       if (!commandExists("git")) {
         return { error: "Git is not installed", success: false };
       }
@@ -163,7 +151,6 @@ export default {
         return { error: "GitHub CLI (gh) is required for PR creation", success: false };
       }
 
-      // Check for uncommitted changes
       const statusResult = execGit(["status", "--porcelain"]);
       if (statusResult.output.trim()) {
         return {
@@ -178,19 +165,16 @@ export default {
       const currentBranchResult = execGit(["branch", "--show-current"]);
       const currentBranch = currentBranchResult.output.trim();
 
-      // Create branch
       const checkoutResult = execGit(["checkout", "-b", branch, currentBranch]);
       if (!checkoutResult.success) {
         return { error: `Failed to create branch: ${checkoutResult.error}`, success: false };
       }
 
-      // Push branch
       const pushResult = execGit(["push", "-u", "origin", branch]);
       if (!pushResult.success) {
         return { error: `Failed to push branch: ${pushResult.error}`, success: false };
       }
 
-      // Create PR using gh CLI
       const draftFlag = params.draft ? ["--draft"] : [];
       const bodyFlag = params.body ? ["--body", params.body] : [];
       
@@ -212,7 +196,7 @@ export default {
       };
     },
 
-    git_log_summary: (params: { since?: string; max_entries?: number; format?: "changelog" | "summary" | "list" }) => {
+    git_log_summary: (params) => {
       if (!commandExists("git")) {
         return { error: "Git is not installed", success: false };
       }
@@ -243,9 +227,8 @@ export default {
         return { content: entries.join("\n"), count: commits.length };
       }
 
-      // Summary format
-      const types: Record<string, number> = {};
-      const scopes: Record<string, number> = {};
+      const types = {};
+      const scopes = {};
 
       for (const commit of commits) {
         const msg = commit.replace(/^[a-f0-9]+\s+/, "");
@@ -281,7 +264,7 @@ export default {
       return { content: summary, count: commits.length, types, scopes };
     },
 
-    git_branch_suggest: (params: { context?: string; prefix?: string; max_length?: number }) => {
+    git_branch_suggest: (params) => {
       if (!commandExists("git")) {
         return { content: "git-not-installed", success: false };
       }
@@ -294,7 +277,7 @@ export default {
         
         if (files.length > 0) {
           const dirs = files.map(f => f.split("/")[0]).filter(Boolean);
-          const dirCounts: Record<string, number> = {};
+          const dirCounts = {};
           for (const d of dirs) dirCounts[d] = (dirCounts[d] || 0) + 1;
           const topDir = Object.entries(dirCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
           baseDescription = `update-${topDir || "files"}`;
@@ -310,7 +293,7 @@ export default {
       return { content: branchName, branchName };
     },
 
-    git_status_detailed: (params: { analyze?: boolean }) => {
+    git_status_detailed: (params) => {
       if (!commandExists("git")) {
         return { error: "Git is not installed", success: false };
       }

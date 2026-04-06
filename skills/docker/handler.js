@@ -11,13 +11,13 @@ import fs from "fs";
 /**
  * Execute a command and return structured result
  */
-function exec(command: string, options: { timeout?: number } = {}) {
+function exec(command, options = {}) {
   try {
     return { 
       success: true, 
       output: execSync(command, { encoding: "utf-8", stdio: "pipe", ...options }) 
     };
-  } catch (e: any) {
+  } catch (e) {
     return { 
       success: false, 
       output: e.stdout || e.stderr || e.message, 
@@ -26,7 +26,7 @@ function exec(command: string, options: { timeout?: number } = {}) {
   }
 }
 
-function fileExists(path: string) {
+function fileExists(path) {
   try {
     fs.accessSync(path);
     return true;
@@ -38,7 +38,7 @@ function fileExists(path: string) {
 /**
  * Detect whether to use docker compose (v2) or docker-compose (v1)
  */
-function getDockerComposeCmd(): string {
+function getDockerComposeCmd() {
   try {
     execSync("docker compose version", { stdio: "pipe" });
     return "docker compose";
@@ -55,7 +55,7 @@ function generateTag() {
 
 export default {
   actions: {
-    docker_build: (params: { tag?: string; dockerfile?: string; context?: string; push?: boolean; no_cache?: boolean }) => {
+    docker_build: (params) => {
       const { tag, dockerfile = "Dockerfile", context = ".", push = false, no_cache = false } = params;
       
       const imageTag = tag || generateTag();
@@ -85,15 +85,7 @@ export default {
       };
     },
 
-    docker_run: (params: { 
-      image: string;
-      name?: string;
-      ports?: string[];
-      env?: Record<string, string>;
-      volumes?: string[];
-      detach?: boolean;
-      remove?: boolean;
-    }) => {
+    docker_run: (params) => {
       const { 
         image, 
         name, 
@@ -150,7 +142,7 @@ export default {
       };
     },
 
-    docker_compose_up: (params: { services?: string[]; build?: boolean; detach?: boolean; file?: string }) => {
+    docker_compose_up: (params) => {
       const { services = [], build = false, detach = true, file } = params;
       
       const composeCmd = getDockerComposeCmd();
@@ -173,7 +165,7 @@ export default {
       };
     },
 
-    docker_compose_down: (params: { volumes?: boolean; file?: string }) => {
+    docker_compose_down: (params) => {
       const { volumes = false, file } = params;
       
       const composeCmd = getDockerComposeCmd();
@@ -191,7 +183,7 @@ export default {
       };
     },
 
-    docker_logs: (params: { container: string; follow?: boolean; tail?: number; since?: string }) => {
+    docker_logs: (params) => {
       const { container, follow = false, tail = 100, since } = params;
       
       if (follow) {
@@ -226,7 +218,7 @@ export default {
       }
     },
 
-    docker_status: (params: { all?: boolean; format?: "table" | "json" }) => {
+    docker_status: (params) => {
       const { all = false, format = "table" } = params;
       
       let cmd = "docker ps";
