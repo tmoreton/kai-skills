@@ -1,0 +1,90 @@
+id: browser
+name: Browser
+description: Browse the web using Playwright - navigate pages, click elements, fill forms, take screenshots, and extract content
+version: 1.0.0
+author: Kai
+tags: ["browser", "web", "playwright", "automation"]
+
+config_schema:
+  BROWSER_HEADLESS:
+    type: boolean
+    description: Run browser in headless mode
+    default: true
+  BROWSER_TIMEOUT_MS:
+    type: number
+    description: Navigation timeout in milliseconds
+    default: 30000
+  BROWSER_CONTENT_LIMIT:
+    type: number
+    description: Max characters to return from page content
+    default: 80000
+  BROWSER_OUTPUT_DIR:
+    type: string
+    description: Directory for screenshots and downloads
+    default: ~/.kai/agent-output/browser
+
+tools:
+  - name: open
+    description: Open a URL and return page content as text. Use for JS-rendered pages or when web_fetch isn't enough.
+    parameters:
+      url:
+        type: string
+        required: true
+        description: URL to navigate to
+      wait_for:
+        type: string
+        description: CSS selector to wait for before extracting content
+
+  - name: click
+    description: Click an element on the current page by CSS selector or text content
+    parameters:
+      selector:
+        type: string
+        description: CSS selector of the element to click
+      text:
+        type: string
+        description: Text content of the element to click (uses getByText)
+
+  - name: fill
+    description: Fill in a form field on the current page
+    parameters:
+      selector:
+        type: string
+        required: true
+        description: CSS selector of the input field
+      value:
+        type: string
+        required: true
+        description: Value to type into the field
+
+  - name: screenshot
+    description: Take a screenshot and return it. Can save to file or return as base64.
+    parameters:
+      full_page:
+        type: boolean
+        description: Capture full scrollable page
+        default: false
+      selector:
+        type: string
+        description: CSS selector of specific element to screenshot
+      return_type:
+        type: string
+        description: How to return the screenshot
+        enum: [path, base64]
+        default: path
+
+  - name: evaluate
+    description: Run JavaScript in the browser context and return the result
+    parameters:
+      script:
+        type: string
+        required: true
+        description: JavaScript code to evaluate
+
+  - name: get_content
+    description: Get current page text content, URL, and title without navigating
+    parameters: {}
+
+  - name: close
+    description: Close the browser session to free resources
+    parameters: {}

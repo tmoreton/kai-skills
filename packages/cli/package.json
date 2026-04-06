@@ -1,0 +1,32 @@
+{
+  "name": "@kai-skills/cli",
+  "version": "1.0.0",
+  "description": "CLI for installing and managing Kai skills",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "kai-skills": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "keywords": [
+    "kai",
+    "skills",
+    "cli",
+    "installer"
+  ],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^12.1.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "typescript": "^5.3.0"
+  }
+}

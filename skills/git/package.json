@@ -1,0 +1,11 @@
+{
+  "name": "@kai-skills/git",
+  "version": "1.0.0",
+  "description": "Git operations - smart commits, PR workflows, branch management",
+  "type": "module",
+  "main": "handler.js",
+  "keywords": ["kai-skill", "git", "version-control"],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {}
+}

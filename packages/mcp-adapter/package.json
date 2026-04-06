@@ -1,0 +1,32 @@
+{
+  "name": "@kai-skills/mcp-adapter",
+  "version": "1.0.0",
+  "description": "MCP protocol adapter for Kai skills",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "kai-skill-mcp": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "keywords": ["kai", "skills", "mcp", "claude", "model-context-protocol"],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "yaml": "^2.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

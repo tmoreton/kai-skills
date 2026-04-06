@@ -1,0 +1,16 @@
+{
+  "name": "@kai-skills/browser",
+  "version": "1.0.0",
+  "description": "Web browsing with Playwright - navigate, click, fill forms, take screenshots",
+  "type": "module",
+  "main": "handler.js",
+  "keywords": ["kai-skill", "browser", "playwright", "web-scraping"],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "scripts": {
+    "postinstall": "playwright install chromium"
+  }
+}

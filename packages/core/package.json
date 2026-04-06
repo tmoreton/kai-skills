@@ -1,0 +1,25 @@
+{
+  "name": "@kai-skills/core",
+  "version": "1.0.0",
+  "description": "Core types and utilities for Kai skills",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "keywords": ["kai", "skills", "mcp", "ai-tools"],
+  "author": "Kai",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

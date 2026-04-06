@@ -1,0 +1,132 @@
+id: notion
+name: Notion
+description: Integrate with Notion - query databases, create pages, add blocks, search content
+version: 1.0.0
+author: Kai
+tags: ["notion", "notes", "wiki", "database", "productivity"]
+
+config_schema:
+  NOTION_API_KEY:
+    type: string
+    description: Notion integration API key (from notion.so/my-integrations)
+    required: true
+    env: NOTION_API_KEY
+  NOTION_VERSION:
+    type: string
+    description: Notion API version
+    default: "2022-06-28"
+    env: NOTION_VERSION
+
+tools:
+  - name: search
+    description: Search pages and databases in Notion
+    parameters:
+      query:
+        type: string
+        description: Search query text
+        required: true
+      filter:
+        type: string
+        description: Filter by type - page, database, or object (both)
+        enum: [page, database, object]
+        default: object
+      page_size:
+        type: number
+        description: Number of results to return (max 100)
+        default: 10
+
+  - name: get_page
+    description: Get a page by ID with its properties
+    parameters:
+      page_id:
+        type: string
+        description: Notion page ID (32 chars, can include hyphens)
+        required: true
+
+  - name: get_page_content
+    description: Get the block content of a page
+    parameters:
+      page_id:
+        type: string
+        description: Notion page ID
+        required: true
+      page_size:
+        type: number
+        description: Max blocks to return
+        default: 100
+
+  - name: create_page
+    description: Create a new page in a database or as a child page
+    parameters:
+      parent:
+        type: string
+        description: Parent database ID or page ID
+        required: true
+      title:
+        type: string
+        description: Page title
+        required: true
+      properties:
+        type: object
+        description: Database properties (if creating in a database)
+      content:
+        type: array
+        description: Block content to add (array of block objects)
+
+  - name: update_page
+    description: Update page properties
+    parameters:
+      page_id:
+        type: string
+        description: Page ID to update
+        required: true
+      properties:
+        type: object
+        description: Properties to update
+        required: true
+
+  - name: query_database
+    description: Query a database with filters and sorts
+    parameters:
+      database_id:
+        type: string
+        description: Database ID to query
+        required: true
+      filter:
+        type: object
+        description: Filter object (see Notion API docs)
+      sorts:
+        type: array
+        description: Sort objects
+      page_size:
+        type: number
+        description: Number of results
+        default: 100
+
+  - name: get_database
+    description: Get database schema and properties
+    parameters:
+      database_id:
+        type: string
+        description: Database ID
+        required: true
+
+  - name: append_blocks
+    description: Append blocks to a page or block
+    parameters:
+      block_id:
+        type: string
+        description: Page ID or block ID to append to
+        required: true
+      blocks:
+        type: array
+        description: Array of block objects to append
+        required: true
+
+  - name: delete_block
+    description: Delete a block
+    parameters:
+      block_id:
+        type: string
+        description: Block ID to delete
+        required: true

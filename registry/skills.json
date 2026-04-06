@@ -1,0 +1,106 @@
+{
+  "skills": [
+    {
+      "id": "git",
+      "name": "Git",
+      "version": "1.0.0",
+      "description": "Advanced Git operations including smart commits, branch management, and PR workflows",
+      "author": "Kai",
+      "tags": ["version-control", "git", "github"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/git.tar.gz",
+      "npmPackage": "@kai-skills/git",
+      "tools": [
+        { "name": "git_smart_commit", "description": "AI-powered git commit with automatic message generation" },
+        { "name": "git_pr_create", "description": "Full PR workflow - creates branch, commits changes, pushes, and opens PR" },
+        { "name": "git_log_summary", "description": "Summarize recent git history with AI-generated changelog" },
+        { "name": "git_branch_suggest", "description": "Suggest branch name based on context" },
+        { "name": "git_status_detailed", "description": "Detailed git status with analysis of changes" }
+      ],
+      "configSchema": {}
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "version": "1.0.0",
+      "description": "Docker container management, compose operations, and image building",
+      "author": "Kai",
+      "tags": ["docker", "containers", "devops", "deployment"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/docker.tar.gz",
+      "npmPackage": "@kai-skills/docker",
+      "tools": [
+        { "name": "docker_build", "description": "Build Docker image with intelligent tagging" },
+        { "name": "docker_run", "description": "Run Docker container with smart defaults" },
+        { "name": "docker_compose_up", "description": "Start services with docker-compose" },
+        { "name": "docker_compose_down", "description": "Stop and remove docker-compose services" },
+        { "name": "docker_logs", "description": "View container logs with filtering" },
+        { "name": "docker_status", "description": "Show running containers and resource usage" }
+      ],
+      "configSchema": {}
+    },
+    {
+      "id": "browser",
+      "name": "Browser",
+      "version": "1.0.0",
+      "description": "Browse the web using Playwright - navigate pages, click elements, fill forms, take screenshots",
+      "author": "Kai",
+      "tags": ["browser", "web", "playwright", "automation"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/browser.tar.gz",
+      "npmPackage": "@kai-skills/browser",
+      "tools": [
+        { "name": "open", "description": "Open a URL and return page content as text" },
+        { "name": "click", "description": "Click an element on the current page" },
+        { "name": "fill", "description": "Fill in a form field on the current page" },
+        { "name": "screenshot", "description": "Take a screenshot and return it" },
+        { "name": "evaluate", "description": "Run JavaScript in the browser context" },
+        { "name": "get_content", "description": "Get current page text content, URL, and title" },
+        { "name": "close", "description": "Close the browser session to free resources" }
+      ],
+      "configSchema": {
+        "BROWSER_HEADLESS": { "type": "boolean", "description": "Run browser in headless mode", "default": true },
+        "BROWSER_TIMEOUT_MS": { "type": "number", "description": "Navigation timeout in milliseconds", "default": 30000 }
+      }
+    },
+    {
+      "id": "email",
+      "name": "Email",
+      "version": "1.0.0",
+      "description": "Send and read emails via SMTP/IMAP using Nodemailer",
+      "author": "Kai",
+      "tags": ["email", "smtp", "imap", "communication"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/email.tar.gz",
+      "npmPackage": "@kai-skills/email",
+      "tools": [
+        { "name": "send", "description": "Send an email to one or more recipients" },
+        { "name": "read", "description": "Read recent emails from the inbox" },
+        { "name": "search", "description": "Search emails by criteria" },
+        { "name": "verify", "description": "Test the SMTP connection" }
+      ],
+      "configSchema": {
+        "SMTP_HOST": { "type": "string", "description": "SMTP server hostname", "required": true },
+        "SMTP_USER": { "type": "string", "description": "SMTP username", "required": true },
+        "SMTP_PASS": { "type": "string", "description": "SMTP password", "required": true }
+      }
+    },
+    {
+      "id": "database",
+      "name": "Database",
+      "version": "1.0.0",
+      "description": "Database operations including migrations, queries, and schema inspection",
+      "author": "Kai",
+      "tags": ["database", "sql", "migrations", "prisma"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/database.tar.gz",
+      "npmPackage": "@kai-skills/database",
+      "tools": [
+        { "name": "db_migrate_run", "description": "Run database migrations" },
+        { "name": "db_migrate_status", "description": "Show migration status" },
+        { "name": "db_query", "description": "Execute SQL query with result formatting" },
+        { "name": "db_schema_inspect", "description": "Inspect database schema" },
+        { "name": "db_backup", "description": "Create database backup" },
+        { "name": "db_seed", "description": "Seed database with test data" }
+      ],
+      "configSchema": {
+        "DATABASE_URL": { "type": "string", "description": "Database connection string" }
+      }
+    }
+  ]
+}
