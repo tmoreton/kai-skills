@@ -1,0 +1,137 @@
+id: threads
+name: Threads API
+version: 1.0.0
+description: Meta Threads API integration for posting threads, managing replies, and retrieving user profiles and content.
+author: kai
+config_schema:
+  # Threads API Credentials (from Meta for Developers)
+  access_token:
+    type: string
+    required: false
+    env: THREADS_ACCESS_TOKEN
+    description: Threads Access Token (from Meta OAuth flow)
+  user_id:
+    type: string
+    required: false
+    env: THREADS_USER_ID
+    description: Threads User ID (from /me endpoint or app dashboard)
+tools:
+  # === PROFILE TOOLS ===
+  - name: get_user_profile
+    description: Get the authenticated user's Threads profile information
+    parameters:
+      user_id:
+        type: string
+        description: Threads User ID (defaults to THREADS_USER_ID env var)
+      username:
+        type: string
+        description: Target username to look up (optional)
+  # === CONTENT TOOLS ===
+  - name: get_threads
+    description: Get a list of threads posted by a user
+    parameters:
+      user_id:
+        type: string
+        description: Threads User ID (defaults to THREADS_USER_ID env var)
+      since:
+        type: string
+        description: Unix timestamp to get threads created after this time
+      until:
+        type: string
+        description: Unix timestamp to get threads created before this time
+      limit:
+        type: number
+        description: Maximum number of threads to return (default 25, max 100)
+  - name: get_thread_replies
+    description: Get replies to a specific thread
+    parameters:
+      thread_id:
+        type: string
+        required: true
+        description: The ID of the thread to get replies for
+      reverse:
+        type: boolean
+        description: Return replies in reverse chronological order (default false)
+      limit:
+        type: number
+        description: Maximum number of replies to return (default 25)
+  - name: get_conversation
+    description: Get a thread and its nested replies as a conversation tree
+    parameters:
+      thread_id:
+        type: string
+        required: true
+        description: The ID of the thread to get conversation for
+      fields:
+        type: string
+        description: Comma-separated list of fields to retrieve
+  # === POSTING TOOLS ===
+  - name: post_thread
+    description: Post a new thread to Threads (text, image, video, or carousel)
+    parameters:
+      user_id:
+        type: string
+        description: Threads User ID (defaults to THREADS_USER_ID env var)
+      text:
+        type: string
+        description: The text content of the thread (max 500 chars)
+      media_type:
+        type: string
+        description: Type of media (TEXT, IMAGE, VIDEO, CAROUSEL)
+        enum: [TEXT, IMAGE, VIDEO, CAROUSEL]
+      image_url:
+        type: string
+        description: URL of image to attach (required for IMAGE type)
+      video_url:
+        type: string
+        description: URL of video to attach (required for VIDEO type)
+      reply_to_id:
+        type: string
+        description: ID of thread to reply to (optional)
+      quote_post_id:
+        type: string
+        description: ID of thread to quote (optional)
+      children:
+        type: array
+        description: Array of container IDs for carousel items (for CAROUSEL type)
+  - name: post_thread_carousel_item
+    description: Create a carousel item container (used before posting a carousel thread)
+    parameters:
+      user_id:
+        type: string
+        description: Threads User ID (defaults to THREADS_USER_ID env var)
+      media_type:
+        type: string
+        description: Type of media (IMAGE or VIDEO)
+        enum: [IMAGE, VIDEO]
+      image_url:
+        type: string
+        description: URL of image
+      video_url:
+        type: string
+        description: URL of video
+  # === REPLY MANAGEMENT TOOLS ===
+  - name: hide_reply
+    description: Hide or unhide a reply to your thread
+    parameters:
+      reply_id:
+        type: string
+        required: true
+        description: ID of the reply to hide/unhide
+      hide:
+        type: boolean
+        description: true to hide, false to unhide (default true)
+  # === ANALYTICS TOOLS ===
+  - name: get_insights
+    description: Get insights/metrics for a specific thread
+    parameters:
+      thread_id:
+        type: string
+        required: true
+        description: The ID of the thread to get insights for
+      metric:
+        type: string
+        description: Metric to retrieve (views, likes, replies, reposts, quotes)
+  - name: get_rate_limits
+    description: Check API rate limits and credential status
+    parameters: {}

@@ -1,0 +1,77 @@
+id: tiktok
+name: TikTok API
+version: 1.0.0
+description: TikTok integration for research and analytics — user profiles, videos, statistics, and search. Uses web search by default, with optional TikTok Research API for enhanced data.
+author: kai
+config_schema:
+  # Web Search API (Required for basic functionality)
+  tavily_api_key:
+    type: string
+    required: true
+    env: TAVILY_API_KEY
+    description: Tavily API Key for web search (required)
+  # TikTok Research API (Optional for enhanced data)
+  research_api_key:
+    type: string
+    required: false
+    env: TIKTOK_RESEARCH_API_KEY
+    description: TikTok Research API Key (optional, for accurate stats)
+  # Alternative: Display API credentials
+  client_key:
+    type: string
+    required: false
+    env: TIKTOK_CLIENT_KEY
+    description: TikTok App Client Key (Display API)
+  client_secret:
+    type: string
+    required: false
+    env: TIKTOK_CLIENT_SECRET
+    description: TikTok App Client Secret (Display API)
+tools:
+  # === RESEARCH TOOLS ===
+  - name: get_user_info
+    description: Get profile information for a TikTok user
+    parameters:
+      username:
+        type: string
+        required: true
+        description: TikTok username (with or without @)
+  - name: get_user_videos
+    description: Get recent videos from a TikTok user
+    parameters:
+      username:
+        type: string
+        required: true
+        description: TikTok username (with or without @)
+      max_results:
+        type: number
+        description: Maximum videos to fetch (default 20)
+  - name: get_video_stats
+    description: Get statistics for a specific TikTok video
+    parameters:
+      video_url:
+        type: string
+        description: Full TikTok video URL (e.g., https://www.tiktok.com/@user/video/1234567890)
+      video_id:
+        type: string
+        description: TikTok video ID (if URL not available)
+  - name: search_videos
+    description: Search for TikTok videos by keyword or hashtag
+    parameters:
+      query:
+        type: string
+        description: Search query or keywords
+      hashtag:
+        type: string
+        description: Hashtag to search (without #)
+      max_results:
+        type: number
+        description: Maximum results (default 20)
+icon: tiktok
+dependencies:
+  - name: node-fetch
+    version: ^3.0.0
+    optional: true
+  - name: tavily
+    version: ^0.5.0
+    optional: true

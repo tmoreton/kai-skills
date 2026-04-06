@@ -1,0 +1,135 @@
+id: instagram
+name: Instagram API
+version: 1.0.0
+description: Instagram integration via Basic Display API and Graph API. Retrieve user profiles, media posts, hashtag content, and media insights.
+author: kai
+icon: instagram
+config_schema:
+  # Instagram Graph API / Basic Display API Access Token
+  access_token:
+    type: string
+    required: false
+    env: INSTAGRAM_ACCESS_TOKEN
+    description: Instagram access token (from Basic Display API or Graph API)
+  # Optional: Alternative token env var
+  token:
+    type: string
+    required: false
+    env: INSTAGRAM_TOKEN
+    description: Alternative env var for access token
+  # App credentials for Graph API
+  app_id:
+    type: string
+    required: false
+    env: INSTAGRAM_APP_ID
+    description: Instagram App ID (for Graph API hashtag search)
+  app_secret:
+    type: string
+    required: false
+    env: INSTAGRAM_APP_SECRET
+    description: Instagram App Secret (for token refresh)
+dependencies:
+  # No required npm dependencies - uses native fetch
+  # Optional: instagram-private-api for advanced features
+  optional:
+    - name: instagram-private-api
+      version: "^1.0.0"
+      description: Optional library for private API features (not required for basic usage)
+tools:
+  - name: get_user_info
+    description: Get Instagram user profile information (requires access token for full data)
+    parameters:
+      username:
+        type: string
+        required: false
+        description: Instagram username (with or without @)
+      url:
+        type: string
+        required: false
+        description: Instagram profile URL
+      user_id:
+        type: string
+        required: false
+        description: Instagram user ID (from connected account)
+  - name: get_user_posts
+    description: Get media posts from a user's Instagram account
+    parameters:
+      username:
+        type: string
+        required: false
+        description: Instagram username
+      url:
+        type: string
+        required: false
+        description: Instagram profile URL
+      user_id:
+        type: string
+        required: false
+        description: Instagram user ID (required for Graph API)
+      limit:
+        type: number
+        description: Maximum number of posts to return (default 20)
+      max_results:
+        type: number
+        description: Alias for limit
+  - name: search_hashtags
+    description: Search for media by hashtag (requires Business/Creator account)
+    parameters:
+      hashtag:
+        type: string
+        required: false
+        description: Hashtag to search (with or without #)
+      query:
+        type: string
+        required: false
+        description: Alias for hashtag
+      user_id:
+        type: string
+        required: false
+        description: Business account user ID (required for hashtag search)
+      limit:
+        type: number
+        description: Maximum results (default 25)
+      max_results:
+        type: number
+        description: Alias for limit
+  - name: get_media_stats
+    description: Get statistics and insights for a specific Instagram post
+    parameters:
+      media_id:
+        type: string
+        required: false
+        description: Instagram media object ID
+      shortcode:
+        type: string
+        required: false
+        description: Post shortcode (e.g., from URL instagram.com/p/SHORTCODE)
+      url:
+        type: string
+        required: false
+        description: Full Instagram post URL
+  - name: get_account_insights
+    description: Get account-level insights and analytics (Business/Creator accounts only)
+    parameters:
+      user_id:
+        type: string
+        required: true
+        description: Instagram Business/Creator account user ID
+      metrics:
+        type: string
+        required: false
+        description: Comma-separated metrics (default impressions,reach,profile_views,follower_count)
+      period:
+        type: string
+        required: false
+        description: Time period for data
+        enum: [day, week, month]
+        default: day
+      since:
+        type: string
+        required: false
+        description: Start date (Unix timestamp or ISO 8601)
+      until:
+        type: string
+        required: false
+        description: End date (Unix timestamp or ISO 8601)

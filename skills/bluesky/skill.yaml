@@ -1,0 +1,160 @@
+id: bluesky
+name: Bluesky API
+version: 1.0.0
+description: Full Bluesky integration via AT Protocol — get profiles, feeds, post content, search posts, and interact with the decentralized social network.
+author: kai
+icon: https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f98b.svg
+config_schema:
+  # Bluesky AT Protocol credentials
+  identifier:
+    type: string
+    required: true
+    env: BLUESKY_IDENTIFIER
+    description: Your Bluesky handle or DID (e.g., user.bsky.social)
+  password:
+    type: string
+    required: true
+    env: BLUESKY_PASSWORD
+    description: Your Bluesky app password (create at Settings > App Passwords)
+  service:
+    type: string
+    required: false
+    env: BLUESKY_SERVICE
+    description: AT Protocol service URL (default: https://bsky.social)
+    default: https://bsky.social
+dependencies:
+  - name: @atproto/api
+    version: ^0.12.0
+    required: true
+    description: Official AT Protocol JavaScript client
+  - name: axios
+    version: ^1.6.0
+    required: false
+    description: Optional HTTP client for public API calls
+tools:
+  # === PROFILE & FEED ===
+  - name: get_profile
+    description: Get a Bluesky user's profile information
+    parameters:
+      handle:
+        type: string
+        required: false
+        description: User handle (with or without @, e.g., "user.bsky.social")
+      did:
+        type: string
+        required: false
+        description: User DID (decentralized identifier)
+  - name: get_feed
+    description: Get recent posts from a specific user's feed
+    parameters:
+      handle:
+        type: string
+        required: false
+        description: User handle to fetch posts from
+      did:
+        type: string
+        required: false
+        description: User DID to fetch posts from
+      limit:
+        type: number
+        description: Maximum posts to fetch (default 20, max 100)
+        default: 20
+      cursor:
+        type: string
+        description: Pagination cursor for fetching more results
+  - name: get_session
+    description: Get current authentication session info
+    parameters: {}
+
+  # === POSTING ===
+  - name: post_post
+    description: Post a new post to Bluesky
+    parameters:
+      text:
+        type: string
+        required: true
+        description: Post text content (supports mentions, URLs, hashtags)
+      reply_to_uri:
+        type: string
+        description: URI of post to reply to (optional)
+      reply_to_cid:
+        type: string
+        description: CID of post to reply to (required if reply_to_uri is set)
+      language:
+        type: string
+        description: Language code for the post (e.g., en, es, ja)
+        default: en
+
+  # === SEARCH ===
+  - name: search_posts
+    description: Search posts on Bluesky by keyword or phrase
+    parameters:
+      query:
+        type: string
+        required: true
+        description: Search query text
+      limit:
+        type: number
+        description: Maximum results (default 20, max 100)
+        default: 20
+      cursor:
+        type: string
+        description: Pagination cursor
+      author:
+        type: string
+        description: Filter by author handle
+      since:
+        type: string
+        description: ISO date to filter posts since (e.g., 2024-01-01T00:00:00Z)
+      until:
+        type: string
+        description: ISO date to filter posts until
+
+  # === INTERACTIONS ===
+  - name: get_notifications
+    description: Get notifications for the authenticated user
+    parameters:
+      limit:
+        type: number
+        description: Maximum notifications (default 20, max 100)
+        default: 20
+      cursor:
+        type: string
+        description: Pagination cursor
+      seen:
+        type: boolean
+        description: Mark notifications as seen after fetching
+        default: false
+  - name: follow_user
+    description: Follow a Bluesky user
+    parameters:
+      handle:
+        type: string
+        required: false
+        description: User handle to follow
+      did:
+        type: string
+        required: false
+        description: User DID to follow
+  - name: like_post
+    description: Like a specific post
+    parameters:
+      uri:
+        type: string
+        required: true
+        description: Post AT URI (e.g., at://did:plc:xyz/app.bsky.feed.post/abc)
+      cid:
+        type: string
+        required: true
+        description: Post CID
+  - name: repost_post
+    description: Repost a specific post
+    parameters:
+      uri:
+        type: string
+        required: true
+        description: Post AT URI
+      cid:
+        type: string
+        required: true
+        description: Post CID

@@ -1,0 +1,97 @@
+id: linkedin
+name: LinkedIn API
+version: 1.0.0
+description: LinkedIn integration — read profiles, create posts, get analytics, and search people. Uses LinkedIn API v2 with OAuth 2.0.
+icon: linkedin
+author: kai
+dependencies:
+  - node-fetch (built-in)
+config_schema:
+  # LinkedIn API v2 OAuth 2.0 Credentials
+  access_token:
+    type: string
+    required: false
+    env: LINKEDIN_ACCESS_TOKEN
+    description: LinkedIn OAuth 2.0 Access Token (from linkedin.com/developers)
+  client_id:
+    type: string
+    required: false
+    env: LINKEDIN_CLIENT_ID
+    description: LinkedIn App Client ID
+  client_secret:
+    type: string
+    required: false
+    env: LINKEDIN_CLIENT_SECRET
+    description: LinkedIn App Client Secret
+  # Optional Tavily API for web search fallback
+  tavily_api_key:
+    type: string
+    required: false
+    env: TAVILY_API_KEY
+    description: Tavily API key for web search fallback (optional)
+tools:
+  # === PROFILE & PEOPLE ===
+  - name: get_profile_info
+    description: Get LinkedIn profile information for authenticated user or specific user
+    parameters:
+      person_id:
+        type: string
+        description: LinkedIn person ID (optional, defaults to authenticated user)
+      linkedin_url:
+        type: string
+        description: LinkedIn profile URL to fetch (e.g., https://linkedin.com/in/username)
+  - name: search_people
+    description: Search for people on LinkedIn by keywords, name, or title
+    parameters:
+      keywords:
+        type: string
+        description: Search keywords (job title, skills, company, etc.)
+      query:
+        type: string
+        description: Alternative to keywords (same functionality)
+      first_name:
+        type: string
+        description: Filter by first name
+      last_name:
+        type: string
+        description: Filter by last name
+      max_results:
+        type: number
+        description: Maximum results to return (default 10, max 50)
+  # === POSTING & CONTENT ===
+  - name: create_post
+    description: Create a new post on LinkedIn (requires w_member_social scope)
+    parameters:
+      text:
+        type: string
+        required: true
+        description: Post text content
+      content:
+        type: string
+        description: Alternative to text parameter
+      visibility:
+        type: string
+        description: Post visibility
+        enum: [PUBLIC, CONNECTIONS]
+        default: PUBLIC
+      link_url:
+        type: string
+        description: URL to share as a link preview
+      link_title:
+        type: string
+        description: Custom title for the link (optional)
+      link_description:
+        type: string
+        description: Custom description for the link (optional)
+      author_urn:
+        type: string
+        description: Author URN (optional, defaults to authenticated user)
+  - name: get_post_stats
+    description: Get engagement statistics for a LinkedIn post
+    parameters:
+      post_id:
+        type: string
+        description: LinkedIn post ID or URN
+      post_urn:
+        type: string
+        description: Alternative to post_id (full URN format)
