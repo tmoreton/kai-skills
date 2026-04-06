@@ -3,6 +3,13 @@ name: Email
 version: 1.0.0
 description: Send and read emails via SMTP/IMAP using Nodemailer. Supports any SMTP provider (Gmail, Outlook, custom servers).
 author: kai
+
+dependencies:
+  - name: nodemailer
+    version: "^6.9.0"
+    optional: true
+    description: Required for SMTP email sending. Install with: npm install nodemailer
+
 config_schema:
   SMTP_HOST:
     type: string

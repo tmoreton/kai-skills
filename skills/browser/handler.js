@@ -6,7 +6,7 @@
  * Standalone version - works with Kai, MCP, or direct API usage.
  */
 
-import playwright from "playwright";
+import { createRequire } from "module";
 import fs from "fs";
 import path from "path";
 import { homedir } from "os";
@@ -15,9 +15,17 @@ let browser = null;
 let page = null;
 let config = {};
 
-/**
- * Load configuration from environment or defaults
- */
+function loadPlaywright() {
+  try {
+    const require = createRequire(process.cwd() + "/package.json");
+    return require("playwright");
+  } catch (e) {
+    throw new Error(
+      "playwright not installed. Run: npm install playwright && npx playwright install chromium"
+    );
+  }
+}
+
 function loadConfig() {
   config = {
     headless: process.env.BROWSER_HEADLESS !== "false",
@@ -32,6 +40,7 @@ async function ensureBrowser() {
 
   loadConfig();
 
+  const playwright = loadPlaywright();
   browser = await playwright.chromium.launch({ headless: config.headless });
   const context = await browser.newContext({
     userAgent:
