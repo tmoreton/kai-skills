@@ -4,17 +4,36 @@
       "id": "git",
       "name": "git",
       "version": "1.0.0",
-      "description": "Git operations — smart commits, PRs, branches, changelogs",
+      "description": "Git operations \u2014 smart commits, PRs, branches, changelogs",
       "author": "Kai",
-      "tags": ["version-control", "git", "github"],
+      "tags": [
+        "version-control",
+        "git",
+        "github"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/git.tar.gz",
       "npmPackage": "@kai-skills/git",
       "tools": [
-        { "name": "git_smart_commit", "description": "AI-powered git commit with automatic message generation" },
-        { "name": "git_pr_create", "description": "Full PR workflow - creates branch, commits changes, pushes, and opens PR" },
-        { "name": "git_log_summary", "description": "Summarize recent git history with AI-generated changelog" },
-        { "name": "git_branch_suggest", "description": "Suggest branch name based on context" },
-        { "name": "git_status_detailed", "description": "Detailed git status with analysis of changes" }
+        {
+          "name": "git_smart_commit",
+          "description": "AI-powered git commit with automatic message generation"
+        },
+        {
+          "name": "git_pr_create",
+          "description": "Full PR workflow - creates branch, commits changes, pushes, and opens PR"
+        },
+        {
+          "name": "git_log_summary",
+          "description": "Summarize recent git history with AI-generated changelog"
+        },
+        {
+          "name": "git_branch_suggest",
+          "description": "Suggest branch name based on context"
+        },
+        {
+          "name": "git_status_detailed",
+          "description": "Detailed git status with analysis of changes"
+        }
       ],
       "configSchema": {}
     },
@@ -22,18 +41,41 @@
       "id": "docker",
       "name": "docker",
       "version": "1.0.0",
-      "description": "Docker containers — build images, run containers, compose",
+      "description": "Docker containers \u2014 build images, run containers, compose",
       "author": "Kai",
-      "tags": ["docker", "containers", "devops", "deployment"],
+      "tags": [
+        "docker",
+        "containers",
+        "devops",
+        "deployment"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/docker.tar.gz",
       "npmPackage": "@kai-skills/docker",
       "tools": [
-        { "name": "docker_build", "description": "Build Docker image with intelligent tagging" },
-        { "name": "docker_run", "description": "Run Docker container with smart defaults" },
-        { "name": "docker_compose_up", "description": "Start services with docker-compose" },
-        { "name": "docker_compose_down", "description": "Stop and remove docker-compose services" },
-        { "name": "docker_logs", "description": "View container logs with filtering" },
-        { "name": "docker_status", "description": "Show running containers and resource usage" }
+        {
+          "name": "docker_build",
+          "description": "Build Docker image with intelligent tagging"
+        },
+        {
+          "name": "docker_run",
+          "description": "Run Docker container with smart defaults"
+        },
+        {
+          "name": "docker_compose_up",
+          "description": "Start services with docker-compose"
+        },
+        {
+          "name": "docker_compose_down",
+          "description": "Stop and remove docker-compose services"
+        },
+        {
+          "name": "docker_logs",
+          "description": "View container logs with filtering"
+        },
+        {
+          "name": "docker_status",
+          "description": "Show running containers and resource usage"
+        }
       ],
       "configSchema": {}
     },
@@ -41,136 +83,341 @@
       "id": "browser",
       "name": "browser",
       "version": "1.0.0",
-      "description": "Browse the web — navigate, click, fill forms, take screenshots",
+      "description": "Browse the web \u2014 navigate, click, fill forms, take screenshots",
       "author": "Kai",
-      "tags": ["browser", "web", "playwright", "automation"],
+      "tags": [
+        "browser",
+        "web",
+        "playwright",
+        "automation"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/browser.tar.gz",
       "npmPackage": "@kai-skills/browser",
       "tools": [
-        { "name": "open", "description": "Open a URL and return page content as text" },
-        { "name": "click", "description": "Click an element on the current page" },
-        { "name": "fill", "description": "Fill in a form field on the current page" },
-        { "name": "screenshot", "description": "Take a screenshot and return it" },
-        { "name": "evaluate", "description": "Run JavaScript in the browser context" },
-        { "name": "get_content", "description": "Get current page text content, URL, and title" },
-        { "name": "close", "description": "Close the browser session to free resources" }
+        {
+          "name": "open",
+          "description": "Open a URL and return page content as text"
+        },
+        {
+          "name": "click",
+          "description": "Click an element on the current page"
+        },
+        {
+          "name": "fill",
+          "description": "Fill in a form field on the current page"
+        },
+        {
+          "name": "screenshot",
+          "description": "Take a screenshot and return it"
+        },
+        {
+          "name": "evaluate",
+          "description": "Run JavaScript in the browser context"
+        },
+        {
+          "name": "get_content",
+          "description": "Get current page text content, URL, and title"
+        },
+        {
+          "name": "close",
+          "description": "Close the browser session to free resources"
+        }
       ],
       "configSchema": {
-        "BROWSER_HEADLESS": { "type": "boolean", "description": "Run browser in headless mode", "default": true },
-        "BROWSER_TIMEOUT_MS": { "type": "number", "description": "Navigation timeout in milliseconds", "default": 30000 }
+        "BROWSER_HEADLESS": {
+          "type": "boolean",
+          "description": "Run browser in headless mode",
+          "default": true
+        },
+        "BROWSER_TIMEOUT_MS": {
+          "type": "number",
+          "description": "Navigation timeout in milliseconds",
+          "default": 30000
+        }
       }
     },
     {
       "id": "email",
       "name": "email",
       "version": "1.0.0",
-      "description": "Send and read emails — SMTP/IMAP support for all providers",
+      "description": "Send and read emails \u2014 SMTP/IMAP support for all providers",
       "author": "Kai",
-      "tags": ["email", "smtp", "imap", "communication"],
+      "tags": [
+        "email",
+        "smtp",
+        "imap",
+        "communication"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/email.tar.gz",
       "npmPackage": "@kai-skills/email",
       "tools": [
-        { "name": "send", "description": "Send an email to one or more recipients" },
-        { "name": "read", "description": "Read recent emails from the inbox" },
-        { "name": "search", "description": "Search emails by criteria" },
-        { "name": "verify", "description": "Test the SMTP connection" }
+        {
+          "name": "send",
+          "description": "Send an email to one or more recipients"
+        },
+        {
+          "name": "read",
+          "description": "Read recent emails from the inbox"
+        },
+        {
+          "name": "search",
+          "description": "Search emails by criteria"
+        },
+        {
+          "name": "verify",
+          "description": "Test the SMTP connection"
+        }
       ],
       "configSchema": {
-        "SMTP_HOST": { "type": "string", "description": "SMTP server hostname", "required": true },
-        "SMTP_USER": { "type": "string", "description": "SMTP username", "required": true },
-        "SMTP_PASS": { "type": "string", "description": "SMTP password", "required": true }
+        "SMTP_HOST": {
+          "type": "string",
+          "description": "SMTP server hostname",
+          "required": true
+        },
+        "SMTP_USER": {
+          "type": "string",
+          "description": "SMTP username",
+          "required": true
+        },
+        "SMTP_PASS": {
+          "type": "string",
+          "description": "SMTP password",
+          "required": true
+        }
       }
     },
     {
       "id": "database",
       "name": "database",
       "version": "1.0.0",
-      "description": "Database operations — migrations, queries, schema, backups",
+      "description": "Database operations \u2014 migrations, queries, schema, backups",
       "author": "Kai",
-      "tags": ["database", "sql", "migrations", "prisma"],
+      "tags": [
+        "database",
+        "sql",
+        "migrations",
+        "prisma"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/database.tar.gz",
       "npmPackage": "@kai-skills/database",
       "tools": [
-        { "name": "db_migrate_run", "description": "Run database migrations" },
-        { "name": "db_migrate_status", "description": "Show migration status" },
-        { "name": "db_query", "description": "Execute SQL query with result formatting" },
-        { "name": "db_schema_inspect", "description": "Inspect database schema" },
-        { "name": "db_backup", "description": "Create database backup" },
-        { "name": "db_seed", "description": "Seed database with test data" }
+        {
+          "name": "db_migrate_run",
+          "description": "Run database migrations"
+        },
+        {
+          "name": "db_migrate_status",
+          "description": "Show migration status"
+        },
+        {
+          "name": "db_query",
+          "description": "Execute SQL query with result formatting"
+        },
+        {
+          "name": "db_schema_inspect",
+          "description": "Inspect database schema"
+        },
+        {
+          "name": "db_backup",
+          "description": "Create database backup"
+        },
+        {
+          "name": "db_seed",
+          "description": "Seed database with test data"
+        }
       ],
       "configSchema": {
-        "DATABASE_URL": { "type": "string", "description": "Database connection string" }
+        "DATABASE_URL": {
+          "type": "string",
+          "description": "Database connection string"
+        }
       }
     },
     {
       "id": "youtube",
       "name": "YouTube",
       "version": "1.0.0",
-      "description": "YouTube analytics — channel stats, video metrics, comments, trending",
+      "description": "YouTube analytics \u2014 channel stats, video metrics, comments, trending",
       "author": "Kai",
-      "tags": ["social-media", "youtube", "analytics", "video"],
+      "tags": [
+        "social-media",
+        "youtube",
+        "analytics",
+        "video"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/youtube.tar.gz",
       "npmPackage": "@kai-skills/youtube",
       "tools": [
-        { "name": "search_videos", "description": "Search YouTube for videos by query" },
-        { "name": "get_video_stats", "description": "Get statistics (views, likes, comments) for YouTube videos" },
-        { "name": "get_channel", "description": "Get YouTube channel info (subscribers, views, video count)" },
-        { "name": "get_recent_uploads", "description": "Get a channel's latest uploaded videos with stats" },
-        { "name": "get_trending", "description": "Get trending YouTube videos by region" },
-        { "name": "get_comments", "description": "Get comments for a video with engagement metrics" },
-        { "name": "compare_videos", "description": "Compare performance metrics across multiple videos" },
-        { "name": "generate_channel_report", "description": "Generate a comprehensive analytics report for a channel" }
+        {
+          "name": "search_videos",
+          "description": "Search YouTube for videos by query"
+        },
+        {
+          "name": "get_video_stats",
+          "description": "Get statistics (views, likes, comments) for YouTube videos"
+        },
+        {
+          "name": "get_channel",
+          "description": "Get YouTube channel info (subscribers, views, video count)"
+        },
+        {
+          "name": "get_recent_uploads",
+          "description": "Get a channel's latest uploaded videos with stats"
+        },
+        {
+          "name": "get_trending",
+          "description": "Get trending YouTube videos by region"
+        },
+        {
+          "name": "get_comments",
+          "description": "Get comments for a video with engagement metrics"
+        },
+        {
+          "name": "compare_videos",
+          "description": "Compare performance metrics across multiple videos"
+        },
+        {
+          "name": "generate_channel_report",
+          "description": "Generate a comprehensive analytics report for a channel"
+        }
       ],
       "configSchema": {
-        "YOUTUBE_API_KEY": { "type": "string", "description": "YouTube Data API v3 key from Google Cloud Console", "required": true }
+        "YOUTUBE_API_KEY": {
+          "type": "string",
+          "description": "YouTube Data API v3 key from Google Cloud Console",
+          "required": true
+        }
       }
     },
     {
       "id": "twitter",
       "name": "Twitter/X",
       "version": "1.0.0",
-      "description": "Twitter/X tools — search tweets, analyze users, post threads",
+      "description": "Twitter/X tools \u2014 search tweets, analyze users, post threads",
       "author": "Kai",
-      "tags": ["social-media", "twitter", "x", "analytics", "posting"],
+      "tags": [
+        "social-media",
+        "twitter",
+        "x",
+        "analytics",
+        "posting"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/twitter.tar.gz",
       "npmPackage": "@kai-skills/twitter",
       "tools": [
-        { "name": "search_tweets", "description": "Search for recent tweets by keyword, topic, or hashtag" },
-        { "name": "get_user_tweets", "description": "Get recent tweets from a specific user handle" },
-        { "name": "analyze_user", "description": "Analyze a Twitter user's profile, stats, and recent engagement" },
-        { "name": "find_influencers", "description": "Find popular accounts in a specific niche/topic" },
-        { "name": "track_topic_sentiment", "description": "Track sentiment and trending discussion around a topic" },
-        { "name": "post_tweet", "description": "Post a tweet to Twitter/X using API v2" },
-        { "name": "post_thread", "description": "Post a thread of connected tweets" },
-        { "name": "get_rate_limits", "description": "Check remaining API quota for the month" }
+        {
+          "name": "search_tweets",
+          "description": "Search for recent tweets by keyword, topic, or hashtag"
+        },
+        {
+          "name": "get_user_tweets",
+          "description": "Get recent tweets from a specific user handle"
+        },
+        {
+          "name": "analyze_user",
+          "description": "Analyze a Twitter user's profile, stats, and recent engagement"
+        },
+        {
+          "name": "find_influencers",
+          "description": "Find popular accounts in a specific niche/topic"
+        },
+        {
+          "name": "track_topic_sentiment",
+          "description": "Track sentiment and trending discussion around a topic"
+        },
+        {
+          "name": "post_tweet",
+          "description": "Post a tweet to Twitter/X using API v2"
+        },
+        {
+          "name": "post_thread",
+          "description": "Post a thread of connected tweets"
+        },
+        {
+          "name": "get_rate_limits",
+          "description": "Check remaining API quota for the month"
+        }
       ],
       "configSchema": {
-        "TAVILY_API_KEY": { "type": "string", "description": "Tavily API key for research tools", "required": false },
-        "X_API_KEY": { "type": "string", "description": "X API Key for posting", "required": false },
-        "X_API_SECRET": { "type": "string", "description": "X API Secret", "required": false },
-        "X_ACCESS_TOKEN": { "type": "string", "description": "X Access Token", "required": false },
-        "X_ACCESS_TOKEN_SECRET": { "type": "string", "description": "X Access Token Secret", "required": false }
+        "TAVILY_API_KEY": {
+          "type": "string",
+          "description": "Tavily API key for research tools",
+          "required": false
+        },
+        "X_API_KEY": {
+          "type": "string",
+          "description": "X API Key for posting",
+          "required": false
+        },
+        "X_API_SECRET": {
+          "type": "string",
+          "description": "X API Secret",
+          "required": false
+        },
+        "X_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "X Access Token",
+          "required": false
+        },
+        "X_ACCESS_TOKEN_SECRET": {
+          "type": "string",
+          "description": "X Access Token Secret",
+          "required": false
+        }
       }
     },
     {
       "id": "data-storage",
       "name": "data-storage",
       "version": "1.0.0",
-      "description": "File storage — read/write JSON, Markdown, text files",
+      "description": "File storage \u2014 read/write JSON, Markdown, text files",
       "author": "Kai",
-      "tags": ["data", "files", "json", "markdown", "storage"],
+      "tags": [
+        "data",
+        "files",
+        "json",
+        "markdown",
+        "storage"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/data-storage.tar.gz",
       "npmPackage": "@kai-skills/data-storage",
       "tools": [
-        { "name": "read", "description": "Auto-detect file type and read (JSON or text)" },
-        { "name": "write", "description": "Auto-detect and write (JSON or text)" },
-        { "name": "append", "description": "Append content to a file" },
-        { "name": "read_json", "description": "Read and parse a JSON file" },
-        { "name": "write_json", "description": "Write data to a JSON file" },
-        { "name": "read_markdown", "description": "Read a Markdown file" },
-        { "name": "write_markdown", "description": "Write content to a Markdown file" },
-        { "name": "read_text", "description": "Read any text file" },
-        { "name": "write_text", "description": "Write text to a file" }
+        {
+          "name": "read",
+          "description": "Auto-detect file type and read (JSON or text)"
+        },
+        {
+          "name": "write",
+          "description": "Auto-detect and write (JSON or text)"
+        },
+        {
+          "name": "append",
+          "description": "Append content to a file"
+        },
+        {
+          "name": "read_json",
+          "description": "Read and parse a JSON file"
+        },
+        {
+          "name": "write_json",
+          "description": "Write data to a JSON file"
+        },
+        {
+          "name": "read_markdown",
+          "description": "Read a Markdown file"
+        },
+        {
+          "name": "write_markdown",
+          "description": "Write content to a Markdown file"
+        },
+        {
+          "name": "read_text",
+          "description": "Read any text file"
+        },
+        {
+          "name": "write_text",
+          "description": "Write text to a file"
+        }
       ],
       "configSchema": {}
     },
@@ -178,238 +425,529 @@
       "id": "web-tools",
       "name": "web-tools",
       "version": "1.0.0",
-      "description": "Web utilities — fetch pages, search with Tavily",
+      "description": "Web utilities \u2014 fetch pages, search with Tavily",
       "author": "Kai",
-      "tags": ["web", "fetch", "search", "tavily"],
+      "tags": [
+        "web",
+        "fetch",
+        "search",
+        "tavily"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/web-tools.tar.gz",
       "npmPackage": "@kai-skills/web-tools",
       "tools": [
-        { "name": "fetch", "description": "Fetch content from a URL and return the response" },
-        { "name": "search", "description": "Search the web using Tavily" }
+        {
+          "name": "fetch",
+          "description": "Fetch content from a URL and return the response"
+        },
+        {
+          "name": "search",
+          "description": "Search the web using Tavily"
+        }
       ],
       "configSchema": {
-        "TAVILY_API_KEY": { "type": "string", "description": "Tavily API key for web search", "required": true }
+        "TAVILY_API_KEY": {
+          "type": "string",
+          "description": "Tavily API key for web search",
+          "required": true
+        }
       }
     },
     {
       "id": "notion",
       "name": "notion",
       "version": "1.0.0",
-      "description": "Notion workspace — query databases, create pages, manage content",
+      "description": "Notion workspace \u2014 query databases, create pages, manage content",
       "author": "Kai",
-      "tags": ["notion", "notes", "wiki", "database", "productivity"],
+      "tags": [
+        "notion",
+        "notes",
+        "wiki",
+        "database",
+        "productivity"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/notion.tar.gz",
       "npmPackage": "@kai-skills/notion",
       "tools": [
-        { "name": "search", "description": "Search pages and databases in Notion" },
-        { "name": "get_page", "description": "Get a page by ID with its properties" },
-        { "name": "get_page_content", "description": "Get the block content of a page" },
-        { "name": "create_page", "description": "Create a new page in a database or as a child page" },
-        { "name": "update_page", "description": "Update page properties" },
-        { "name": "query_database", "description": "Query a database with filters and sorts" },
-        { "name": "get_database", "description": "Get database schema and properties" },
-        { "name": "append_blocks", "description": "Add blocks to a page or block" },
-        { "name": "delete_block", "description": "Delete a block" }
+        {
+          "name": "search",
+          "description": "Search pages and databases in Notion"
+        },
+        {
+          "name": "get_page",
+          "description": "Get a page by ID with its properties"
+        },
+        {
+          "name": "get_page_content",
+          "description": "Get the block content of a page"
+        },
+        {
+          "name": "create_page",
+          "description": "Create a new page in a database or as a child page"
+        },
+        {
+          "name": "update_page",
+          "description": "Update page properties"
+        },
+        {
+          "name": "query_database",
+          "description": "Query a database with filters and sorts"
+        },
+        {
+          "name": "get_database",
+          "description": "Get database schema and properties"
+        },
+        {
+          "name": "append_blocks",
+          "description": "Add blocks to a page or block"
+        },
+        {
+          "name": "delete_block",
+          "description": "Delete a block"
+        }
       ],
       "configSchema": {
-        "NOTION_API_KEY": { "type": "string", "description": "Notion integration API key", "required": true }
+        "NOTION_API_KEY": {
+          "type": "string",
+          "description": "Notion integration API key",
+          "required": true
+        }
       }
     },
     {
       "id": "instagram",
       "name": "Instagram",
       "version": "1.0.0",
-      "description": "Instagram content — profiles, posts, hashtags, insights",
+      "description": "Instagram content \u2014 profiles, posts, hashtags, insights",
       "author": "Kai",
-      "tags": ["social-media", "instagram", "photos", "analytics"],
+      "tags": [
+        "social-media",
+        "instagram",
+        "photos",
+        "analytics"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/instagram.tar.gz",
       "npmPackage": "@kai-skills/instagram",
       "tools": [
-        { "name": "get_user_profile", "description": "Get Instagram user profile information" },
-        { "name": "get_user_media", "description": "Get recent media posts from a user" },
-        { "name": "search_hashtag", "description": "Search for hashtag content and top posts" },
-        { "name": "get_media_insights", "description": "Get engagement metrics for media" },
-        { "name": "get_account_insights", "description": "Get account-level analytics" }
+        {
+          "name": "get_user_profile",
+          "description": "Get Instagram user profile information"
+        },
+        {
+          "name": "get_user_media",
+          "description": "Get recent media posts from a user"
+        },
+        {
+          "name": "search_hashtag",
+          "description": "Search for hashtag content and top posts"
+        },
+        {
+          "name": "get_media_insights",
+          "description": "Get engagement metrics for media"
+        },
+        {
+          "name": "get_account_insights",
+          "description": "Get account-level analytics"
+        }
       ],
       "configSchema": {
-        "INSTAGRAM_ACCESS_TOKEN": { "type": "string", "description": "Instagram Graph API access token", "required": true }
+        "INSTAGRAM_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "Instagram Graph API access token",
+          "required": true
+        }
       }
     },
     {
       "id": "facebook",
       "name": "Facebook",
       "version": "1.0.0",
-      "description": "Facebook Pages — page info, posts, insights, publishing",
+      "description": "Facebook Pages \u2014 page info, posts, insights, publishing",
       "author": "Kai",
-      "tags": ["social-media", "facebook", "pages", "publishing"],
+      "tags": [
+        "social-media",
+        "facebook",
+        "pages",
+        "publishing"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/facebook.tar.gz",
       "npmPackage": "@kai-skills/facebook",
       "tools": [
-        { "name": "get_page_info", "description": "Get Facebook page information" },
-        { "name": "get_page_posts", "description": "Get posts from a page" },
-        { "name": "create_post", "description": "Create a new post on a page" },
-        { "name": "get_page_insights", "description": "Get page analytics and metrics" },
-        { "name": "get_post_insights", "description": "Get engagement metrics for a post" }
+        {
+          "name": "get_page_info",
+          "description": "Get Facebook page information"
+        },
+        {
+          "name": "get_page_posts",
+          "description": "Get posts from a page"
+        },
+        {
+          "name": "create_post",
+          "description": "Create a new post on a page"
+        },
+        {
+          "name": "get_page_insights",
+          "description": "Get page analytics and metrics"
+        },
+        {
+          "name": "get_post_insights",
+          "description": "Get engagement metrics for a post"
+        }
       ],
       "configSchema": {
-        "FACEBOOK_ACCESS_TOKEN": { "type": "string", "description": "Facebook Graph API access token", "required": true }
+        "FACEBOOK_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "Facebook Graph API access token",
+          "required": true
+        }
       }
     },
     {
       "id": "linkedin",
       "name": "LinkedIn",
       "version": "1.0.0",
-      "description": "LinkedIn professional — profiles, posts, analytics, search",
+      "description": "LinkedIn professional \u2014 profiles, posts, analytics, search",
       "author": "Kai",
-      "tags": ["social-media", "linkedin", "professional", "b2b"],
+      "tags": [
+        "social-media",
+        "linkedin",
+        "professional",
+        "b2b"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/linkedin.tar.gz",
       "npmPackage": "@kai-skills/linkedin",
       "tools": [
-        { "name": "get_profile", "description": "Get LinkedIn profile information" },
-        { "name": "create_post", "description": "Create a post on LinkedIn" },
-        { "name": "search_people", "description": "Search for people on LinkedIn" },
-        { "name": "get_post_analytics", "description": "Get post engagement metrics" },
-        { "name": "get_company_updates", "description": "Get updates from a company page" }
+        {
+          "name": "get_profile",
+          "description": "Get LinkedIn profile information"
+        },
+        {
+          "name": "create_post",
+          "description": "Create a post on LinkedIn"
+        },
+        {
+          "name": "search_people",
+          "description": "Search for people on LinkedIn"
+        },
+        {
+          "name": "get_post_analytics",
+          "description": "Get post engagement metrics"
+        },
+        {
+          "name": "get_company_updates",
+          "description": "Get updates from a company page"
+        }
       ],
       "configSchema": {
-        "LINKEDIN_ACCESS_TOKEN": { "type": "string", "description": "LinkedIn API access token", "required": true }
+        "LINKEDIN_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "LinkedIn API access token",
+          "required": true
+        }
       }
     },
     {
       "id": "tiktok",
       "name": "TikTok",
       "version": "1.0.0",
-      "description": "TikTok videos — user profiles, video stats, hashtag search",
+      "description": "TikTok videos \u2014 user profiles, video stats, hashtag search",
       "author": "Kai",
-      "tags": ["social-media", "tiktok", "video", "short-form"],
+      "tags": [
+        "social-media",
+        "tiktok",
+        "video",
+        "short-form"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/tiktok.tar.gz",
       "npmPackage": "@kai-skills/tiktok",
       "tools": [
-        { "name": "get_user_info", "description": "Get TikTok user information" },
-        { "name": "get_user_videos", "description": "Get videos from a user" },
-        { "name": "get_video_stats", "description": "Get video engagement metrics" },
-        { "name": "search_hashtag", "description": "Search for hashtag content" },
-        { "name": "get_trending", "description": "Get trending videos" }
+        {
+          "name": "get_user_info",
+          "description": "Get TikTok user information"
+        },
+        {
+          "name": "get_user_videos",
+          "description": "Get videos from a user"
+        },
+        {
+          "name": "get_video_stats",
+          "description": "Get video engagement metrics"
+        },
+        {
+          "name": "search_hashtag",
+          "description": "Search for hashtag content"
+        },
+        {
+          "name": "get_trending",
+          "description": "Get trending videos"
+        }
       ],
       "configSchema": {
-        "TIKTOK_ACCESS_TOKEN": { "type": "string", "description": "TikTok API access token", "required": true }
+        "TIKTOK_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "TikTok API access token",
+          "required": true
+        }
       }
     },
     {
       "id": "threads",
       "name": "Threads",
       "version": "1.0.0",
-      "description": "Threads posts — profiles, publishing, replies, insights",
+      "description": "Threads posts \u2014 profiles, publishing, replies, insights",
       "author": "Kai",
-      "tags": ["social-media", "threads", "meta", "text"],
+      "tags": [
+        "social-media",
+        "threads",
+        "meta",
+        "text"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/threads.tar.gz",
       "npmPackage": "@kai-skills/threads",
       "tools": [
-        { "name": "get_profile", "description": "Get Threads user profile" },
-        { "name": "get_user_threads", "description": "Get threads from a user" },
-        { "name": "create_thread", "description": "Create a new thread" },
-        { "name": "reply_to_thread", "description": "Reply to an existing thread" },
-        { "name": "get_thread_insights", "description": "Get engagement metrics" }
+        {
+          "name": "get_profile",
+          "description": "Get Threads user profile"
+        },
+        {
+          "name": "get_user_threads",
+          "description": "Get threads from a user"
+        },
+        {
+          "name": "create_thread",
+          "description": "Create a new thread"
+        },
+        {
+          "name": "reply_to_thread",
+          "description": "Reply to an existing thread"
+        },
+        {
+          "name": "get_thread_insights",
+          "description": "Get engagement metrics"
+        }
       ],
       "configSchema": {
-        "THREADS_ACCESS_TOKEN": { "type": "string", "description": "Threads API access token", "required": true }
-      }
-    },
-    {
-      "id": "bluesky",
-      "name": "Bluesky",
-      "version": "1.0.0",
-      "description": "Bluesky social — profiles, feeds, posts, AT Protocol",
-      "author": "Kai",
-      "tags": ["social-media", "bluesky", "at-protocol", "decentralized"],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/bluesky.tar.gz",
-      "npmPackage": "@kai-skills/bluesky",
-      "tools": [
-        { "name": "get_profile", "description": "Get Bluesky profile information" },
-        { "name": "get_feed", "description": "Get user's feed posts" },
-        { "name": "create_post", "description": "Create a new post" },
-        { "name": "search_posts", "description": "Search for posts" },
-        { "name": "follow_user", "description": "Follow a user" },
-        { "name": "like_post", "description": "Like a post" },
-        { "name": "reply_to_post", "description": "Reply to a post" }
-      ],
-      "configSchema": {
-        "BLUESKY_HANDLE": { "type": "string", "description": "Bluesky handle (e.g., user.bsky.social)", "required": true },
-        "BLUESKY_PASSWORD": { "type": "string", "description": "Bluesky app password", "required": true }
+        "THREADS_ACCESS_TOKEN": {
+          "type": "string",
+          "description": "Threads API access token",
+          "required": true
+        }
       }
     },
     {
       "id": "openrouter",
       "name": "openrouter",
       "version": "1.0.0",
-      "description": "OpenRouter AI — image generation, chat completions, model routing",
+      "description": "OpenRouter AI \u2014 image generation with Nano Banana, chat completions, model routing",
       "author": "Kai",
-      "tags": ["ai", "openrouter", "images", "llm"],
+      "tags": [
+        "openrouter",
+        "ai",
+        "image-generation",
+        "chat",
+        "models"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/openrouter.tar.gz",
       "npmPackage": "@kai-skills/openrouter",
       "tools": [
-        { "name": "generate_image", "description": "Generate images using Nano Banana or other models" },
-        { "name": "chat_completion", "description": "Generate text completions using any model" },
-        { "name": "list_models", "description": "List available models on OpenRouter" },
-        { "name": "get_generation_status", "description": "Check status of async image generation" }
+        {
+          "name": "generate_image",
+          "description": "Generate images using Nano Banana or other image models via OpenRouter"
+        },
+        {
+          "name": "chat_completion",
+          "description": "Generate text completions using any model via OpenRouter"
+        },
+        {
+          "name": "list_models",
+          "description": "List available models on OpenRouter with pricing and capabilities"
+        },
+        {
+          "name": "get_generation_status",
+          "description": "Check status of an asynchronous image generation"
+        }
       ],
       "configSchema": {
-        "OPENROUTER_API_KEY": { "type": "string", "description": "OpenRouter API key from https://openrouter.ai/keys", "required": true },
-        "OPENROUTER_MODEL": { "type": "string", "description": "Default model for chat completions", "default": "anthropic/claude-3.5-sonnet" }
+        "OPENROUTER_API_KEY": {
+          "type": "string",
+          "description": "OpenRouter API key from https://openrouter.ai/keys",
+          "required": true
+        },
+        "OPENROUTER_MODEL": {
+          "type": "string",
+          "description": "Default model for chat completions",
+          "default": "anthropic/claude-3.5-sonnet"
+        }
+      }
+    },
+    {
+      "id": "bluesky",
+      "name": "Bluesky",
+      "version": "1.0.0",
+      "description": "Bluesky social \u2014 profiles, feeds, posts, AT Protocol",
+      "author": "Kai",
+      "tags": [
+        "social-media",
+        "bluesky",
+        "at-protocol",
+        "decentralized"
+      ],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/bluesky.tar.gz",
+      "npmPackage": "@kai-skills/bluesky",
+      "tools": [
+        {
+          "name": "get_profile",
+          "description": "Get Bluesky profile information"
+        },
+        {
+          "name": "get_feed",
+          "description": "Get user's feed posts"
+        },
+        {
+          "name": "create_post",
+          "description": "Create a new post"
+        },
+        {
+          "name": "search_posts",
+          "description": "Search for posts"
+        },
+        {
+          "name": "follow_user",
+          "description": "Follow a user"
+        },
+        {
+          "name": "like_post",
+          "description": "Like a post"
+        },
+        {
+          "name": "reply_to_post",
+          "description": "Reply to a post"
+        }
+      ],
+      "configSchema": {
+        "BLUESKY_HANDLE": {
+          "type": "string",
+          "description": "Bluesky handle (e.g., user.bsky.social)",
+          "required": true
+        },
+        "BLUESKY_PASSWORD": {
+          "type": "string",
+          "description": "Bluesky app password",
+          "required": true
+        }
       }
     },
     {
       "id": "google-sheets",
       "name": "google-sheets",
       "version": "1.0.0",
-      "description": "Google Sheets — create spreadsheets, export data, share reports",
+      "description": "Google Sheets \u2014 create spreadsheets, export data, share reports",
       "author": "Kai",
-      "tags": ["google", "sheets", "spreadsheets", "export"],
+      "tags": [
+        "google",
+        "sheets",
+        "spreadsheets",
+        "export"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/google-sheets.tar.gz",
       "npmPackage": "@kai-skills/google-sheets",
       "tools": [
-        { "name": "create_spreadsheet", "description": "Create a new Google Sheets spreadsheet" },
-        { "name": "append_rows", "description": "Append rows of data to a sheet" },
-        { "name": "update_cell", "description": "Update a specific cell or range" },
-        { "name": "get_values", "description": "Read values from a spreadsheet range" },
-        { "name": "share_spreadsheet", "description": "Share spreadsheet with permissions" }
+        {
+          "name": "create_spreadsheet",
+          "description": "Create a new Google Sheets spreadsheet"
+        },
+        {
+          "name": "append_rows",
+          "description": "Append rows of data to a sheet"
+        },
+        {
+          "name": "update_cell",
+          "description": "Update a specific cell or range"
+        },
+        {
+          "name": "get_values",
+          "description": "Read values from a spreadsheet range"
+        },
+        {
+          "name": "share_spreadsheet",
+          "description": "Share spreadsheet with permissions"
+        }
       ],
       "configSchema": {
-        "GOOGLE_SERVICE_ACCOUNT_JSON": { "type": "string", "description": "Google Service Account JSON key", "required": false }
+        "GOOGLE_SERVICE_ACCOUNT_JSON": {
+          "type": "string",
+          "description": "Google Service Account JSON key",
+          "required": false
+        }
       }
     },
     {
       "id": "slack",
       "name": "slack",
       "version": "1.0.0",
-      "description": "Slack notifications — send messages, upload files, create threads",
+      "description": "Slack notifications \u2014 send messages, upload files, create threads",
       "author": "Kai",
-      "tags": ["slack", "notifications", "messaging", "alerts"],
+      "tags": [
+        "slack",
+        "notifications",
+        "messaging",
+        "alerts"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/slack.tar.gz",
       "npmPackage": "@kai-skills/slack",
       "tools": [
-        { "name": "send_message", "description": "Send DM to a user" },
-        { "name": "send_to_channel", "description": "Post message to a channel" },
-        { "name": "upload_file", "description": "Upload file to Slack" },
-        { "name": "create_thread", "description": "Reply in a thread" }
+        {
+          "name": "send_message",
+          "description": "Send DM to a user"
+        },
+        {
+          "name": "send_to_channel",
+          "description": "Post message to a channel"
+        },
+        {
+          "name": "upload_file",
+          "description": "Upload file to Slack"
+        },
+        {
+          "name": "create_thread",
+          "description": "Reply in a thread"
+        }
       ],
       "configSchema": {
-        "SLACK_BOT_TOKEN": { "type": "string", "description": "Slack Bot User OAuth Token (xoxb-)", "required": true }
+        "SLACK_BOT_TOKEN": {
+          "type": "string",
+          "description": "Slack Bot User OAuth Token (xoxb-)",
+          "required": true
+        }
       }
     },
     {
       "id": "webhook",
       "name": "webhook",
       "version": "1.0.0",
-      "description": "Webhook triggers — POST to Zapier, Make, custom endpoints",
+      "description": "Webhook triggers \u2014 POST to Zapier, Make, custom endpoints",
       "author": "Kai",
-      "tags": ["webhook", "automation", "zapier", "http"],
+      "tags": [
+        "webhook",
+        "automation",
+        "zapier",
+        "http"
+      ],
       "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/webhook.tar.gz",
       "npmPackage": "@kai-skills/webhook",
       "tools": [
-        { "name": "send_webhook", "description": "POST JSON payload to any URL" },
-        { "name": "send_with_auth", "description": "POST with Bearer token or API key" },
-        { "name": "test_endpoint", "description": "Test connectivity to endpoint" }
+        {
+          "name": "send_webhook",
+          "description": "POST JSON payload to any URL"
+        },
+        {
+          "name": "send_with_auth",
+          "description": "POST with Bearer token or API key"
+        },
+        {
+          "name": "test_endpoint",
+          "description": "Test connectivity to endpoint"
+        }
       ],
       "configSchema": {}
     }

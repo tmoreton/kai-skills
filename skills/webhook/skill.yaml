@@ -1,5 +1,5 @@
 id: webhook
-name: Webhook
+name: webhook
 version: 1.0.0
 description: Webhook triggers — POST to Zapier, Make, custom endpoints
 author: Kai

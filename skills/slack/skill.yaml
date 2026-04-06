@@ -1,5 +1,5 @@
 id: slack
-name: Slack
+name: slack
 version: 1.0.0
 description: Slack notifications — send messages, upload files, create threads
 author: Kai
