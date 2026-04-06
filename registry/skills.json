@@ -214,6 +214,129 @@
       "configSchema": {
         "NOTION_API_KEY": { "type": "string", "description": "Notion integration API key", "required": true }
       }
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "version": "1.0.0",
+      "description": "Instagram API - user profiles, media posts, hashtag search, insights",
+      "author": "Kai",
+      "tags": ["instagram", "social-media", "photos", "analytics"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/instagram.tar.gz",
+      "npmPackage": "@kai-skills/instagram",
+      "tools": [
+        { "name": "get_user_profile", "description": "Get Instagram user profile information" },
+        { "name": "get_user_media", "description": "Get recent media posts from a user" },
+        { "name": "search_hashtag", "description": "Search for hashtag content and top posts" },
+        { "name": "get_media_insights", "description": "Get engagement metrics for media" },
+        { "name": "get_account_insights", "description": "Get account-level analytics" }
+      ],
+      "configSchema": {
+        "INSTAGRAM_ACCESS_TOKEN": { "type": "string", "description": "Instagram Graph API access token", "required": true }
+      }
+    },
+    {
+      "id": "facebook",
+      "name": "Facebook",
+      "version": "1.0.0",
+      "description": "Facebook Pages API - page info, posts, insights, publishing",
+      "author": "Kai",
+      "tags": ["facebook", "social-media", "pages", "publishing"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/facebook.tar.gz",
+      "npmPackage": "@kai-skills/facebook",
+      "tools": [
+        { "name": "get_page_info", "description": "Get Facebook page information" },
+        { "name": "get_page_posts", "description": "Get posts from a page" },
+        { "name": "create_post", "description": "Create a new post on a page" },
+        { "name": "get_page_insights", "description": "Get page analytics and metrics" },
+        { "name": "get_post_insights", "description": "Get engagement metrics for a post" }
+      ],
+      "configSchema": {
+        "FACEBOOK_ACCESS_TOKEN": { "type": "string", "description": "Facebook Graph API access token", "required": true }
+      }
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "version": "1.0.0",
+      "description": "LinkedIn API - profile info, create posts, analytics, people search",
+      "author": "Kai",
+      "tags": ["linkedin", "social-media", "professional", "b2b"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/linkedin.tar.gz",
+      "npmPackage": "@kai-skills/linkedin",
+      "tools": [
+        { "name": "get_profile", "description": "Get LinkedIn profile information" },
+        { "name": "create_post", "description": "Create a post on LinkedIn" },
+        { "name": "search_people", "description": "Search for people on LinkedIn" },
+        { "name": "get_post_analytics", "description": "Get post engagement metrics" },
+        { "name": "get_company_updates", "description": "Get updates from a company page" }
+      ],
+      "configSchema": {
+        "LINKEDIN_ACCESS_TOKEN": { "type": "string", "description": "LinkedIn API access token", "required": true }
+      }
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "version": "1.0.0",
+      "description": "TikTok API - user info, videos, stats, hashtag search",
+      "author": "Kai",
+      "tags": ["tiktok", "social-media", "video", "short-form"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/tiktok.tar.gz",
+      "npmPackage": "@kai-skills/tiktok",
+      "tools": [
+        { "name": "get_user_info", "description": "Get TikTok user information" },
+        { "name": "get_user_videos", "description": "Get videos from a user" },
+        { "name": "get_video_stats", "description": "Get video engagement metrics" },
+        { "name": "search_hashtag", "description": "Search for hashtag content" },
+        { "name": "get_trending", "description": "Get trending videos" }
+      ],
+      "configSchema": {
+        "TIKTOK_ACCESS_TOKEN": { "type": "string", "description": "TikTok API access token", "required": true }
+      }
+    },
+    {
+      "id": "threads",
+      "name": "Threads",
+      "version": "1.0.0",
+      "description": "Threads API - profile, posts, publishing, replies, insights",
+      "author": "Kai",
+      "tags": ["threads", "social-media", "meta", "text"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/threads.tar.gz",
+      "npmPackage": "@kai-skills/threads",
+      "tools": [
+        { "name": "get_profile", "description": "Get Threads user profile" },
+        { "name": "get_user_threads", "description": "Get threads from a user" },
+        { "name": "create_thread", "description": "Create a new thread" },
+        { "name": "reply_to_thread", "description": "Reply to an existing thread" },
+        { "name": "get_thread_insights", "description": "Get engagement metrics" }
+      ],
+      "configSchema": {
+        "THREADS_ACCESS_TOKEN": { "type": "string", "description": "Threads API access token", "required": true }
+      }
+    },
+    {
+      "id": "bluesky",
+      "name": "Bluesky",
+      "version": "1.0.0",
+      "description": "Bluesky AT Protocol - profile, feed, posting, search, social actions",
+      "author": "Kai",
+      "tags": ["bluesky", "social-media", "at-protocol", "decentralized"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/bluesky.tar.gz",
+      "npmPackage": "@kai-skills/bluesky",
+      "tools": [
+        { "name": "get_profile", "description": "Get Bluesky profile information" },
+        { "name": "get_feed", "description": "Get user's feed posts" },
+        { "name": "create_post", "description": "Create a new post" },
+        { "name": "search_posts", "description": "Search for posts" },
+        { "name": "follow_user", "description": "Follow a user" },
+        { "name": "like_post", "description": "Like a post" },
+        { "name": "reply_to_post", "description": "Reply to a post" }
+      ],
+      "configSchema": {
+        "BLUESKY_HANDLE": { "type": "string", "description": "Bluesky handle (e.g., user.bsky.social)", "required": true },
+        "BLUESKY_PASSWORD": { "type": "string", "description": "Bluesky app password", "required": true }
+      }
     }
   ]
 }
