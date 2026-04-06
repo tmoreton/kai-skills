@@ -101,6 +101,119 @@
       "configSchema": {
         "DATABASE_URL": { "type": "string", "description": "Database connection string" }
       }
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube Analytics",
+      "version": "1.0.0",
+      "description": "YouTube Data API integration for analytics dashboards - channel stats, video metrics, comments, trending, and comparative reports",
+      "author": "Kai",
+      "tags": ["youtube", "social-media", "analytics", "video", "dashboard"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/youtube.tar.gz",
+      "npmPackage": "@kai-skills/youtube",
+      "tools": [
+        { "name": "search_videos", "description": "Search YouTube for videos by query" },
+        { "name": "get_video_stats", "description": "Get statistics (views, likes, comments) for YouTube videos" },
+        { "name": "get_channel", "description": "Get YouTube channel info (subscribers, views, video count)" },
+        { "name": "get_recent_uploads", "description": "Get a channel's latest uploaded videos with stats" },
+        { "name": "get_trending", "description": "Get trending YouTube videos by region" },
+        { "name": "get_comments", "description": "Get comments for a video with engagement metrics" },
+        { "name": "compare_videos", "description": "Compare performance metrics across multiple videos" },
+        { "name": "generate_channel_report", "description": "Generate a comprehensive analytics report for a channel" }
+      ],
+      "configSchema": {
+        "YOUTUBE_API_KEY": { "type": "string", "description": "YouTube Data API v3 key from Google Cloud Console", "required": true }
+      }
+    },
+    {
+      "id": "twitter",
+      "name": "Twitter/X",
+      "version": "1.0.0",
+      "description": "Twitter/X integration - research via web search, posting via X API v2. Supports content intelligence, analytics, and automated posting",
+      "author": "Kai",
+      "tags": ["twitter", "x", "social-media", "analytics", "posting"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/twitter.tar.gz",
+      "npmPackage": "@kai-skills/twitter",
+      "tools": [
+        { "name": "search_tweets", "description": "Search for recent tweets by keyword, topic, or hashtag" },
+        { "name": "get_user_tweets", "description": "Get recent tweets from a specific user handle" },
+        { "name": "analyze_user", "description": "Analyze a Twitter user's profile, stats, and recent engagement" },
+        { "name": "find_influencers", "description": "Find popular accounts in a specific niche/topic" },
+        { "name": "track_topic_sentiment", "description": "Track sentiment and trending discussion around a topic" },
+        { "name": "post_tweet", "description": "Post a tweet to Twitter/X using API v2" },
+        { "name": "post_thread", "description": "Post a thread of connected tweets" },
+        { "name": "get_rate_limits", "description": "Check remaining API quota for the month" }
+      ],
+      "configSchema": {
+        "TAVILY_API_KEY": { "type": "string", "description": "Tavily API key for research tools", "required": false },
+        "X_API_KEY": { "type": "string", "description": "X API Key for posting", "required": false },
+        "X_API_SECRET": { "type": "string", "description": "X API Secret", "required": false },
+        "X_ACCESS_TOKEN": { "type": "string", "description": "X Access Token", "required": false },
+        "X_ACCESS_TOKEN_SECRET": { "type": "string", "description": "X Access Token Secret", "required": false }
+      }
+    },
+    {
+      "id": "data-storage",
+      "name": "Data Storage",
+      "version": "1.0.0",
+      "description": "Read and write JSON, Markdown, and text files - simple file I/O for data persistence",
+      "author": "Kai",
+      "tags": ["data", "files", "json", "markdown", "storage"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/data-storage.tar.gz",
+      "npmPackage": "@kai-skills/data-storage",
+      "tools": [
+        { "name": "read", "description": "Auto-detect file type and read (JSON or text)" },
+        { "name": "write", "description": "Auto-detect and write (JSON or text)" },
+        { "name": "append", "description": "Append content to a file" },
+        { "name": "read_json", "description": "Read and parse a JSON file" },
+        { "name": "write_json", "description": "Write data to a JSON file" },
+        { "name": "read_markdown", "description": "Read a Markdown file" },
+        { "name": "write_markdown", "description": "Write content to a Markdown file" },
+        { "name": "read_text", "description": "Read any text file" },
+        { "name": "write_text", "description": "Write text to a file" }
+      ],
+      "configSchema": {}
+    },
+    {
+      "id": "web-tools",
+      "name": "Web Tools",
+      "version": "1.0.0",
+      "description": "Fetch web pages and search the web via Tavily",
+      "author": "Kai",
+      "tags": ["web", "fetch", "search", "tavily"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/web-tools.tar.gz",
+      "npmPackage": "@kai-skills/web-tools",
+      "tools": [
+        { "name": "fetch", "description": "Fetch content from a URL and return the response" },
+        { "name": "search", "description": "Search the web using Tavily" }
+      ],
+      "configSchema": {
+        "TAVILY_API_KEY": { "type": "string", "description": "Tavily API key for web search", "required": true }
+      }
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "version": "1.0.0",
+      "description": "Integrate with Notion - query databases, create pages, add blocks, search content",
+      "author": "Kai",
+      "tags": ["notion", "notes", "wiki", "database", "productivity"],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/notion.tar.gz",
+      "npmPackage": "@kai-skills/notion",
+      "tools": [
+        { "name": "search", "description": "Search pages and databases in Notion" },
+        { "name": "get_page", "description": "Get a page by ID with its properties" },
+        { "name": "get_page_content", "description": "Get the block content of a page" },
+        { "name": "create_page", "description": "Create a new page in a database or as a child page" },
+        { "name": "update_page", "description": "Update page properties" },
+        { "name": "query_database", "description": "Query a database with filters and sorts" },
+        { "name": "get_database", "description": "Get database schema and properties" },
+        { "name": "append_blocks", "description": "Add blocks to a page or block" },
+        { "name": "delete_block", "description": "Delete a block" }
+      ],
+      "configSchema": {
+        "NOTION_API_KEY": { "type": "string", "description": "Notion integration API key", "required": true }
+      }
     }
   ]
 }

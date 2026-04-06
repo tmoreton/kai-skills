@@ -1,0 +1,114 @@
+id: twitter
+name: Twitter/X API
+version: 2.0.0
+description: Full Twitter/X integration — research via web search, posting via X API v2. Supports content intelligence and automated growth.
+author: kai
+config_schema:
+  # X API v2 OAuth 1.0a Credentials (Free tier: 500 posts/month)
+  api_key:
+    type: string
+    required: false
+    env: X_API_KEY
+    description: X API Key (from developer.x.com)
+  api_secret:
+    type: string
+    required: false
+    env: X_API_SECRET
+    description: X API Secret
+  access_token:
+    type: string
+    required: false
+    env: X_ACCESS_TOKEN
+    description: X Access Token
+  access_token_secret:
+    type: string
+    required: false
+    env: X_ACCESS_TOKEN_SECRET
+    description: X Access Token Secret
+  # Optional: Bearer token for read operations
+  bearer_token:
+    type: string
+    required: false
+    env: X_BEARER_TOKEN
+    description: X Bearer Token (optional)
+tools:
+  # === RESEARCH TOOLS (Web Search) ===
+  - name: search_tweets
+    description: Search for recent tweets by keyword, topic, or hashtag
+    parameters:
+      query:
+        type: string
+        required: true
+        description: Search query (keywords, hashtags, or topic)
+      max_results:
+        type: number
+        description: Maximum results (default 20)
+      time_range:
+        type: string
+        description: Time range for tweets
+        enum: [last_hour, today, this_week, this_month]
+  - name: get_user_tweets
+    description: Get recent tweets from a specific user handle
+    parameters:
+      username:
+        type: string
+        required: true
+        description: Twitter/X username (with or without @)
+      max_results:
+        type: number
+        description: Maximum tweets to fetch (default 20)
+  - name: analyze_user
+    description: Analyze a Twitter user's profile, stats, and recent engagement
+    parameters:
+      username:
+        type: string
+        required: true
+        description: Twitter/X username
+  - name: find_influencers
+    description: Find popular accounts in a specific niche/topic
+    parameters:
+      topic:
+        type: string
+        required: true
+        description: Topic/niche to search (e.g., "AI coding", "indie hacker")
+      min_followers:
+        type: number
+        description: Minimum follower count (default 5000)
+      max_results:
+        type: number
+        description: Maximum results (default 10)
+  - name: track_topic_sentiment
+    description: Track sentiment and trending discussion around a topic
+    parameters:
+      topic:
+        type: string
+        required: true
+        description: Topic to track
+      time_range:
+        type: string
+        description: Time range
+        enum: [today, this_week, this_month]
+  # === POSTING TOOLS (X API v2) ===
+  - name: post_tweet
+    description: Post a tweet to Twitter/X using API v2 (requires OAuth credentials)
+    parameters:
+      text:
+        type: string
+        required: true
+        description: Tweet text (max 280 characters)
+      reply_to:
+        type: string
+        description: Tweet ID to reply to (optional)
+      quote_tweet:
+        type: string
+        description: Tweet URL or ID to quote (optional)
+  - name: post_thread
+    description: Post a thread of connected tweets
+    parameters:
+      tweets:
+        type: array
+        required: true
+        description: Array of tweet texts (each max 280 chars)
+  - name: get_rate_limits
+    description: Check remaining API quota for the month
+    parameters: {}

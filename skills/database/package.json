@@ -1,0 +1,23 @@
+{
+  "name": "database-skill",
+  "version": "1.0.0",
+  "description": "Database operations including migrations, queries, and connection management",
+  "type": "module",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "database",
+    "sql",
+    "migrations",
+    "prisma",
+    "typeorm",
+    "sequelize"
+  ],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^10.3.0"
+  }
+}

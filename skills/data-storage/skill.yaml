@@ -1,0 +1,105 @@
+id: data-storage
+name: Data Storage
+version: 1.0.0
+description: Read and write JSON, Markdown, and other data files
+author: kai
+tools:
+  - name: read
+    description: Auto-detect file type and read (JSON or text)
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the file
+      default:
+        type: object
+        description: Default value if file doesn't exist
+  - name: write
+    description: Auto-detect and write (JSON or text)
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the file
+      data:
+        type: string
+        description: Data to write (JSON or text)
+      content:
+        type: string
+        description: Alternative to data parameter
+  - name: append
+    description: Append content to a file (creates if doesn't exist)
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the file
+      data:
+        type: string
+        description: Data to append (JSON or text)
+      content:
+        type: string
+        description: Alternative to data parameter
+  - name: read_json
+    description: Read and parse a JSON file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the JSON file
+  - name: write_json
+    description: Write data to a JSON file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the JSON file
+      data:
+        type: string
+        required: true
+        description: JSON string or object to write
+      pretty:
+        type: boolean
+        description: Pretty-print the JSON (default true)
+  - name: read_markdown
+    description: Read a Markdown file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the Markdown file
+  - name: write_markdown
+    description: Write content to a Markdown file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the Markdown file
+      content:
+        type: string
+        required: true
+        description: Markdown content to write
+      append:
+        type: boolean
+        description: Append to file instead of overwriting
+  - name: read_text
+    description: Read any text file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the text file
+  - name: write_text
+    description: Write text to a file
+    parameters:
+      file_path:
+        type: string
+        required: true
+        description: Path to the file
+      content:
+        type: string
+        required: true
+        description: Text content to write
+      append:
+        type: boolean
+        description: Append to file instead of overwriting

@@ -1,33 +1,65 @@
 # Browser Skill
 
-Web browsing with Playwright for AI assistants. Works with Kai, Claude Desktop, or any MCP-compatible client.
+Web browsing with Playwright for AI assistants. Works with **Claude Desktop** (the chat app) via MCP, or with Kai.
 
-## Installation
+**Not for Claude Code** — if you're using the `claude` CLI tool, use [claude-skills](https://github.com/alirezarezvani/claude-skills) instead.
 
-### Via Kai CLI
+## Claude Desktop Installation
+
+**Step 1:** Install the MCP adapter globally:
 ```bash
-kai skills install browser
+npm install -g @kai-skills/mcp-adapter
 ```
 
-### Via Standalone CLI
+**Step 2:** Install Playwright (required):
 ```bash
-npx kai-skills install browser --target=kai
+npx playwright install chromium
 ```
 
-### For Claude Desktop (MCP)
-```bash
-npx kai-skills install browser --target=mcp
+**Step 3:** Edit Claude Desktop config:
+
+- **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Step 4:** Add the Browser skill:
+
+```json
+{
+  "mcpServers": {
+    "browser": {
+      "command": "npx",
+      "args": ["-y", "kai-skill-mcp", "/path/to/kai-skills/skills/browser"]
+    }
+  }
+}
 ```
+
+**Step 5:** Restart Claude Desktop. The skill is ready to use.
+
+## Requirements
+
+- Node.js 18+
+- Playwright (auto-installs Chromium)
 
 ## Tools
 
-- `open` - Navigate to URL and return page content
-- `click` - Click elements by selector or text
-- `fill` - Fill form fields
-- `screenshot` - Take screenshots (file or base64)
-- `evaluate` - Run JavaScript in browser context
-- `get_content` - Get current page content
-- `close` - Close browser session
+| Tool | Description |
+|------|-------------|
+| `open` | Navigate to URL and return page content |
+| `click` | Click elements by selector or text |
+| `fill` | Fill form fields |
+| `screenshot` | Take screenshots (saved to file or returned as base64) |
+| `evaluate` | Run JavaScript in browser context |
+| `get_content` | Get current page content |
+| `close` | Close browser session |
+
+## Example Usage (in Claude Desktop)
+
+Just ask Claude naturally:
+- "Go to example.com and tell me what you see"
+- "Take a screenshot of this page"
+- "Fill out the login form and submit it"
+- "Search for 'AI tools' on this page"
 
 ## Configuration
 
@@ -38,12 +70,9 @@ npx kai-skills install browser --target=mcp
 | `BROWSER_CONTENT_LIMIT` | Max content to return | `80000` |
 | `BROWSER_OUTPUT_DIR` | Screenshot directory | `~/.kai/agent-output/browser` |
 
-## Requirements
+To use headless mode (see browser UI), set `BROWSER_HEADLESS=false` in the env section of your Claude config.
 
-- Playwright (auto-installed via postinstall script)
-- Chromium browser (auto-installed)
-
-## Example Usage
+## Programmatic Usage
 
 ```javascript
 // Navigate and extract content

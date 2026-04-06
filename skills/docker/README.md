@@ -1,43 +1,65 @@
 # Docker Skill
 
-Docker container management for AI assistants. Works with Kai, Claude Desktop, or any MCP-compatible client.
+Docker container management for AI assistants. Works with **Claude Desktop** (the chat app) via MCP, or with Kai.
 
-## Installation
+**Not for Claude Code** — if you're using the `claude` CLI tool, use [claude-skills](https://github.com/alirezarezvani/claude-skills) instead.
 
-### Via Kai CLI
+## Claude Desktop Installation
+
+**Step 1:** Install the MCP adapter globally:
 ```bash
-kai skills install docker
+npm install -g @kai-skills/mcp-adapter
 ```
 
-### Via Standalone CLI
-```bash
-npx kai-skills install docker --target=kai
+**Step 2:** Edit Claude Desktop config:
+
+- **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Step 3:** Add the Docker skill:
+
+```json
+{
+  "mcpServers": {
+    "docker": {
+      "command": "npx",
+      "args": ["-y", "kai-skill-mcp", "/path/to/kai-skills/skills/docker"]
+    }
+  }
+}
 ```
 
-### For Claude Desktop (MCP)
-```bash
-npx kai-skills install docker --target=mcp
-```
+**Step 4:** Restart Claude Desktop. The skill is ready to use.
+
+## Requirements
+
+- Docker CLI installed
+- docker-compose (v1) or `docker compose` (v2)
 
 ## Tools
 
-- `docker_build` - Build Docker image with intelligent tagging
-- `docker_run` - Run Docker container with smart defaults
-- `docker_compose_up` - Start services with docker-compose
-- `docker_compose_down` - Stop and remove docker-compose services
-- `docker_logs` - View container logs with filtering
-- `docker_status` - Show running containers and resource usage
+| Tool | Description |
+|------|-------------|
+| `docker_build` | Build Docker image with intelligent tagging |
+| `docker_run` | Run Docker container with smart defaults |
+| `docker_compose_up` | Start services with docker-compose |
+| `docker_compose_down` | Stop and remove docker-compose services |
+| `docker_logs` | View container logs with filtering |
+| `docker_status` | Show running containers and resource usage |
+
+## Example Usage (in Claude Desktop)
+
+Just ask Claude naturally:
+- "Build this Docker image"
+- "Start my Docker containers"
+- "Show me the container logs"
+- "What containers are running?"
 
 ## Configuration
 
 No configuration required. Automatically detects docker compose v1 vs v2.
 
-## Requirements
-
-- Docker CLI
-- docker-compose (v1) or docker compose (v2)
-
-## Example Usage
+## Programmatic Usage
 
 ```javascript
 // Build and push image

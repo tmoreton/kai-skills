@@ -1,0 +1,19 @@
+{
+  "name": "@kai-skills/email",
+  "version": "1.0.0",
+  "description": "Email skill for Kai - send and read emails via SMTP/IMAP",
+  "type": "module",
+  "main": "handler.js",
+  "dependencies": {
+    "nodemailer": "^6.9.0"
+  },
+  "keywords": [
+    "kai-skill",
+    "email",
+    "smtp",
+    "imap",
+    "nodemailer"
+  ],
+  "author": "Kai",
+  "license": "MIT"
+}
