@@ -1,9 +1,9 @@
 id: youtube
-name: YouTube Analytics
-description: YouTube Data API integration for analytics dashboards — channel stats, video metrics, comments, trending, and comparative reports
+name: YouTube
+description: YouTube analytics — channel stats, video metrics, comments, trending
 version: 1.0.0
 author: Kai
-tags: ["youtube", "social-media", "analytics", "video", "dashboard"]
+tags: ["social-media", "youtube", "analytics", "video"]
 
 config_schema:
   YOUTUBE_API_KEY:

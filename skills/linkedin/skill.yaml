@@ -1,7 +1,7 @@
 id: linkedin
-name: LinkedIn API
+name: LinkedIn
 version: 1.0.0
-description: LinkedIn integration — read profiles, create posts, get analytics, and search people. Uses LinkedIn API v2 with OAuth 2.0.
+description: LinkedIn professional — profiles, posts, analytics, search
 icon: linkedin
 author: kai
 dependencies:

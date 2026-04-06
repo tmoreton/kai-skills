@@ -1,8 +1,9 @@
 id: twitter
-name: Twitter/X API
+name: Twitter/X
 version: 2.0.0
-description: Full Twitter/X integration — research via web search, posting via X API v2. Supports content intelligence and automated growth.
-author: kai
+description: Twitter/X tools — search tweets, analyze users, post threads
+author: Kai
+tags: ["social-media", "twitter", "x", "analytics", "posting"]
 config_schema:
   # X API v2 OAuth 1.0a Credentials (Free tier: 500 posts/month)
   api_key:

@@ -1,8 +1,9 @@
 id: facebook
-name: Facebook Pages API
+name: Facebook
 version: 1.0.0
-description: Facebook Pages integration via Graph API — get page info, posts, insights, and post content to your page.
-author: kai
+description: Facebook Pages — page info, posts, insights, publishing
+author: Kai
+tags: ["social-media", "facebook", "pages", "publishing"]
 config_schema:
   # Facebook Graph API Credentials
   access_token:

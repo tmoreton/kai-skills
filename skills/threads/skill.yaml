@@ -1,7 +1,7 @@
 id: threads
-name: Threads API
+name: Threads
 version: 1.0.0
-description: Meta Threads API integration for posting threads, managing replies, and retrieving user profiles and content.
+description: Threads posts — profiles, publishing, replies, insights
 author: kai
 config_schema:
   # Threads API Credentials (from Meta for Developers)

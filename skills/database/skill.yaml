@@ -1,6 +1,6 @@
 id: database
 name: database
-description: Database operations including migrations, queries, and connection management
+description: Database operations — migrations, queries, schema, backups
 version: 1.0.0
 author: Kai
 

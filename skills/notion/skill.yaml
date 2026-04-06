@@ -1,6 +1,6 @@
 id: notion
-name: Notion
-description: Integrate with Notion - query databases, create pages, add blocks, search content
+name: notion
+description: Notion workspace — query databases, create pages, manage content
 version: 1.0.0
 author: Kai
 tags: ["notion", "notes", "wiki", "database", "productivity"]

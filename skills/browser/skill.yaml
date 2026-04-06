@@ -1,6 +1,6 @@
 id: browser
-name: Browser
-description: Browse the web using Playwright - navigate pages, click elements, fill forms, take screenshots, and extract content
+name: browser
+description: Browse the web — navigate, click, fill forms, take screenshots
 version: 1.0.0
 author: Kai
 tags: ["browser", "web", "playwright", "automation"]

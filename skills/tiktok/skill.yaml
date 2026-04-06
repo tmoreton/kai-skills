@@ -1,7 +1,7 @@
 id: tiktok
-name: TikTok API
+name: TikTok
 version: 1.0.0
-description: TikTok integration for research and analytics — user profiles, videos, statistics, and search. Uses web search by default, with optional TikTok Research API for enhanced data.
+description: TikTok videos — user profiles, video stats, hashtag search
 author: kai
 config_schema:
   # Web Search API (Required for basic functionality)

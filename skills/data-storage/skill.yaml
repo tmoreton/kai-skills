@@ -1,7 +1,7 @@
 id: data-storage
-name: Data Storage
+name: data-storage
 version: 1.0.0
-description: Read and write JSON, Markdown, and other data files
+description: File storage — read/write JSON, Markdown, text files
 author: kai
 tools:
   - name: read

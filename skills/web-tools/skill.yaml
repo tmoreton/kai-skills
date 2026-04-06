@@ -1,7 +1,7 @@
 id: web-tools
-name: Web Tools
+name: web-tools
 version: 1.0.0
-description: Fetch web pages and search the web via Tavily
+description: Web utilities — fetch pages, search with Tavily
 author: kai
 config_schema:
   tavily_api_key:

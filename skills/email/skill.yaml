@@ -1,7 +1,6 @@
 id: email
-name: Email
-version: 1.0.0
-description: Send and read emails via SMTP/IMAP using Nodemailer. Supports any SMTP provider (Gmail, Outlook, custom servers).
+name: email
+description: Send and read emails — SMTP/IMAP support for all providers
 author: kai
 
 dependencies:

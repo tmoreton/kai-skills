@@ -1,6 +1,6 @@
 id: docker
 name: docker
-description: Docker container management, compose operations, and image building
+description: Docker containers — build images, run containers, compose
 version: 1.0.0
 author: Kai
 tags: ["docker", "containers", "devops", "deployment"]

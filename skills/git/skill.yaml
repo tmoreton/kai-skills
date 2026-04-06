@@ -1,6 +1,6 @@
 id: git
 name: git
-description: Advanced Git operations including smart commits, branch management, and PR workflows
+description: Git operations — smart commits, PRs, branches, changelogs
 version: 1.0.0
 author: Kai
 tags: ["version-control", "git", "github"]

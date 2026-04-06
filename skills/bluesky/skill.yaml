@@ -1,7 +1,7 @@
 id: bluesky
-name: Bluesky API
+name: Bluesky
 version: 1.0.0
-description: Full Bluesky integration via AT Protocol — get profiles, feeds, post content, search posts, and interact with the decentralized social network.
+description: Bluesky social — profiles, feeds, posts, AT Protocol
 author: kai
 icon: https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f98b.svg
 config_schema:

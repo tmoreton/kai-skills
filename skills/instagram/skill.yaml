@@ -1,9 +1,10 @@
 id: instagram
-name: Instagram API
+name: Instagram
 version: 1.0.0
-description: Instagram integration via Basic Display API and Graph API. Retrieve user profiles, media posts, hashtag content, and media insights.
-author: kai
+description: Instagram content — profiles, posts, hashtags, insights
+author: Kai
 icon: instagram
+tags: ["social-media", "instagram", "photos", "analytics", "content"]
 config_schema:
   # Instagram Graph API / Basic Display API Access Token
   access_token:
