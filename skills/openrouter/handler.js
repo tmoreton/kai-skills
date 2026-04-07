@@ -13,7 +13,7 @@ import { createRequire } from "module";
 import path from "path";
 import os from "os";
 import fs from "fs";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, injectCredentials } from '../../lib/credentials.js';
 
 // Dynamic import for optional dependency
 function loadOpenAI() {

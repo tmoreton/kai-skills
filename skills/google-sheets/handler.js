@@ -12,7 +12,7 @@
  */
 
 import { createRequire } from "module";
-import { getCredential, setupCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../../lib/credentials.js';
 
 let googleapis = null;
 

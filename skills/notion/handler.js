@@ -5,7 +5,7 @@
  * Works with Kai, MCP servers, or direct API usage.
  */
 
-import { setupCredentials, getCredential } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../../lib/credentials.js';
 
 const NOTION_API_BASE = "https://api.notion.com/v1";
 

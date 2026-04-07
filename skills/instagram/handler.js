@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { getCredential, setupCredentials, hasCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials, hasCredentials } from '../../lib/credentials.js';
 
 // Dynamic requires for optional dependencies
 function loadInstagramAPI() {

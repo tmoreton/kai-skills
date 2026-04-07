@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, getCredential } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../../lib/credentials.js';
 
 const FB_API_VERSION = 'v18.0';
 const FB_API_BASE = `https://graph.facebook.com/${FB_API_VERSION}`;

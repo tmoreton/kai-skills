@@ -10,7 +10,7 @@ import { createRequire } from "module";
 import fs from "fs";
 import path from "path";
 import { homedir } from "os";
-import { setupCredentials, injectCredentials, getCredentials } from "../lib/credentials.js";
+import { setupCredentials, injectCredentials, getCredentials } from "../../lib/credentials.js";
 
 let browser = null;
 let page = null;

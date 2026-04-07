@@ -7,7 +7,7 @@
 
 import { createRequire } from "module";
 import { connect as tlsConnect } from "tls";
-import { getCredential, setupCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../../lib/credentials.js';
 
 let transporter = null;
 let smtpConfig = {};

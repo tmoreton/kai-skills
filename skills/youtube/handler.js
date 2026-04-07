@@ -5,7 +5,7 @@
  * Works with Kai and Claude Desktop via MCP.
  */
 
-import { setupCredentials, getCredential } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../../lib/credentials.js';
 
 const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
 const FETCH_TIMEOUT_MS = 15000;

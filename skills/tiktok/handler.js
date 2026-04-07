@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { getCredential, setupCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../../lib/credentials.js';
 
 const DEFAULT_MAX_RESULTS = 20;
 const TIKTOK_API_BASE = 'https://open-api.tiktok.com';

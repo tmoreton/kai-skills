@@ -345,12 +345,14 @@ function installSkills() {
       throw new Error('Skills folder not found in cloned repo');
     }
     
+    // Copy lib/ to ~/.kai/lib (outside skills to avoid detection as skill)
     const libSource = join(tempDir, 'skills', 'lib');
-    const libDest = join(skillsDir, 'lib');
+    const libDest = join(kaiDir, 'lib');
     if (existsSync(libSource)) {
       if (!existsSync(libDest)) {
-        execSync(`cp -r "${libSource}" "${libDest}"`);
+        mkdirSync(libDest, { recursive: true });
       }
+      execSync(`cp -r "${libSource}"/* "${libDest}/" 2>/dev/null || true`);
     }
     
     if (existsSync(tempDir)) {

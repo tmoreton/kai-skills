@@ -5,7 +5,7 @@
  * Uses native fetch - no npm dependencies.
  */
 
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, injectCredentials } from '../../lib/credentials.js';
 
 export default {
   install: async (config) => {

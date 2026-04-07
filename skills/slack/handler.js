@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, getCredential } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../../lib/credentials.js';
 
 // Load @slack/web-api dynamically (optional dependency)
 function loadSlackWebApi() {

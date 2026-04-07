@@ -1,66 +1,101 @@
 /**
- * Shared credential management for Kai skills
+ * Standard credential getter for all Kai skills
+ * Checks in priority order: env vars > config > stored credentials
  * 
- * Provides secure storage and retrieval of API keys.
- * Skills use this to get credentials from Kai CLI config.
+ * Usage in skill handler:
+ *   import { getCredentials } from '../lib/credentials.js';
+ *   
+ *   const apiKey = getCredentials('youtube', 'YOUTUBE_API_KEY', config);
+ *   if (!apiKey) throw new Error('API key required');
  */
 
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { homedir } from 'os';
-import { fileURLToPath } from 'url';
 
 const KAI_DIR = join(homedir(), '.kai');
 const CONFIG_FILE = join(KAI_DIR, 'config.json');
-const CREDENTIALS_DIR = join(KAI_DIR, '.credentials');
-
-// Get skill name from calling module
-function getCallerSkill() {
-  // This is a heuristic - assumes skill is in ~/.kai/skills/{skillName}/
-  const stack = new Error().stack;
-  const match = stack.match(/\/\.kai\/skills\/([^\/]+)\//);
-  return match ? match[1] : null;
-}
 
 /**
- * Check if credentials are configured for a skill
+ * Get credential value using standard priority:
+ * 1. process.env (from Kai web UI or system) - HIGHEST
+ * 2. config object passed from MCP/Kai
+ * 3. Stored credentials from kai config.json
+ * 4. Stored credentials from conversation setup
  */
-export function hasCredentials(skillName) {
-  const name = skillName || getCallerSkill();
-  if (!name) return false;
-  
-  // Check Kai CLI config
-  const kaiConfig = loadKaiConfig();
-  if (kaiConfig.skills?.[name]) {
-    return Object.keys(kaiConfig.skills[name]).length > 0;
+export function getCredential(skillName, envKey, config = {}) {
+  // Priority 1: Environment variable (Kai web UI, system, or injected)
+  if (process.env[envKey]) {
+    return process.env[envKey];
   }
   
-  // Check environment variables
-  const envPrefix = name.toUpperCase().replace(/-/g, '_');
-  const requiredKeys = getRequiredEnvKeys(name);
-  return requiredKeys.some(key => process.env[key] || process.env[`${envPrefix}_${key}`]);
+  // Priority 2: Config object from MCP/Kai
+  if (config[envKey]) {
+    return config[envKey];
+  }
+  
+  // Priority 3: Stored credentials (kai config.json)
+  const kaiConfig = loadKaiConfig();
+  const skillConfig = kaiConfig.skills?.[skillName];
+  if (skillConfig) {
+    // Check for exact env key match
+    if (skillConfig[envKey]) return skillConfig[envKey];
+    // Check for camelCase or lowercase version
+    const lowerKey = envKey.toLowerCase();
+    if (skillConfig[lowerKey]) return skillConfig[lowerKey];
+  }
+  
+  return null;
 }
 
 /**
- * Get required environment variable names for a skill
+ * Get multiple credentials for a skill
  */
-function getRequiredEnvKeys(skillName) {
-  const defaults = {
-    youtube: ['YOUTUBE_API_KEY'],
-    twitter: ['TAVILY_API_KEY'],
-    instagram: ['INSTAGRAM_ACCESS_TOKEN'],
-    facebook: ['FACEBOOK_ACCESS_TOKEN', 'FACEBOOK_PAGE_ID'],
-    linkedin: ['LINKEDIN_ACCESS_TOKEN'],
-    notion: ['NOTION_API_KEY'],
-    slack: ['SLACK_BOT_TOKEN'],
-    openrouter: ['OPENROUTER_API_KEY'],
-    threads: ['THREADS_ACCESS_TOKEN'],
-    tiktok: ['TAVILY_API_KEY'],
-    bluesky: ['BLUESKY_IDENTIFIER', 'BLUESKY_PASSWORD'],
-    'google-sheets': ['GOOGLE_SERVICE_ACCOUNT_JSON'],
+export function getCredentials(skillName, envKeys, config = {}) {
+  const result = {};
+  for (const key of envKeys) {
+    result[key] = getCredential(skillName, key, config);
+  }
+  return result;
+}
+
+/**
+ * Setup credentials for a skill (conversation-based)
+ */
+export async function setupCredentials(skillName, credentials) {
+  const kaiConfig = loadKaiConfig();
+  
+  if (!kaiConfig.skills) {
+    kaiConfig.skills = {};
+  }
+  
+  // Map credentials to env-friendly format
+  const mappedCreds = {};
+  for (const [key, value] of Object.entries(credentials)) {
+    // Store both original key and uppercase env-style key
+    mappedCreds[key] = value;
+    const envKey = `${skillName.toUpperCase().replace(/-/g, '_')}_${key.toUpperCase()}`;
+    mappedCreds[envKey] = value;
+  }
+  
+  kaiConfig.skills[skillName] = {
+    ...kaiConfig.skills[skillName],
+    ...mappedCreds,
+    _updated: new Date().toISOString()
   };
   
-  return defaults[skillName] || [`${skillName.toUpperCase()}_API_KEY`];
+  if (!existsSync(KAI_DIR)) {
+    mkdirSync(KAI_DIR, { recursive: true });
+  }
+  
+  writeFileSync(CONFIG_FILE, JSON.stringify(kaiConfig, null, 2));
+  
+  // Also set in process.env for immediate use
+  for (const [key, value] of Object.entries(mappedCreds)) {
+    if (key.includes('_')) process.env[key] = value;
+  }
+  
+  return { success: true, skill: skillName, keys: Object.keys(credentials) };
 }
 
 /**
@@ -79,64 +114,15 @@ function loadKaiConfig() {
 }
 
 /**
- * Setup credentials for a skill
- * This is called by the skill's 'setup' tool
+ * Check if credentials exist for a skill
  */
-export async function setupCredentials(skillName, credentials) {
-  const kaiConfig = loadKaiConfig();
-  
-  if (!kaiConfig.skills) {
-    kaiConfig.skills = {};
-  }
-  
-  kaiConfig.skills[skillName] = {
-    ...kaiConfig.skills[skillName],
-    ...credentials,
-    _updated: new Date().toISOString()
-  };
-  
-  // Ensure Kai directory exists
-  if (!existsSync(KAI_DIR)) {
-    mkdirSync(KAI_DIR, { recursive: true });
-  }
-  
-  writeFileSync(CONFIG_FILE, JSON.stringify(kaiConfig, null, 2));
-  
-  return { success: true, skill: skillName, keys: Object.keys(credentials) };
-}
-
-/**
- * Inject credentials into environment for a skill
- * Called by MCP wrapper before spawning skill process
- */
-export function injectCredentials(skillName, env = {}) {
-  const kaiConfig = loadKaiConfig();
-  const skillConfig = kaiConfig.skills?.[skillName] || {};
-  
-  // Merge: env vars > Kai config > existing env
-  return {
-    ...process.env,
-    ...skillConfig,
-    ...env  // Passed env vars (e.g., from web UI) take highest priority
-  };
-}
-
-/**
- * Get credential value for a skill
- */
-export function getCredential(skillName, key) {
-  const kaiConfig = loadKaiConfig();
-  const skillConfig = kaiConfig.skills?.[skillName] || {};
-  
-  // Priority: direct key in config > env var with skill prefix > plain env var
-  return skillConfig[key] || 
-         process.env[`${skillName.toUpperCase()}_${key}`] ||
-         process.env[key];
+export function hasCredentials(skillName, requiredKeys = [], config = {}) {
+  return requiredKeys.every(key => getCredential(skillName, key, config));
 }
 
 export default {
+  getCredential,
+  getCredentials,
   setupCredentials,
-  injectCredentials,
-  hasCredentials,
-  getCredential
+  hasCredentials
 };
