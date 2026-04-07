@@ -1,0 +1,22 @@
+{
+  "name": "kai-dashboard",
+  "version": "1.0.0",
+  "description": "Generate local analytics dashboard from Kai skills data",
+  "main": "bin/cli.js",
+  "bin": {
+    "kai-dashboard": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node bin/cli.js"
+  },
+  "keywords": ["kai", "dashboard", "analytics", "social-media", "charts"],
+  "author": "Kai",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tmoreton/kai-skills"
+  }
+}
