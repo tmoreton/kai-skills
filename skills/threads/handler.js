@@ -17,12 +17,40 @@ function loadCrypto() {
 
 const THREADS_API_BASE = 'https://graph.threads.net/v1.0';
 
-async function threadsApiGet(endpoint, params, config) {
-  const accessToken = config.access_token || process.env.THREADS_ACCESS_TOKEN;
-  
-  if (!accessToken) {
-    throw new Error('THREADS_ACCESS_TOKEN not configured. Set THREADS_ACCESS_TOKEN in environment.');
+// Helper to check for access token with helpful error message
+function getAccessToken(config) {
+  const token = config.access_token || process.env.THREADS_ACCESS_TOKEN;
+  if (!token) {
+    const error = new Error(`
+Threads Access Token Required
+=============================
+
+To use Threads features, you need a Threads access token.
+
+Get your token:
+1. Go to: https://developers.facebook.com/apps
+2. Create an app → Add "Threads API" product
+3. Set up a Threads test user
+4. Generate an access token with scopes:
+   - threads_basic (read profile)
+   - threads_content_publish (post threads)
+   - threads_manage_insights (view insights)
+5. Copy your access token
+
+Set it via environment variable:
+  export THREADS_ACCESS_TOKEN=your_token_here
+  export THREADS_USER_ID=your_user_id_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
+  return token;
+}
+
+async function threadsApiGet(endpoint, params, config) {
+  const accessToken = getAccessToken(config);
 
   const queryParams = new URLSearchParams({ access_token: accessToken, ...params });
   const url = `${THREADS_API_BASE}${endpoint}?${queryParams}`;
@@ -40,11 +68,7 @@ async function threadsApiGet(endpoint, params, config) {
 }
 
 async function threadsApiPost(endpoint, data, config) {
-  const accessToken = config.access_token || process.env.THREADS_ACCESS_TOKEN;
-  
-  if (!accessToken) {
-    throw new Error('THREADS_ACCESS_TOKEN not configured. Set THREADS_ACCESS_TOKEN in environment.');
-  }
+  const accessToken = getAccessToken(config);
 
   const url = `${THREADS_API_BASE}${endpoint}`;
   const formData = new URLSearchParams({ access_token: accessToken, ...data });

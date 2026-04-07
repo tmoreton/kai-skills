@@ -14,7 +14,24 @@ const TIKTOK_RESEARCH_BASE = 'https://research.tiktok.com/v1';
 async function webSearch(query, maxResults) {
   const apiKey = process.env.TAVILY_API_KEY;
   if (!apiKey) {
-    throw new Error('TAVILY_API_KEY not set. Web search requires Tavily API key.');
+    const error = new Error(`
+Tavily API Key Required
+=======================
+
+To search TikTok content, you need a Tavily API key for web search.
+
+Get your free API key:
+1. Go to: https://tavily.com/
+2. Sign up for a free account
+3. Get your API key from the dashboard
+
+Set it via environment variable:
+  export TAVILY_API_KEY=your_api_key_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
 
   const response = await fetch('https://api.tavily.com/search', {

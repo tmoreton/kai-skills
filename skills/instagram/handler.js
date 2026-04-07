@@ -22,7 +22,34 @@ const INSTAGRAM_BASIC_API_BASE = 'https://graph.instagram.com';
 
 // Helper to get access token from config or environment
 function getAccessToken(config) {
-  return config.access_token || process.env.INSTAGRAM_ACCESS_TOKEN || process.env.INSTAGRAM_TOKEN;
+  const token = config.access_token || process.env.INSTAGRAM_ACCESS_TOKEN || process.env.INSTAGRAM_TOKEN;
+  if (!token) {
+    const error = new Error(`
+Instagram Access Token Required
+===============================
+
+To use Instagram features, you need an Instagram access token.
+
+Option 1: Instagram Basic Display API (for public content)
+1. Go to: https://developers.facebook.com/apps
+2. Create an app → Select "Other" → "Consumer"
+3. Add "Instagram Basic Display" product
+4. Add a test user and generate a token
+
+Option 2: Instagram Graph API (for business accounts)
+1. Your Instagram must be a Business/Creator account
+2. Connect to a Facebook Page
+3. Use Facebook Graph API Explorer to generate token
+
+Set your token:
+  export INSTAGRAM_ACCESS_TOKEN=your_token_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
+  }
+  return token;
 }
 
 // Helper to get Graph API app credentials

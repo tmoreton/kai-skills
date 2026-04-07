@@ -15,10 +15,49 @@ function getCredentials(config) {
   const pageId = config.page_id || process.env.FACEBOOK_PAGE_ID;
   
   if (!accessToken) {
-    throw new Error('FACEBOOK_ACCESS_TOKEN not configured. Get one from developers.facebook.com/tools/explorer/');
+    const error = new Error(`
+Facebook Access Token Required
+==============================
+
+To use Facebook features, you need a Facebook Page access token.
+
+Get your token:
+1. Go to: https://developers.facebook.com/tools/explorer/
+2. Select your Facebook app (or create one)
+3. Select "User Access Token" with these permissions:
+   - pages_read_engagement
+   - pages_manage_posts
+   - pages_read_user_content
+4. Copy the token
+
+Set it via environment variable:
+  export FACEBOOK_ACCESS_TOKEN=your_token_here
+  export FACEBOOK_PAGE_ID=your_page_id_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
   if (!pageId) {
-    throw new Error('FACEBOOK_PAGE_ID not configured. Find it in your page settings.');
+    const error = new Error(`
+Facebook Page ID Required
+========================
+
+You need to specify which Facebook Page to work with.
+
+Find your Page ID:
+1. Go to your Facebook Page
+2. Click "Settings" → "Page Info"
+3. Copy the "Page ID" value
+
+Set it via environment variable:
+  export FACEBOOK_PAGE_ID=your_page_id_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_PAGE_ID';
+    throw error;
   }
   
   return { accessToken, pageId };

@@ -10,7 +10,28 @@ const NOTION_API_BASE = "https://api.notion.com/v1";
 let config = null;
 
 function getHeaders() {
-  if (!config) throw new Error("Notion not configured. Set NOTION_API_KEY.");
+  if (!config || !config.apiKey) {
+    const error = new Error(`
+Notion API Key Required
+=======================
+
+To use Notion features, you need a Notion integration token.
+
+Get your token:
+1. Go to: https://www.notion.so/my-integrations
+2. Click "New integration"
+3. Name it "Kai" and select your workspace
+4. Copy the "Internal Integration Token"
+5. Share pages/databases with your integration (click "..." on any page → "Add connections")
+
+Set it via environment variable:
+  export NOTION_API_KEY=your_token_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
+  }
   return {
     "Authorization": `Bearer ${config.apiKey}`,
     "Notion-Version": config.version,

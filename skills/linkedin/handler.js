@@ -24,15 +24,39 @@ const LINKEDIN_API_BASE = 'https://api.linkedin.com/v2';
 
 // Get access token from config or environment
 function getAccessToken(config) {
-  return config.access_token || process.env.LINKEDIN_ACCESS_TOKEN;
+  const token = config.access_token || process.env.LINKEDIN_ACCESS_TOKEN;
+  if (!token) {
+    const error = new Error(`
+LinkedIn Access Token Required
+==============================
+
+To use LinkedIn features, you need a LinkedIn access token with appropriate scopes.
+
+Required scopes:
+  - r_basicprofile (read profile info)
+  - w_member_social (create posts)
+  - r_organization_social (read org posts for stats)
+
+Get your token:
+1. Go to: https://www.linkedin.com/developers/apps
+2. Create an app or select existing
+3. Request access to "Share on LinkedIn" and "Advertising API"
+4. Generate an access token with the scopes above
+
+Set it via environment variable:
+  export LINKEDIN_ACCESS_TOKEN=your_token_here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
+  }
+  return token;
 }
 
 // LinkedIn API request helper
 async function linkedInApi(endpoint, method = 'GET', data = null, config = {}) {
   const token = getAccessToken(config);
-  if (!token) {
-    throw new Error('LINKEDIN_ACCESS_TOKEN not configured. Set LINKEDIN_ACCESS_TOKEN environment variable.');
-  }
 
   const url = `${LINKEDIN_API_BASE}${endpoint}`;
   const options = {

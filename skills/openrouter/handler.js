@@ -49,7 +49,27 @@ function generateFilename(prompt) {
 async function generateImage({ prompt, width = 1280, height = 720, model = "google/gemma-3-27b-it", output_dir, reference_image }, config) {
   const apiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    throw new Error("OPENROUTER_API_KEY not configured. Get one at https://openrouter.ai/keys");
+    const error = new Error(`
+OpenRouter API Key Required
+===========================
+
+To generate images and use AI models, you need an OpenRouter API key.
+
+Get your free API key:
+1. Go to: https://openrouter.ai/keys
+2. Sign up (or sign in with Google/GitHub)
+3. Create a new API key
+4. Copy your key
+
+Set it via environment variable:
+  export OPENROUTER_API_KEY=your_api_key_here
+
+Or add to Claude Desktop config and restart.
+
+Note: You may need to add credits ($5-10) to generate images.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
 
   const { default: OpenAI } = loadOpenAI();

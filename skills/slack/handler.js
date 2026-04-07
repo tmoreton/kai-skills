@@ -30,9 +30,31 @@ function getClient() {
   const token = _config.bot_token || process.env.SLACK_BOT_TOKEN;
 
   if (!token) {
-    throw new Error(
-      "Slack bot token not configured. Set SLACK_BOT_TOKEN."
-    );
+    const error = new Error(`
+Slack Bot Token Required
+========================
+
+To use Slack features, you need a Slack Bot User OAuth Token.
+
+Get your token:
+1. Go to: https://api.slack.com/apps
+2. Create a new app (or select existing)
+3. Go to "OAuth & Permissions"
+4. Add these Bot Token Scopes:
+   - chat:write (send messages)
+   - files:write (upload files)
+   - users:read (lookup users by email)
+   - channels:read (list channels)
+5. Click "Install to Workspace"
+6. Copy the "Bot User OAuth Token" (starts with xoxb-)
+
+Set it via environment variable:
+  export SLACK_BOT_TOKEN=xoxb-your-token-here
+
+Or add to Claude Desktop config and restart.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
 
   _client = new WebClient(token);
