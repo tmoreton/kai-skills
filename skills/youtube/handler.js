@@ -14,9 +14,26 @@ let _apiKeyValid = null; // null = not checked, true = valid, false = invalid
 function getApiKey() {
   const key = _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
   if (!key) {
-    throw new Error(
-      "YOUTUBE_API_KEY not configured. Get one at console.cloud.google.com/apis/credentials"
-    );
+    const error = new Error(`
+YouTube API Key Required
+========================
+
+To use YouTube features, you need a YouTube Data API key.
+
+Get your free API key:
+1. Go to: https://console.cloud.google.com/apis/credentials
+2. Create a new project (or select existing)
+3. Click "Create Credentials" → "API Key"
+4. Enable "YouTube Data API v3" if prompted
+5. Copy your API key
+
+Set it via environment variable:
+  export YOUTUBE_API_KEY=your_api_key_here
+
+Or restart Claude Desktop after setting it in your shell profile.
+`);
+    error.code = 'MISSING_API_KEY';
+    throw error;
   }
   return key;
 }
