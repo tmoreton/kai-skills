@@ -6,6 +6,7 @@
  */
 
 import { createRequire } from "module";
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 // Load @atproto/api dynamically (optional dependency)
 function loadAtproto() {
@@ -75,9 +76,37 @@ export default {
   install: async (config) => {
     _config = config;
     _agent = null;
+    // Load stored credentials if available
+    const storedCreds = injectCredentials('bluesky');
+    if (storedCreds) {
+      if (storedCreds.identifier) process.env.BLUESKY_IDENTIFIER = storedCreds.identifier;
+      if (storedCreds.password) process.env.BLUESKY_PASSWORD = storedCreds.password;
+      if (storedCreds.service) process.env.BLUESKY_SERVICE = storedCreds.service;
+    }
   },
 
   actions: {
+    setup: async (params) => {
+      const result = setupCredentials('bluesky', {
+        identifier: params.identifier,
+        password: params.password,
+        service: params.service || 'https://bsky.social'
+      });
+      // Set immediately for this session
+      process.env.BLUESKY_IDENTIFIER = params.identifier;
+      process.env.BLUESKY_PASSWORD = params.password;
+      process.env.BLUESKY_SERVICE = params.service || 'https://bsky.social';
+      _agent = null; // Force re-auth
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: "Bluesky credentials saved",
+          handle: params.identifier,
+          next_steps: "Try: 'Post to Bluesky: Hello from Kai!'"
+        }, null, 2)
+      };
+    },
+
     /**
      * Get a Bluesky user's profile
      * @param {Object} params

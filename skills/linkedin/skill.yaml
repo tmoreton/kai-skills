@@ -30,6 +30,13 @@ config_schema:
     env: TAVILY_API_KEY
     description: Tavily API key for web search fallback (optional)
 tools:
+  - name: setup
+    description: Set up LinkedIn API credentials
+    parameters:
+      access_token:
+        type: string
+        required: true
+        description: LinkedIn OAuth 2.0 access token
   # === PROFILE & PEOPLE ===
   - name: get_profile_info
     description: Get LinkedIn profile information for authenticated user or specific user

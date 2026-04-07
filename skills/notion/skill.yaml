@@ -18,6 +18,19 @@ config_schema:
     env: NOTION_VERSION
 
 tools:
+  - name: setup
+    description: Set up Notion API credentials. Ask user for their Notion integration API key.
+    parameters:
+      api_key:
+        type: string
+        required: true
+        description: Notion integration API key (create at https://www.notion.so/my-integrations)
+      version:
+        type: string
+        required: false
+        description: Notion API version
+        default: "2022-06-28"
+
   - name: search
     description: Search pages and databases in Notion
     parameters:

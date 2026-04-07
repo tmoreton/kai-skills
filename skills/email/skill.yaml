@@ -41,6 +41,26 @@ config_schema:
     type: string
     description: IMAP password (defaults to SMTP_PASS if not set)
 tools:
+  - name: setup
+    description: Set up email SMTP credentials
+    parameters:
+      smtp_host:
+        type: string
+        required: true
+        description: SMTP server host (e.g., smtp.gmail.com)
+      smtp_port:
+        type: number
+        required: false
+        default: 587
+        description: SMTP port
+      username:
+        type: string
+        required: true
+        description: Email username
+      password:
+        type: string
+        required: true
+        description: Email password or app-specific password
   - name: send
     description: Send an email to one or more recipients. Supports plain text and HTML bodies, CC, BCC, and reply-to.
     parameters:

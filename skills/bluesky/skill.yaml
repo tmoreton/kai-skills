@@ -32,6 +32,23 @@ dependencies:
     required: false
     description: Optional HTTP client for public API calls
 tools:
+  - name: setup
+    description: Set up Bluesky credentials. Ask user for their Bluesky handle and app password.
+    parameters:
+      identifier:
+        type: string
+        required: true
+        description: Your Bluesky handle (e.g., user.bsky.social) or DID
+      password:
+        type: string
+        required: true
+        description: Your Bluesky app password (create at bsky.app Settings > App Passwords)
+      service:
+        type: string
+        required: false
+        description: AT Protocol service URL (default https://bsky.social)
+        default: https://bsky.social
+
   # === PROFILE & FEED ===
   - name: get_profile
     description: Get a Bluesky user's profile information

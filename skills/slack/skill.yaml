@@ -17,6 +17,14 @@ dependencies:
     required: true
     description: Official Slack Web API client for Node.js
 tools:
+  - name: setup
+    description: Set up Slack credentials. Ask user for their Slack Bot Token.
+    parameters:
+      bot_token:
+        type: string
+        required: true
+        description: Slack Bot User OAuth Token (starts with xoxb-). Get from api.slack.com/apps > Your App > OAuth & Permissions
+
   # === MESSAGING ===
   - name: send_message
     description: Send a direct message to a Slack user by email or user ID

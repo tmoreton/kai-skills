@@ -17,6 +17,17 @@ config_schema:
     env: FACEBOOK_PAGE_ID
     description: Facebook Page ID (found in Page Settings > Page Info)
 tools:
+  - name: setup
+    description: Set up Facebook API credentials
+    parameters:
+      access_token:
+        type: string
+        required: true
+        description: Facebook Graph API access token
+      page_id:
+        type: string
+        required: false
+        description: Default Facebook Page ID to use
   - name: get_page_info
     description: Get Facebook page details including name, followers, category, verification status, and contact info
     parameters:

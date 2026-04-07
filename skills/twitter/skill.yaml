@@ -33,6 +33,25 @@ config_schema:
     env: X_BEARER_TOKEN
     description: X Bearer Token (optional)
 tools:
+  - name: setup
+    description: Set up Twitter/X API credentials
+    parameters:
+      api_key:
+        type: string
+        required: true
+        description: Twitter API Key
+      api_secret:
+        type: string
+        required: true
+        description: Twitter API Secret
+      access_token:
+        type: string
+        required: true
+        description: Twitter Access Token
+      access_secret:
+        type: string
+        required: true
+        description: Twitter Access Token Secret
   # === RESEARCH TOOLS (Web Search) ===
   - name: search_tweets
     description: Search for recent tweets by keyword, topic, or hashtag

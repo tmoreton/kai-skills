@@ -47,6 +47,26 @@ config_schema:
 dependencies:
   - googleapis
 tools:
+  - name: setup
+    description: Set up Google Sheets credentials via OAuth or Service Account
+    parameters:
+      client_id:
+        type: string
+        required: false
+        description: OAuth 2.0 Client ID (if using OAuth)
+      client_secret:
+        type: string
+        required: false
+        description: OAuth 2.0 Client Secret (if using OAuth)
+      refresh_token:
+        type: string
+        required: false
+        description: OAuth 2.0 Refresh Token (if using OAuth)
+      service_account_json:
+        type: string
+        required: false
+        description: Service Account JSON key content (alternative to OAuth)
+
   - name: create_spreadsheet
     description: Create a new Google Spreadsheet with optional sheets
     parameters:

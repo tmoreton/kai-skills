@@ -37,6 +37,13 @@ dependencies:
       version: "^1.0.0"
       description: Optional library for private API features (not required for basic usage)
 tools:
+  - name: setup
+    description: Set up Instagram API credentials
+    parameters:
+      access_token:
+        type: string
+        required: true
+        description: Instagram Graph API access token
   - name: get_user_info
     description: Get Instagram user profile information (requires access token for full data)
     parameters:

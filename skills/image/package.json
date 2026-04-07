@@ -1,0 +1,23 @@
+{
+  "name": "kai-image-skill",
+  "version": "1.0.0",
+  "description": "AI-powered image and thumbnail generation using OpenRouter API",
+  "type": "module",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "image",
+    "thumbnail",
+    "generation",
+    "ai",
+    "graphics",
+    "openrouter"
+  ],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^4.0.0"
+  }
+}

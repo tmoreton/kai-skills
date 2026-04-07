@@ -20,6 +20,13 @@ dependencies:
     optional: true
     description: Required for OpenRouter API client
 tools:
+  - name: setup
+    description: Set up OpenRouter API key for AI model access
+    parameters:
+      api_key:
+        type: string
+        required: true
+        description: OpenRouter API key (get from openrouter.ai/keys)
   - name: generate_image
     description: Generate images using Nano Banana or other image models via OpenRouter
     parameters:

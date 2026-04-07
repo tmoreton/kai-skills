@@ -5,6 +5,8 @@
  * Works with Kai, MCP servers, or direct API usage.
  */
 
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+
 const NOTION_API_BASE = "https://api.notion.com/v1";
 
 let config = null;
@@ -27,7 +29,7 @@ Get your token:
 Set it via environment variable:
   export NOTION_API_KEY=your_token_here
 
-Or add to Claude Desktop config and restart.
+Or say "Set up Notion" to configure via conversation.
 `);
     error.code = 'MISSING_API_KEY';
     throw error;
@@ -133,9 +135,12 @@ function formatBlock(block, indent = 0) {
 
 export default {
   install: async (inputConfig) => {
+    // Load stored credentials if available
+    const storedCreds = injectCredentials('notion');
+    
     config = {
-      apiKey: inputConfig.NOTION_API_KEY || process.env.NOTION_API_KEY || "",
-      version: inputConfig.NOTION_VERSION || process.env.NOTION_VERSION || "2022-06-28",
+      apiKey: inputConfig.NOTION_API_KEY || process.env.NOTION_API_KEY || storedCreds?.api_key || "",
+      version: inputConfig.NOTION_VERSION || process.env.NOTION_VERSION || storedCreds?.version || "2022-06-28",
     };
     
     if (!config.apiKey) {
@@ -148,6 +153,26 @@ export default {
   },
 
   actions: {
+    setup: async (params) => {
+      const result = setupCredentials('notion', {
+        api_key: params.api_key,
+        version: params.version || '2022-06-28'
+      });
+      // Update config immediately
+      config = {
+        apiKey: params.api_key,
+        version: params.version || '2022-06-28'
+      };
+      process.env.NOTION_API_KEY = params.api_key;
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: "Notion API key saved",
+          next_steps: "Try: 'Search my Notion pages' or 'Create a page in Notion'"
+        }, null, 2)
+      };
+    },
+
     search: async (params) => {
       const body = { query: params.query };
       if (params.filter && params.filter !== "object") {
