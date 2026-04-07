@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kai Social Media Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Kai Command Center</title>
     <style>
         * {
             margin: 0;
@@ -14,408 +13,548 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
+            background: #f5f5f5;
             color: #1a1a2e;
         }
         
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .setup-banner {
             background: white;
-            border-left: 4px solid #667eea;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .setup-banner h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-        
-        .platforms {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .platform-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .platform-card h2 {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
             color: #1a1a2e;
         }
         
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .status-badge.connected {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-badge.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .stat-box {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .stat-box .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .stat-box .label {
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
             font-size: 0.875rem;
             color: #666;
         }
         
-        .connect-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #22c55e;
             font-weight: 600;
-            margin-top: 1rem;
-            width: 100%;
         }
         
-        .connect-btn:hover {
-            background: #5a6fd6;
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
         
-        .chart-container {
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e5e5e5;
             background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        .chart-container h3 {
-            margin-bottom: 1rem;
+        .btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .btn-primary {
+            background: #0f172a;
+            color: white;
+            border-color: #0f172a;
+        }
+        
+        .btn-primary:hover {
+            background: #1e293b;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 0 24px;
+            display: flex;
+            gap: 4px;
+        }
+        
+        .nav-tab {
+            padding: 16px 20px;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .nav-tab:hover {
             color: #1a1a2e;
         }
         
-        .instructions {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
+        .nav-tab.active {
+            color: #0f172a;
+            border-bottom-color: #0f172a;
+            font-weight: 600;
         }
         
-        .instructions code {
-            background: #e9ecef;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Monaco', monospace;
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+        
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        
+        .metric-change {
             font-size: 0.875rem;
+            color: #22c55e;
+            font-weight: 500;
         }
         
-        .instructions pre {
-            background: #e9ecef;
-            padding: 1rem;
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .progress-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .progress-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .progress-account {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        
+        .progress-current {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .progress-remaining {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e5e5e5;
             border-radius: 4px;
-            overflow-x: auto;
-            margin-top: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #0f172a;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Setup Panel */
+        .setup-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .setup-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .connect-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .connect-btn {
+            padding: 16px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        
+        .connect-btn:hover {
+            border-color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            margin-top: 12px;
         }
         
         .hidden {
             display: none;
         }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Kai Social Media Dashboard</h1>
-        <p>Local analytics powered by Kai skills</p>
-    </div>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">Kai Command Center</div>
+            <div class="status-bar">
+                <span class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                </span>
+                <span id="current-time">-</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn" onclick="refreshData()">Refresh</button>
+            <button class="btn btn-primary" onclick="showSetup()">Connect Accounts</button>
+        </div>
+    </header>
+    
+    <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('overview', this)">Overview</button>
+        <button class="nav-tab" onclick="showTab('youtube', this)">YouTube</button>
+        <button class="nav-tab" onclick="showTab('instagram', this)">Instagram</button>
+        <button class="nav-tab" onclick="showTab('twitter', this)">Twitter/X</button>
+    </nav>
     
     <div class="container">
-        <div class="setup-banner">
-            <h3>Setup Required</h3>
-            <p>Connect your social media accounts to view analytics. Run these commands in your terminal:</p>
-            <pre>npm run setup    # Configure API keys
-kai skill youtube get_channel --params '{"channel_id": "YOUR_CHANNEL"}'</pre>
-        </div>
-        
-        <div class="platforms">
-            <div class="platform-card">
-                <h2>
-                    YouTube
-                    <span class="status-badge pending" id="yt-status">Not Connected</span>
-                </h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="value" id="yt-subscribers">-</div>
-                        <div class="label">Subscribers</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="yt-views">-</div>
-                        <div class="label">Total Views</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="yt-videos">-</div>
-                        <div class="label">Videos</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="yt-engagement">-</div>
-                        <div class="label">Engagement</div>
-                    </div>
-                </div>
-                <button class="connect-btn" onclick="showInstructions('youtube')">Connect YouTube</button>
+        <!-- Setup Panel -->
+        <div id="setup-panel" class="setup-panel">
+            <div class="setup-title">Connect Your Accounts</div>
+            <p style="color: #666; margin-bottom: 20px;">Use Kai skills to fetch your social media data. Everything stays local on your machine.</p>
+            
+            <div class="connect-grid">
+                <button class="connect-btn" onclick="showConnectInstructions('youtube')">
+                    <strong>YouTube</strong>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">Channel stats, video metrics</div>
+                </button>
+                <button class="connect-btn" onclick="showConnectInstructions('instagram')">
+                    <strong>Instagram</strong>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">Followers, posts, reach</div>
+                </button>
+                <button class="connect-btn" onclick="showConnectInstructions('twitter')">
+                    <strong>Twitter/X</strong>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">Followers, tweets, engagement</div>
+                </button>
             </div>
             
-            <div class="platform-card">
-                <h2>
-                    Instagram
-                    <span class="status-badge pending" id="ig-status">Not Connected</span>
-                </h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="value" id="ig-followers">-</div>
-                        <div class="label">Followers</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="ig-posts">-</div>
-                        <div class="label">Posts</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="ig-reach">-</div>
-                        <div class="label">Reach</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="ig-engagement">-</div>
-                        <div class="label">Engagement</div>
-                    </div>
+            <div id="instructions-area" style="margin-top: 24px; display: none;">
+                <div class="code-block" id="instructions-code"></div>
+                <button class="btn btn-primary" style="margin-top: 12px;" onclick="pasteData()">Paste Data</button>
+            </div>
+        </div>
+        
+        <!-- Overview Tab -->
+        <div id="overview-tab" class="tab-content">
+            <div class="section-title">Last 28 Days</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Total Followers</div>
+                    <div class="metric-value" id="total-followers">-</div>
+                    <div class="metric-change">Across all platforms</div>
                 </div>
-                <button class="connect-btn" onclick="showInstructions('instagram')">Connect Instagram</button>
+                <div class="metric-card">
+                    <div class="metric-label">Total Views</div>
+                    <div class="metric-value" id="total-views">-</div>
+                    <div class="metric-change">All platforms</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Posts</div>
+                    <div class="metric-value" id="total-posts">-</div>
+                    <div class="metric-change">Videos + posts</div>
+                </div>
             </div>
             
-            <div class="platform-card">
-                <h2>
-                    X / Twitter
-                    <span class="status-badge pending" id="tw-status">Not Connected</span>
-                </h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="value" id="tw-followers">-</div>
-                        <div class="label">Followers</div>
+            <div class="progress-section">
+                <div class="progress-title">Road to 100K</div>
+                <div class="progress-grid">
+                    <div class="progress-item">
+                        <div class="progress-account" id="goal-account-1">Connect YouTube</div>
+                        <div class="progress-stats">
+                            <div class="progress-current" id="goal-current-1">0</div>
+                            <div class="progress-remaining" id="goal-remaining-1">100,000 to go</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="goal-bar-1" style="width: 0%"></div>
+                        </div>
                     </div>
-                    <div class="stat-box">
-                        <div class="value" id="tw-tweets">-</div>
-                        <div class="label">Tweets</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="tw-impressions">-</div>
-                        <div class="label">Impressions</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="value" id="tw-engagement">-</div>
-                        <div class="label">Engagement</div>
+                    <div class="progress-item">
+                        <div class="progress-account" id="goal-account-2">Connect Instagram</div>
+                        <div class="progress-stats">
+                            <div class="progress-current" id="goal-current-2">0</div>
+                            <div class="progress-remaining" id="goal-remaining-2">100,000 to go</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="goal-bar-2" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
-                <button class="connect-btn" onclick="showInstructions('twitter')">Connect Twitter</button>
             </div>
         </div>
         
-        <div id="instructions-panel" class="instructions hidden">
-            <h4>Connection Instructions</h4>
-            <p id="instructions-text"></p>
+        <!-- Platform Tabs -->
+        <div id="youtube-tab" class="tab-content hidden">
+            <div class="setup-title">YouTube Analytics</div>
+            <div id="youtube-content">
+                <p style="color: #666;">Connect your YouTube channel to see analytics.</p>
+            </div>
         </div>
         
-        <div class="chart-container">
-            <h3>Weekly Performance</h3>
-            <canvas id="weeklyChart"></canvas>
+        <div id="instagram-tab" class="tab-content hidden">
+            <div class="setup-title">Instagram Analytics</div>
+            <div id="instagram-content">
+                <p style="color: #666;">Connect your Instagram account to see analytics.</p>
+            </div>
+        </div>
+        
+        <div id="twitter-tab" class="tab-content hidden">
+            <div class="setup-title">Twitter/X Analytics</div>
+            <div id="twitter-content">
+                <p style="color: #666;">Connect your Twitter account to see analytics.</p>
+            </div>
         </div>
     </div>
     
     <script>
-        // Sample data - replace with real data from Kai skills
-        const sampleData = {
-            youtube: {
-                subscribers: 15234,
-                views: 892345,
-                videos: 156,
-                engagement: 4.2
-            },
-            instagram: {
-                followers: 8934,
-                posts: 412,
-                reach: 234567,
-                engagement: 3.8
-            },
-            twitter: {
-                followers: 5621,
-                tweets: 2134,
-                impressions: 456789,
-                engagement: 2.1
-            }
+        // Data store
+        const dataStore = {
+            youtube: null,
+            instagram: null,
+            twitter: null
         };
         
-        function updateStats(platform, data) {
-            const prefix = platform.substring(0, 2);
-            document.getElementById(`${prefix}-status`).textContent = 'Connected';
-            document.getElementById(`${prefix}-status`).className = 'status-badge connected';
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // Tab switching
+        function showTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             
-            if (platform === 'youtube') {
-                document.getElementById('yt-subscribers').textContent = data.subscribers?.toLocaleString() || '-';
-                document.getElementById('yt-views').textContent = data.views?.toLocaleString() || '-';
-                document.getElementById('yt-videos').textContent = data.videos?.toLocaleString() || '-';
-                document.getElementById('yt-engagement').textContent = data.engagement ? data.engagement + '%' : '-';
-            } else if (platform === 'instagram') {
-                document.getElementById('ig-followers').textContent = data.followers?.toLocaleString() || '-';
-                document.getElementById('ig-posts').textContent = data.posts?.toLocaleString() || '-';
-                document.getElementById('ig-reach').textContent = data.reach?.toLocaleString() || '-';
-                document.getElementById('ig-engagement').textContent = data.engagement ? data.engagement + '%' : '-';
-            } else if (platform === 'twitter') {
-                document.getElementById('tw-followers').textContent = data.followers?.toLocaleString() || '-';
-                document.getElementById('tw-tweets').textContent = data.tweets?.toLocaleString() || '-';
-                document.getElementById('tw-impressions').textContent = data.impressions?.toLocaleString() || '-';
-                document.getElementById('tw-engagement').textContent = data.engagement ? data.engagement + '%' : '-';
-            }
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            element.classList.add('active');
         }
         
-        function showInstructions(platform) {
-            const panel = document.getElementById('instructions-panel');
-            const text = document.getElementById('instructions-text');
-            
+        function showSetup() {
+            document.getElementById('setup-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showConnectInstructions(platform) {
             const instructions = {
-                youtube: `
-1. Get your YouTube API key from <a href="https://tmoreton.github.io/kai-skills/platforms/youtube.html" target="_blank">Google Cloud Console</a>
-2. Run: <code>kai skill youtube get_channel '{"channel_id": "YOUR_CHANNEL_ID"}'</code>
-3. Copy the JSON output and paste it below:
-<pre id="paste-area" style="cursor: pointer;" onclick="pasteData('youtube')">Click here to paste data...</pre>
-                `,
-                instagram: `
-1. Get your Instagram access token from <a href="https://tmoreton.github.io/kai-skills/platforms/instagram.html" target="_blank">Meta Developers</a>
-2. Run: <code>kai skill instagram get_account '{"user_id": "YOUR_USER_ID"}'</code>
-3. Copy the JSON output and paste it below:
-<pre id="paste-area" style="cursor: pointer;" onclick="pasteData('instagram')">Click here to paste data...</pre>
-                `,
-                twitter: `
-1. Get your Twitter API keys from <a href="https://tmoreton.github.io/kai-skills/platforms/twitter.html" target="_blank">Twitter Developer Portal</a>
-2. Run: <code>kai skill twitter get_user '{"username": "YOUR_USERNAME"}'</code>
-3. Copy the JSON output and paste it below:
-<pre id="paste-area" style="cursor: pointer;" onclick="pasteData('twitter')">Click here to paste data...</pre>
-                `
+                youtube: `# Option 1: Use Kai CLI (interactive)
+Start: kai
+Ask: "Get YouTube stats for channel YOUR_CHANNEL_ID"
+Copy the output and paste below.
+
+# Option 2: Direct execution (one-liner)
+cd ~/.kai/skills/youtube && YOUTUBE_API_KEY=$YOUTUBE_API_KEY node --input-type=module -e 'import h from "./handler.js"; const r=await h.actions.get_channel({channel_id:"YOUR_CHANNEL_ID"}); console.log(r.content);'
+
+# Then paste the JSON output here:`,
+                instagram: `# Option 1: Use Kai CLI (interactive)
+Start: kai
+Ask: "Get Instagram stats for account YOUR_USER_ID"
+Copy the output and paste below.
+
+# Option 2: Direct execution (one-liner)
+cd ~/.kai/skills/instagram && INSTAGRAM_ACCESS_TOKEN=$INSTAGRAM_ACCESS_TOKEN node --input-type=module -e 'import h from "./handler.js"; const r=await h.actions.get_account({user_id:"YOUR_USER_ID"}); console.log(r.content);'
+
+# Then paste the JSON output here:`,
+                twitter: `# Option 1: Use Kai CLI (interactive)
+Start: kai
+Ask: "Get Twitter stats for username YOUR_USERNAME"
+Copy the output and paste below.
+
+# Option 2: Direct execution (one-liner)
+cd ~/.kai/skills/twitter && TWITTER_API_KEY=$TWITTER_API_KEY node --input-type=module -e 'import h from "./handler.js"; const r=await h.actions.get_user({username:"YOUR_USERNAME"}); console.log(r.content);'
+
+# Then paste the JSON output here:`
             };
             
-            text.innerHTML = instructions[platform];
-            panel.classList.remove('hidden');
-            
-            // For demo purposes, load sample data
-            if (confirm('Load sample data for demonstration?')) {
-                updateStats(platform, sampleData[platform]);
-            }
+            document.getElementById('instructions-code').textContent = instructions[platform];
+            document.getElementById('instructions-area').style.display = 'block';
+            document.getElementById('instructions-area').dataset.platform = platform;
         }
         
-        function pasteData(platform) {
+        function pasteData() {
+            const platform = document.getElementById('instructions-area').dataset.platform;
             const data = prompt('Paste the JSON output from Kai skill:');
+            
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
-                    updateStats(platform, parsed);
-                    alert(`${platform} data loaded successfully!`);
+                    loadPlatformData(platform, parsed);
+                    document.getElementById('instructions-area').style.display = 'none';
+                    alert(platform + ' connected!');
                 } catch (e) {
-                    alert('Invalid JSON. Please copy the exact output from the Kai skill.');
+                    alert('Invalid JSON. Copy the exact output from Kai skill.');
                 }
             }
         }
         
-        // Initialize chart
-        const ctx = document.getElementById('weeklyChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'YouTube Views',
-                    data: [1200, 1900, 1500, 2200, 1800, 2800, 3100],
-                    borderColor: '#FF0000',
-                    tension: 0.4
-                }, {
-                    label: 'Instagram Reach',
-                    data: [800, 1200, 900, 1500, 1100, 1800, 2000],
-                    borderColor: '#E1306C',
-                    tension: 0.4
-                }, {
-                    label: 'Twitter Impressions',
-                    data: [500, 700, 600, 900, 800, 1200, 1100],
-                    borderColor: '#1DA1F2',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+        function loadPlatformData(platform, data) {
+            dataStore[platform] = data;
+            
+            // Calculate totals
+            let totalFollowers = 0;
+            let totalViews = 0;
+            let totalPosts = 0;
+            
+            if (dataStore.youtube) {
+                const yt = Array.isArray(dataStore.youtube) ? dataStore.youtube[0] : dataStore.youtube;
+                totalFollowers += yt.subscribers || 0;
+                totalViews += yt.total_views || 0;
+                totalPosts += yt.video_count || 0;
+                
+                // Update progress bar
+                const subs = yt.subscribers || 0;
+                const progress = Math.min((subs / 100000) * 100, 100);
+                document.getElementById('goal-account-1').textContent = yt.title || 'YouTube';
+                document.getElementById('goal-current-1').textContent = subs.toLocaleString();
+                document.getElementById('goal-remaining-1').textContent = (100000 - subs).toLocaleString() + ' to 100K';
+                document.getElementById('goal-bar-1').style.width = progress + '%';
             }
-        });
+            
+            // Update metrics
+            document.getElementById('total-followers').textContent = totalFollowers.toLocaleString();
+            document.getElementById('total-views').textContent = totalViews.toLocaleString();
+            document.getElementById('total-posts').textContent = totalPosts.toLocaleString();
+            
+            // Hide setup if we have data
+            if (totalFollowers > 0) {
+                document.getElementById('setup-panel').style.display = 'none';
+            }
+        }
         
-        // Check status on load
-        fetch('/api/status')
-            .then(r => r.json())
-            .then(data => {
-                console.log('Status:', data);
-            })
-            .catch(() => {
-                console.log('Server not connected');
-            });
+        function refreshData() {
+            location.reload();
+        }
     </script>
 </body>
 </html>
