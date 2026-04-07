@@ -10,7 +10,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { readFileSync, existsSync } from "fs";
-import { join, resolve } from "path";
+import { join, resolve, dirname } from "path";
 import { pathToFileURL } from "url";
 import YAML from "yaml";
 
@@ -67,67 +67,17 @@ const tools = manifest.tools?.map((tool) => ({
   inputSchema: convertParamsToJsonSchema(tool.parameters),
 })) || [];
 
-// Create MCP server
-const server = new Server({
-  name: manifest.id || "kai-skill",
-  version: manifest.version || "1.0.0",
-});
-
 // Load handler module
-let handler;
 async function loadHandler() {
   try {
     const handlerUrl = pathToFileURL(handlerPath).href;
     const module = await import(handlerUrl);
-    handler = module.default || module;
+    return module.default || module;
   } catch (e) {
     console.error(`Failed to load handler from ${handlerPath}:`, e.message);
     process.exit(1);
   }
 }
-
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return { tools };
-});
-
-// Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-
-  // Find the tool definition
-  const toolDef = manifest.tools?.find((t) => t.name === name);
-  if (!toolDef) {
-    return {
-      content: [{ type: "text", text: JSON.stringify({ error: `Tool "${name}" not found` }) }],
-      isError: true,
-    };
-  }
-
-  try {
-    // Check if handler has the action
-    if (!handler || !handler[name]) {
-      // Try direct function export
-      if (handler && typeof handler === "function") {
-        const result = await handler({ action: name, ...args });
-        return formatResult(result);
-      }
-      
-      return {
-        content: [{ type: "text", text: JSON.stringify({ error: `Action "${name}" not implemented` }) }],
-        isError: true,
-      };
-    }
-
-    const result = await handler[name](args);
-    return formatResult(result);
-  } catch (e) {
-    return {
-      content: [{ type: "text", text: JSON.stringify({ error: e.message }) }],
-      isError: true,
-    };
-  }
-});
 
 function formatResult(result) {
   if (typeof result === "string") {
@@ -140,7 +90,73 @@ function formatResult(result) {
 
 // Start server
 async function main() {
-  await loadHandler();
+  // Load handler first
+  const handler = await loadHandler();
+
+  // Create MCP server with capabilities declared
+  const server = new Server(
+    {
+      name: manifest.id || "kai-skill",
+      version: manifest.version || "1.0.0",
+    },
+    {
+      capabilities: {
+        tools: {},
+      },
+    }
+  );
+
+  // List available tools
+  server.setRequestHandler(ListToolsRequestSchema, async () => {
+    return { tools };
+  });
+
+  // Handle tool calls
+  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const { name, arguments: args } = request.params;
+
+    // Find the tool definition
+    const toolDef = manifest.tools?.find((t) => t.name === name);
+    if (!toolDef) {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ error: `Tool "${name}" not found` }) }],
+        isError: true,
+      };
+    }
+
+    try {
+      // Check if handler has the action
+      let action = handler[name];
+      
+      // If not at top level, check in actions property (Kai skill format)
+      if (!action && handler.actions) {
+        action = handler.actions[name];
+      }
+      
+      // Try direct function call
+      if (!action) {
+        if (handler && typeof handler === "function") {
+          const result = await handler({ action: name, ...args });
+          return formatResult(result);
+        }
+        
+        return {
+          content: [{ type: "text", text: JSON.stringify({ error: `Action "${name}" not implemented` }) }],
+          isError: true,
+        };
+      }
+
+      const result = await action(args);
+      return formatResult(result);
+    } catch (e) {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ error: e.message }) }],
+        isError: true,
+      };
+    }
+  });
+
+  // Start transport
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
