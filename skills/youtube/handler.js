@@ -9,6 +9,7 @@ const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
 const FETCH_TIMEOUT_MS = 15000;
 
 let _config = {};
+let _apiKeyValid = null; // null = not checked, true = valid, false = invalid
 
 function getApiKey() {
   const key = _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
@@ -55,23 +56,40 @@ function calculateEngagement(likes, comments, views) {
   return (((likes + comments) / views) * 100).toFixed(2);
 }
 
+// Helper to validate API key (throws if invalid)
+async function validateApiKey() {
+  if (_apiKeyValid === true) return;
+  if (_apiKeyValid === false) {
+    throw new Error("YouTube API key is invalid. Check your YOUTUBE_API_KEY configuration.");
+  }
+  try {
+    await youtubeApi("videos", { part: "snippet", id: "dQw4w9WgXcQ", maxResults: 1 });
+    _apiKeyValid = true;
+  } catch (err) {
+    _apiKeyValid = false;
+    throw new Error(`YouTube API key validation failed: ${err.message}`);
+  }
+}
+
 export default {
   install: async (config) => {
     _config = config;
-    // Validate API key works
-    try {
-      await youtubeApi("videos", { part: "snippet", id: "dQw4w9WgXcQ", maxResults: 1 });
-    } catch (err) {
-      throw new Error(`YouTube API key validation failed: ${err.message}`);
+    // Don't validate API key during install - let it fail when tools are used
+    // This allows the MCP server to start even with invalid/missing keys
+    const key = _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
+    if (!key) {
+      console.warn("[youtube] Warning: YOUTUBE_API_KEY not configured. YouTube tools will fail until a valid API key is set.");
     }
   },
 
   uninstall: async () => {
     _config = {};
+    _apiKeyValid = null;
   },
 
   actions: {
     search_videos: async (params) => {
+      await validateApiKey();
       const data = await youtubeApi("search", {
         part: "snippet",
         q: params.query || "",
@@ -95,6 +113,7 @@ export default {
     },
 
     get_video_stats: async (params) => {
+      await validateApiKey();
       const videoIds = Array.isArray(params.video_ids)
         ? params.video_ids.join(",")
         : params.video_ids;
@@ -125,6 +144,7 @@ export default {
     },
 
     get_channel: async (params) => {
+      await validateApiKey();
       const data = await youtubeApi("channels", {
         part: "statistics,snippet,contentDetails",
         id: params.channel_id,
@@ -147,6 +167,7 @@ export default {
     },
 
     get_recent_uploads: async (params) => {
+      await validateApiKey();
       // First get the uploads playlist ID
       const channelData = await youtubeApi("channels", {
         part: "contentDetails",
@@ -202,6 +223,7 @@ export default {
     },
 
     get_trending: async (params) => {
+      await validateApiKey();
       const data = await youtubeApi("videos", {
         part: "statistics,snippet",
         chart: "mostPopular",
@@ -225,6 +247,7 @@ export default {
 
     // NEW: Get comments for engagement analysis
     get_comments: async (params) => {
+      await validateApiKey();
       const data = await youtubeApi("commentThreads", {
         part: "snippet,replies",
         videoId: params.video_id,
@@ -259,6 +282,7 @@ export default {
 
     // NEW: Compare multiple videos
     compare_videos: async (params) => {
+      await validateApiKey();
       const videoIds = Array.isArray(params.video_ids)
         ? params.video_ids.join(",")
         : params.video_ids;
@@ -316,6 +340,7 @@ export default {
 
     // NEW: Generate comprehensive channel report
     generate_channel_report: async (params) => {
+      await validateApiKey();
       const days = params.days || 30;
       const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 

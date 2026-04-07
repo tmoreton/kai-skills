@@ -97,10 +97,6 @@ claude
 | **Docker** | Deploy containers |
 | **Git** | Version control |
 | **Web Tools** | Web search, page fetching |
-| **Git** | Version control |
-| **Docker** | Deploy containers |
-| **Data Storage** | Read/write JSON, CSV, Markdown |
-| **Web Tools** | Web search, page fetching |
 
 ---
 

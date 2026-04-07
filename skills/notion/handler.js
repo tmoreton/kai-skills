@@ -118,7 +118,7 @@ export default {
     };
     
     if (!config.apiKey) {
-      throw new Error("NOTION_API_KEY is required. Get one at notion.so/my-integrations");
+      console.warn("[notion] Warning: NOTION_API_KEY not configured. Notion tools will fail until a valid API key is set.");
     }
   },
 
