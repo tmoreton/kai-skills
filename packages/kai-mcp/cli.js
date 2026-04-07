@@ -286,6 +286,16 @@ function installSkills() {
       execSync(`mv "${skillsSource}" "${skillsDir}"`);
     }
     
+    // Also copy lib/ folder for shared utilities (credentials.js)
+    const libSource = join(tempDir, 'skills', 'lib');
+    const libDest = join(skillsDir, 'lib');
+    if (existsSync(libSource)) {
+      if (!existsSync(libDest)) {
+        mkdirSync(libDest, { recursive: true });
+      }
+      execSync(`cp -r "${libSource}"/* "${libDest}/" 2>/dev/null || true`);
+    }
+    
     // Clean up temp repo
     execSync(`rm -rf "${tempDir}"`);
     
