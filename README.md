@@ -12,24 +12,24 @@ Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT. No coding r
 
 Kai skills integrate directly with **Claude Desktop** and **Claude Code** via MCP (Model Context Protocol).
 
-### Using kai-mcp (Recommended)
+### Using kai-skills-cli (Recommended)
 
 No Kai CLI required! Just install the helper and go:
 
 ```bash
-# Install kai-mcp helper
-npm install -g kai-mcp
+# Install kai-skills-cli helper
+npm install -g kai-skills-cli
 
 # Install skills from GitHub
-kai-mcp install
+kai-skills-cli install
 
 # Add all skills to Claude
-kai-mcp add all
+kai-skills-cli add all
 
 # Or add individually
-kai-mcp add youtube
-kai-mcp add instagram
-kai-mcp add twitter
+kai-skills-cli add youtube
+kai-skills-cli add instagram
+kai-skills-cli add twitter
 ```
 
 Then restart Claude Desktop and use natural language:

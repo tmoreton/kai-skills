@@ -1,25 +1,31 @@
 {
-  "name": "kai-mcp",
-  "version": "1.0.1",
+  "name": "@kai/cli",
+  "version": "1.0.0",
   "description": "Quickly connect Kai skills to Claude Desktop/Code",
   "type": "module",
   "bin": {
-    "kai-mcp": "./cli.js",
-    "kmcp": "./cli.js"
+    "kai": "./cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "kai",
+    "skills",
     "mcp",
     "claude",
     "ai",
-    "skills"
+    "social-media",
+    "analytics"
   ],
   "author": "Kai",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tmoreton/kai-skills.git",
+    "directory": "packages/kai-mcp"
   }
 }

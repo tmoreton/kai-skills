@@ -4,14 +4,14 @@
 
 ---
 
-## Test 1: Install kai-mcp Helper
+## Test 1: Install kai-skills-cli Helper
 
 ```bash
 # As a new user, first install the helper
-npm install -g kai-mcp
+npm install -g kai-skills-cli
 
 # Verify it works
-kai-mcp
+kai-skills
 ```
 
 **Expected:** Shows list of commands and "No Kai skills found" message
@@ -22,7 +22,7 @@ kai-mcp
 
 ```bash
 # Download all skills from GitHub
-kai-mcp install
+kai-skills install
 ```
 
 **Expected:** 
@@ -36,10 +36,10 @@ kai-mcp install
 
 ```bash
 # Add just the dashboard skill first
-kai-mcp add dashboard
+kai-skills add dashboard
 
 # Or add all skills at once
-kai-mcp add all
+kai-skills add all
 ```
 
 **Expected:**
@@ -133,7 +133,7 @@ Repeat Test 6 for:
 
 ## Test Checklist
 
-- [ ] kai-mcp installs cleanly
+- [ ] kai-skills-cli installs cleanly
 - [ ] Skills download without errors
 - [ ] Claude MCP add works
 - [ ] Dashboard starts on localhost:3000
@@ -153,7 +153,7 @@ Repeat Test 6 for:
 **Fix:** Install Claude Desktop from https://claude.ai/download
 
 ### Issue 2: "skills not found"
-**Fix:** Run `kai-mcp install` first
+**Fix:** Run `kai-skills install` first
 
 ### Issue 3: API key errors
 **Fix:** Follow api-setup.html guide for each platform
