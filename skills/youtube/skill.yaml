@@ -13,6 +13,14 @@ config_schema:
     env: YOUTUBE_API_KEY
 
 tools:
+  - name: setup
+    description: Set up YouTube API credentials. Ask user for their YouTube Data API key and store it securely.
+    parameters:
+      api_key:
+        type: string
+        required: true
+        description: YouTube Data API v3 key from Google Cloud Console
+
   - name: search_videos
     description: Search YouTube for videos by query
     parameters:
