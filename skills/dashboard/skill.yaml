@@ -1,0 +1,83 @@
+id: dashboard
+name: Social Media Dashboard
+version: 1.0.0
+description: Local social media analytics dashboard — auto-installs, stores API keys securely, fetches data, and displays visual charts. No cloud, 100% private.
+author: Kai
+tags: ["dashboard", "analytics", "social-media", "visualization", "local"]
+
+config_schema:
+  DASHBOARD_PORT:
+    type: number
+    description: Port for dashboard web server
+    default: 3000
+    env: DASHBOARD_PORT
+
+tools:
+  - name: setup
+    description: Install and configure the dashboard locally
+    parameters: {}
+
+  - name: start
+    description: Start the dashboard server
+    parameters:
+      port:
+        type: number
+        description: Override default port
+
+  - name: add_account
+    description: Add a social media account with API credentials
+    parameters:
+      platform:
+        type: string
+        required: true
+        description: Platform name (youtube, instagram, twitter, etc.)
+        enum: [youtube, instagram, twitter, facebook, linkedin, tiktok, threads, bluesky]
+      credentials:
+        type: object
+        required: true
+        description: API credentials for the platform (encrypted and stored locally)
+
+  - name: fetch_all
+    description: Fetch fresh data from all connected accounts
+    parameters:
+      days:
+        type: number
+        description: Days of historical data to fetch
+        default: 28
+
+  - name: fetch_platform
+    description: Fetch data from a specific platform
+    parameters:
+      platform:
+        type: string
+        required: true
+        description: Platform to fetch from
+      days:
+        type: number
+        default: 28
+
+  - name: view
+    description: Open dashboard in browser
+    parameters:
+      port:
+        type: number
+        description: Port to open
+
+  - name: status
+    description: Show dashboard status and connected accounts
+    parameters: {}
+
+  - name: export_data
+    description: Export dashboard data to JSON or CSV
+    parameters:
+      format:
+        type: string
+        default: json
+        enum: [json, csv]
+      path:
+        type: string
+        description: Output file path
+
+dependencies:
+  - express
+  - chart.js (CDN)
