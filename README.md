@@ -1,6 +1,6 @@
 # Kai Skills
 
-**20 AI-powered tools for social media analytics and automation.**
+**21 AI-powered tools for social media analytics and automation.**
 
 Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT. No coding required.
 
@@ -8,21 +8,24 @@ Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT. No coding r
 
 ---
 
-## Dashboard Example
+## Dashboard Skill (New!)
 
-Want a visual dashboard? We've included a **local-only** example that displays your social media analytics with charts.
+The easiest way to view all your social media analytics in one place. One command setup, auto-fetches data, 100% private.
 
 ```bash
-# From the kai-skills repo
-cd examples/social-media-dashboard
-npm install
-npm run setup
-npm start
+# Install and start dashboard
+kai-skill dashboard setup
+
+# Add your accounts
+kai-skill dashboard add_youtube '{"api_key": "xxx", "channel_id": "xxx"}'
+kai-skill dashboard add_instagram '{"access_token": "xxx"}'
+kai-skill dashboard add_twitter '{"api_key": "xxx", "api_secret": "xxx"}'
+
+# View unified dashboard
+kai-skill dashboard view
 ```
 
-Then open http://localhost:3000 and paste data from Kai skills to see charts.
-
-**Why local-only?** No data ever leaves your computer. No subscriptions. Full privacy.
+Then open http://localhost:3000 — dashboard auto-fetches from all connected platforms!
 
 ---
 
@@ -49,11 +52,12 @@ npx kai-api-setup
 
 ---
 
-## 20 Skills Included
+## 21 Skills Included
 
 ### Social Media Analytics
 | Skill | Actions | Setup |
 |-------|---------|-------|
+| **Dashboard** | Unified analytics dashboard for all platforms | 2 min |
 | **YouTube** | Channel stats, video metrics, trending | 2 min |
 | **Instagram** | Followers, posts, hashtags, insights | 2 min |
 | **Twitter/X** | Tweet search, user analysis, posting | 2 min |
@@ -70,14 +74,18 @@ npx kai-api-setup
 | **Google Sheets** | Export reports to spreadsheets |
 | **Slack** | Send team notifications |
 | **Webhook** | Trigger Zapier, Make, custom endpoints |
+| **Notion** | Query databases, create pages |
+| **Email** | Send reports via SMTP |
 
 ### Utilities
 | Skill | Actions |
 |-------|---------|
 | **Browser** | Web scraping, screenshots |
-| **Notion** | Query databases, create pages |
-| **Email** | Send reports via SMTP |
 | **Database** | Store analytics data |
+| **Data Storage** | Read/write JSON, CSV, Markdown |
+| **Docker** | Deploy containers |
+| **Git** | Version control |
+| **Web Tools** | Web search, page fetching |
 | **Git** | Version control |
 | **Docker** | Deploy containers |
 | **Data Storage** | Read/write JSON, CSV, Markdown |
