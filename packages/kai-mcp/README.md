@@ -1,4 +1,4 @@
-# kai-mcp-helper
+# kai-skills
 
 Quickly connect Kai skills to Claude Desktop or Claude Code.
 
@@ -7,13 +7,8 @@ Quickly connect Kai skills to Claude Desktop or Claude Code.
 ## Install
 
 ```bash
-# Option 1: From npm (when published)
+# From npm
 npm install -g kai-skills
-
-# Option 2: From GitHub (current)
-git clone https://github.com/tmoreton/kai-skills.git
-cd kai-skills/packages/kai-mcp
-npm link
 ```
 
 ## Quick Start

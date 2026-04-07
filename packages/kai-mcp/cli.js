@@ -6,7 +6,7 @@
 
 import { homedir } from 'os';
 import { readdirSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { execSync } from 'child_process';
 
 const SKILLS_DIR = join(homedir(), '.kai', 'skills');
@@ -108,9 +108,24 @@ function addSkill(skillName, all = false) {
 }
 
 function addSingleSkill(skillName, quiet = false) {
-  const handlerPath = join(SKILLS_DIR, skillName, 'handler.js');
+  // Check both locations (direct or in skills/ subdirectory)
+  const locations = [
+    join(SKILLS_DIR, skillName, 'handler.js'),
+    join(SKILLS_DIR, 'skills', skillName, 'handler.js')
+  ];
   
-  if (!existsSync(handlerPath)) {
+  let handlerPath = null;
+  let actualSkillDir = null;
+  
+  for (const path of locations) {
+    if (existsSync(path)) {
+      handlerPath = path;
+      actualSkillDir = dirname(path);
+      break;
+    }
+  }
+  
+  if (!handlerPath) {
     if (!quiet) {
       print('red', `\n❌ Skill "${skillName}" not found\n`);
       print('dim', 'Available skills:\n');
@@ -159,20 +174,51 @@ function installSkills() {
   print('bold', '\n📥 Installing Kai Skills');
   print('dim', '========================\n');
   
-  if (!existsSync(join(homedir(), '.kai'))) {
-    mkdirSync(join(homedir(), '.kai'), { recursive: true });
+  const kaiDir = join(homedir(), '.kai');
+  const skillsDir = join(kaiDir, 'skills');
+  const tempDir = join(kaiDir, '.tmp-skills-repo');
+  
+  if (!existsSync(kaiDir)) {
+    mkdirSync(kaiDir, { recursive: true });
   }
   
   try {
+    // Remove temp dir if it exists from previous failed attempt
+    if (existsSync(tempDir)) {
+      execSync(`rm -rf "${tempDir}"`);
+    }
+    
+    // Clone to temp location
     execSync(
-      'git clone https://github.com/tmoreton/kai-skills.git ~/.kai/skills',
+      `git clone https://github.com/tmoreton/kai-skills.git "${tempDir}"`,
       { stdio: 'inherit' }
     );
+    
+    // Clean up existing skills if any
+    if (existsSync(skillsDir)) {
+      execSync(`rm -rf "${skillsDir}"`);
+    }
+    
+    // Move skills/* to ~/.kai/skills/
+    const skillsSource = join(tempDir, 'skills');
+    if (existsSync(skillsSource)) {
+      execSync(`mv "${skillsSource}" "${skillsDir}"`);
+    }
+    
+    // Clean up temp repo
+    execSync(`rm -rf "${tempDir}"`);
+    
     print('green', '\n✅ Skills installed to ~/.kai/skills\n');
     print('dim', 'Now run: kai-skills add all\n');
   } catch (e) {
-    print('red', '\n❌ Failed to clone. Try manually:\n');
-    print('cyan', '  git clone https://github.com/tmoreton/kai-skills ~/.kai/skills\n');
+    // Clean up temp on error
+    if (existsSync(tempDir)) {
+      execSync(`rm -rf "${tempDir}"`);
+    }
+    print('red', '\n❌ Failed to install. Try manually:\n');
+    print('cyan', '  git clone https://github.com/tmoreton/kai-skills /tmp/kai-skills\n');
+    print('cyan', '  mv /tmp/kai-skills/skills ~/.kai/skills\n');
+    print('cyan', '  rm -rf /tmp/kai-skills\n');
   }
 }
 
