@@ -129,7 +129,7 @@ tools:
         required: true
         description: Cell reference (e.g., "A1", "B2") or range (e.g., "A1:C3")
       value:
-        type: any
+        type: string
         required: true
         description: Value to write to the cell
       value_input_option:
