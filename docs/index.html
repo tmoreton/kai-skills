@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
-      /* Kai Web UI Theme - Teal accent, warm off-white */
+      /* Kai Web UI Theme */
       --bg: #faf9f7;
       --bg-elevated: #ffffff;
       --bg-card: #ffffff;
@@ -24,17 +24,22 @@
       --radius-sm: 8px;
       --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
       --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 10px 40px rgba(0,0,0,0.08);
+      
+      /* Brand Colors */
+      --youtube: #FF0000;
+      --instagram: #E4405F;
+      --twitter: #000000;
+      --linkedin: #0A66C2;
+      --facebook: #1877F2;
+      --tiktok: #000000;
+      --threads: #000000;
+      --bluesky: #0285FF;
+      --slack: #4A154B;
+      --notion: #000000;
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
@@ -44,18 +49,12 @@
       -webkit-font-smoothing: antialiased;
     }
     
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
     
     /* Navigation */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 100;
       background: rgba(250, 249, 247, 0.9);
       backdrop-filter: blur(20px);
@@ -69,33 +68,12 @@
       height: 72px;
     }
     
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
+    .logo { font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .logo span { color: var(--accent); }
     
-    .logo span {
-      color: var(--accent);
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 32px;
-    }
-    
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    
-    .nav-links a:hover {
-      color: var(--text);
-    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
     
     .nav-cta {
       padding: 10px 20px;
@@ -107,17 +85,10 @@
       font-weight: 500;
       transition: all 0.2s;
     }
-    
-    .nav-cta:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-    }
+    .nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
     
     /* Hero */
-    .hero {
-      padding: 160px 0 100px;
-      text-align: center;
-    }
+    .hero { padding: 160px 0 100px; text-align: center; }
     
     .badge {
       display: inline-flex;
@@ -141,26 +112,10 @@
       animation: pulse 2s infinite;
     }
     
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     
-    h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-    
-    .hero p {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
+    h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; color: var(--text); }
+    .hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
     
     .hero-cta {
       display: inline-flex;
@@ -176,12 +131,7 @@
       transition: all 0.3s;
       box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
     }
-    
-    .hero-cta:hover {
-      background: var(--accent-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
-    }
+    .hero-cta:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45); }
     
     .hero-secondary {
       display: inline-flex;
@@ -194,10 +144,7 @@
       font-weight: 500;
       transition: color 0.2s;
     }
-    
-    .hero-secondary:hover {
-      color: var(--text);
-    }
+    .hero-secondary:hover { color: var(--text); }
     
     /* Code Window */
     .code-window {
@@ -219,21 +166,11 @@
       border-bottom: 1px solid var(--border);
     }
     
-    .code-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
     .code-dot.red { background: #ef4444; }
     .code-dot.yellow { background: #f59e0b; }
     .code-dot.green { background: #22c55e; }
-    
-    .code-title {
-      margin-left: 8px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
+    .code-title { margin-left: 8px; font-size: 0.85rem; color: var(--text-muted); }
     
     .code-body {
       padding: 24px;
@@ -245,49 +182,32 @@
       color: #e2e8f0;
     }
     
-    .code-line {
-      display: flex;
-      gap: 16px;
-    }
-    
-    .line-num {
-      color: #475569;
-      min-width: 24px;
-      text-align: right;
-      user-select: none;
-    }
-    
+    .code-line { display: flex; gap: 16px; }
+    .line-num { color: #475569; min-width: 24px; text-align: right; user-select: none; }
     .code-keyword { color: #c084fc; }
     .code-string { color: #86efac; }
     .code-comment { color: #64748b; }
     .code-prompt { color: #38bdf8; }
     
     /* Section */
-    section {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
+    section { padding: 100px 0; border-top: 1px solid var(--border); }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.01em; }
+    .section-subtitle { font-size: 1.125rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
     
-    .section-header {
-      text-align: center;
-      margin-bottom: 64px;
-    }
-    
-    h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
-    }
-    
-    .section-subtitle {
-      font-size: 1.125rem;
+    /* Skills Grid - Categorized */
+    .skills-category { margin-bottom: 48px; }
+    .category-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
     
-    /* Skills Grid */
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -300,45 +220,26 @@
       border-radius: var(--radius);
       padding: 24px;
       transition: all 0.3s;
+      cursor: pointer;
     }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
     
-    .skill-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    
-    .skill-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
+    .skill-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     
     .skill-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--accent-light);
-      border: 1px solid var(--accent);
+      width: 44px;
+      height: 44px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--accent);
+      flex-shrink: 0;
     }
     
-    .skill-name {
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
+    .skill-icon svg { width: 24px; height: 24px; }
     
-    .skill-desc {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
+    .skill-name { font-weight: 600; font-size: 1.1rem; }
+    .skill-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
     
     .skill-meta {
       display: flex;
@@ -351,11 +252,7 @@
     }
     
     /* Platform Tabs */
-    .tabs-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
+    .tabs-wrapper { max-width: 800px; margin: 0 auto; }
     .tabs {
       display: flex;
       gap: 8px;
@@ -365,7 +262,6 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
     }
-    
     .tab {
       flex: 1;
       padding: 12px 24px;
@@ -378,43 +274,16 @@
       background: transparent;
       transition: all 0.2s;
     }
+    .tab:hover { color: var(--text); }
+    .tab.active { background: var(--accent); color: white; }
     
-    .tab:hover {
-      color: var(--text);
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     
-    .tab.active {
-      background: var(--accent);
-      color: white;
-    }
+    .setup-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
     
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .setup-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-    }
-    
-    .step-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .step-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    
+    .step-list { display: flex; flex-direction: column; gap: 20px; }
+    .step-item { display: flex; gap: 16px; align-items: flex-start; }
     .step-num {
       width: 32px;
       height: 32px;
@@ -424,145 +293,42 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
       font-weight: 600;
+      font-size: 0.875rem;
       color: var(--accent);
       flex-shrink: 0;
     }
-    
-    .step-text h4 {
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-    
-    .step-text p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
+    .step-text { flex: 1; }
+    .step-text h4 { font-weight: 600; margin-bottom: 4px; }
+    .step-text p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; }
     
     .code-block {
       background: #0f172a;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px;
+      border-radius: 6px;
+      padding: 12px 16px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #e2e8f0;
-      margin-top: 12px;
-      overflow-x: auto;
-    }
-    
-    /* API Section */
-    .api-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    
-    .api-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: all 0.3s;
-    }
-    
-    .api-card:hover {
-      border-color: var(--accent);
-      box-shadow: var(--shadow);
-    }
-    
-    .api-number {
-      width: 32px;
-      height: 32px;
-      background: var(--accent);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-    }
-    
-    .api-card h4 {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-    }
-    
-    .api-card p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-    }
-    
-    .coming-soon {
-      color: var(--accent);
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      margin: 12px 0;
     }
     
     /* Footer */
-    footer {
-      padding: 60px 0;
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-    
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-bottom: 24px;
-    }
-    
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-    
-    footer p {
-      color: var(--text-dim);
-      font-size: 0.85rem;
-    }
+    footer { padding: 60px 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    footer p { color: var(--text-dim); font-size: 0.85rem; }
     
     /* Responsive */
     @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-      
-      h2 {
-        font-size: 2rem;
-      }
-      
-      .nav-links {
-        display: none;
-      }
-      
-      .hero {
-        padding: 120px 0 60px;
-      }
-      
-      .hero-secondary {
-        display: block;
-        margin: 16px 0 0;
-      }
-      
-      .skills-grid {
-        grid-template-columns: 1fr;
-      }
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      .nav-links { display: none; }
+      .hero { padding: 120px 0 60px; }
+      .hero-secondary { display: block; margin: 16px 0 0; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .tabs { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -573,7 +339,6 @@
       <div class="nav-links">
         <a href="#skills">Skills</a>
         <a href="#setup">Setup</a>
-        <a href="#dashboard">Dashboard</a>
         <a href="api-setup.html">API Keys</a>
         <a href="https://github.com/tmoreton/kai-skills">GitHub</a>
       </div>
@@ -616,7 +381,8 @@
             <path d="M4.167 10h11.666m0 0L10 4.167M15.833 10L10 15.833" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-      <a href="https://docs.kai.dev" class="hero-secondary">View Documentation →</a>
+        <a href="https://docs.kai.dev" class="hero-secondary">View Documentation →</a>
+      </div>
       
       <div class="code-window">
         <div class="code-header">
@@ -639,14 +405,14 @@
             <span class="code-comment"># ✓ 21 skills added to Claude - no Kai CLI needed!</span>
           </div>
           <div class="code-line">
-            <span class="line-num">3</span>
-          </div>
-          <div class="code-line">
             <span class="line-num">4</span>
-            <span class="code-prompt">$</span> <span class="code-string">"Get my YouTube stats and create a report"</span>
           </div>
           <div class="code-line">
             <span class="line-num">5</span>
+            <span class="code-prompt">$</span> <span class="code-string">"Get my YouTube stats and create a report"</span>
+          </div>
+          <div class="code-line">
+            <span class="line-num">6</span>
             <span class="code-comment"># Claude fetches real data and generates insights</span>
           </div>
         </div>
@@ -657,104 +423,310 @@
   <section id="skills">
     <div class="container">
       <div class="section-header">
-        <h2>20 skills included</h2>
+        <h2>21 skills included</h2>
         <p class="section-subtitle">Everything you need for social media analytics and automation</p>
       </div>
       
-      <div class="skills-grid">
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">YT</div>
-            <div class="skill-name">YouTube</div>
+      <!-- Social Media -->
+      <div class="skills-category">
+        <div class="category-title">📱 Social Media Platforms</div>
+        <div class="skills-grid">
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/youtube', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #FF0000; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </div>
+              <div class="skill-name">YouTube</div>
+            </div>
+            <div class="skill-desc">Channel analytics, video metrics, comments, and trending content</div>
+            <div class="skill-meta">
+              <span>8 actions</span>
+              <span>~2 min setup</span>
+            </div>
           </div>
-          <div class="skill-desc">Channel analytics, video metrics, comments, and trending content</div>
-          <div class="skill-meta">
-            <span>8 actions</span>
-            <span>~2 min setup</span>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/instagram', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+              </div>
+              <div class="skill-name">Instagram</div>
+            </div>
+            <div class="skill-desc">Follower analytics, post insights, hashtag search, and stories</div>
+            <div class="skill-meta">
+              <span>5 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/twitter', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #000000; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </div>
+              <div class="skill-name">Twitter / X</div>
+            </div>
+            <div class="skill-desc">Tweet search, user analysis, post threads, and topic tracking</div>
+            <div class="skill-meta">
+              <span>8 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/linkedin', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #0A66C2; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </div>
+              <div class="skill-name">LinkedIn</div>
+            </div>
+            <div class="skill-desc">Professional network analytics, posts, and company insights</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/facebook', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #1877F2; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </div>
+              <div class="skill-name">Facebook</div>
+            </div>
+            <div class="skill-desc">Page insights, post analytics, audience demographics</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/tiktok', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #000000; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+              </div>
+              <div class="skill-name">TikTok</div>
+            </div>
+            <div class="skill-desc">Video analytics, follower growth, trending sounds</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/threads', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #000000; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.155-5.98-6.394-6.035-2.708-.036-4.65.885-5.97 2.82-1.502 2.226-2.369 5.051-2.373 8.081-.004 3.037.858 5.877 2.378 8.112 1.323 1.94 3.27 2.865 5.973 2.9 3.247.053 5.3-1.97 6.398-6.036l2.041.569c-.66 2.34-1.837 4.18-3.514 5.47-1.784 1.37-4.082 2.074-6.83 2.095z"/></svg>
+              </div>
+              <div class="skill-name">Threads</div>
+            </div>
+            <div class="skill-desc">Post analytics, follower insights, engagement metrics</div>
+            <div class="skill-meta">
+              <span>9 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/bluesky', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #0285FF; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.355.9 2.5.3 3.55.5 4.848 1.433 6.48c.433.768.91 1.435 1.433 2.004 1.433 1.668 3.036 2.868 4.333 3.134 1.2.25 2.333-.065 3.2-.86.867-.797 1.3-1.862 1.3-3.2 0-.933-.233-1.833-.7-2.7.467-.867.9-1.633 1.3-2.3.433-.7.833-1.367 1.2-2 .367.633.767 1.3 1.2 2 .4.667.833 1.433 1.3 2.3-.467.867-.7 1.767-.7 2.7 0 1.338.433 2.403 1.3 3.2.867.795 2 1.11 3.2.86 1.297-.266 2.9-1.466 4.333-3.134.523-.569 1-1.236 1.433-2.004.933-1.632 1.133-2.93.533-3.98-.66-1.145-1.666-1.556-3.5-2.695-2.752 1.942-5.711 5.881-6.798 7.995z"/></svg>
+              </div>
+              <div class="skill-name">Bluesky</div>
+            </div>
+            <div class="skill-desc">Post analytics, feed curation, engagement tracking</div>
+            <div class="skill-meta">
+              <span>9 actions</span>
+              <span>~2 min setup</span>
+            </div>
           </div>
         </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">IG</div>
-            <div class="skill-name">Instagram</div>
-          </div>
-          <div class="skill-desc">Follower analytics, post insights, hashtag search, and stories</div>
-          <div class="skill-meta">
-            <span>5 actions</span>
-            <span>~2 min setup</span>
-          </div>
-        </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">X</div>
-            <div class="skill-name">Twitter / X</div>
-          </div>
-          <div class="skill-desc">Tweet search, user analysis, post threads, and topic tracking</div>
-          <div class="skill-meta">
-            <span>8 actions</span>
-            <span>~2 min setup</span>
+      </div>
+      
+      <!-- AI & Content -->
+      <div class="skills-category">
+        <div class="category-title">🤖 AI & Content Generation</div>
+        <div class="skills-grid">
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/openrouter', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #5D5FEF; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              </div>
+              <div class="skill-name">OpenRouter</div>
+            </div>
+            <div class="skill-desc">AI image generation, chat completions, multiple models</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~1 min setup</span>
+            </div>
           </div>
         </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">LI</div>
-            <div class="skill-name">LinkedIn</div>
+      </div>
+      
+      <!-- Productivity -->
+      <div class="skills-category">
+        <div class="category-title">📊 Productivity & Data</div>
+        <div class="skills-grid">
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/google-sheets', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #0F9D58; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.545 7.535h6.554v6.554h-1.308V9.31l-7.96 7.962-2.617-2.617 7.96-7.962h-2.463V7.535zm-3.273 5.891l-1.308-1.308 4.8-4.8h-3.382V5.81h6.554v6.554h-1.636v-3.382l-4.8 4.8zM3.818 19.2V4.8h8.727V2.4H2.4v19.2h10.145v-2.4H3.818z"/></svg>
+              </div>
+              <div class="skill-name">Google Sheets</div>
+            </div>
+            <div class="skill-desc">Export analytics data, create reports, share with teams</div>
+            <div class="skill-meta">
+              <span>5 actions</span>
+              <span>~3 min setup</span>
+            </div>
           </div>
-          <div class="skill-desc">Professional network analytics, posts, and company insights</div>
-          <div class="skill-meta">
-            <span>4 actions</span>
-            <span>~2 min setup</span>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/notion', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #000000; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.98-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-.747.247-1.214.186l-3.36-.186V8.02l-2.146.14v11.676l-2.286.186c-2.005 0-2.472-1.074-2.472-2.285V8.438l-.653-.186c-.42-.14-.467-.513-.28-.886l3.173-3.454c.327-.373.607-.513 1.027-.513h.513l3.96.28V7.03l2.285-.14V4.743l2.052.233v1.633h.047zm-8.466 1.12c-.514.047-.747.14-.84.513v8.205l2.146.186V8.764l-1.306-.186z"/></svg>
+              </div>
+              <div class="skill-name">Notion</div>
+            </div>
+            <div class="skill-desc">Create pages, databases, export reports to your workspace</div>
+            <div class="skill-meta">
+              <span>9 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/slack', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #4A154B; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>
+              </div>
+              <div class="skill-name">Slack</div>
+            </div>
+            <div class="skill-desc">Send notifications, upload files, alert teams</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~2 min setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/data-storage', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #2563EB; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="skill-name">Data Storage</div>
+            </div>
+            <div class="skill-desc">Save and retrieve data across sessions, JSON storage</div>
+            <div class="skill-meta">
+              <span>9 actions</span>
+              <span>No setup</span>
+            </div>
+          </div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/webhook', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #F59E0B; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="skill-name">Webhook</div>
+            </div>
+            <div class="skill-desc">Trigger Zapier, Make, and custom HTTP endpoints</div>
+            <div class="skill-meta">
+              <span>3 actions</span>
+              <span>No setup</span>
+            </div>
           </div>
         </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">AI</div>
-            <div class="skill-name">OpenRouter</div>
+      </div>
+      
+      <!-- Dev Tools -->
+      <div class="skills-category">
+        <div class="category-title">🛠️ Developer Tools</div>
+        <div class="skills-grid">
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/git', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #F05032; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.678-1.342-.396-2.009L7.611 3.527 4.453 6.685c-.602.605-.602 1.588 0 2.193l10.48 10.477c.604.604 1.582.604 2.186 0l6.252-6.248c.605-.603.605-1.586 0-2.197z"/></svg>
+              </div>
+              <div class="skill-name">Git</div>
+            </div>
+            <div class="skill-desc">Smart commits, PR creation, changelog generation</div>
+            <div class="skill-meta">
+              <span>5 actions</span>
+              <span>No setup</span>
+            </div>
           </div>
-          <div class="skill-desc">AI image generation with Nano Banana, chat completions</div>
-          <div class="skill-meta">
-            <span>4 actions</span>
-            <span>~1 min setup</span>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/docker', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #2496ED; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.186m-2.93 0h2.12a.185.185 0 00.184-.186V3.574a.185.185 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V3.574a.185.185 0 00-.185-.185H2.136a.185.185 0 00-.186.185v1.888c0 .102.084.185.186.186zm-2.93 5.43h2.12a.186.186 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.136a.186.186 0 00-.186.186v1.887c0 .102.084.186.186.186zm-2.92 0h2.12a.186.186 0 00.184-.185V9.006a.186.186 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.12a.186.186 0 00.184-.185V9.006a.186.186 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.92 0h2.12a.186.186 0 00.184-.185V9.006a.186.186 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.963 0h2.119a.186.186 0 00.185-.185V9.006a.185.185 0 00-.185-.186H2.136a.186.186 0 00-.186.186v1.887c0 .102.084.186.186.186zm-2.929 5.431h2.12a.186.186 0 00.184-.186V14.44a.185.185 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V14.44a.185.185 0 00-.185-.185H2.136a.186.186 0 00-.186.185v1.888c0 .102.084.186.186.186zm-2.929 0h2.12a.186.186 0 00.184-.186V14.44a.185.185 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m-2.92 0h2.12a.186.186 0 00.184-.186V14.44a.186.186 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m-2.965 0h2.12a.186.186 0 00.184-.186V14.44a.186.186 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m22.063-11.854h-2.119a.186.186 0 00-.185.185v1.888c0 .102.083.186.185.186h2.119a.186.186 0 00.186-.186V8.155a.186.186 0 00-.186-.185m-2.93 5.431h2.12a.186.186 0 00.184-.186V13.57a.185.185 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m-2.963 0h2.119a.186.186 0 00.185-.186V13.57a.185.185 0 00-.185-.185h-2.119a.186.186 0 00-.186.185v1.888c0 .102.084.186.186.186zm-2.93 0h2.12a.186.186 0 00.184-.186V13.57a.185.185 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186m-2.964 0h2.12a.186.186 0 00.184-.186V13.57a.186.186 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186zm-2.964 0h2.12a.186.186 0 00.184-.186V13.57a.186.186 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186zm-2.92 0h2.12a.186.186 0 00.184-.186V13.57a.186.186 0 00-.184-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.186.185.186z"/></svg>
+              </div>
+              <div class="skill-name">Docker</div>
+            </div>
+            <div class="skill-desc">Build, run, compose containers and manage images</div>
+            <div class="skill-meta">
+              <span>6 actions</span>
+              <span>No setup</span>
+            </div>
           </div>
-        </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">GS</div>
-            <div class="skill-name">Google Sheets</div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/database', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #336791; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm0 2c3.31 0 6 1.34 6 3s-2.69 3-6 3-6-1.34-6-3 2.69-3 6-3zm0 14c-3.31 0-6-1.34-6-3v-1.71c1.35.96 3.59 1.71 6 1.71s4.65-.75 6-1.71V16c0 1.66-2.69 3-6 3zm0-5c-3.31 0-6-1.34-6-3V9.29c1.35.96 3.59 1.71 6 1.71s4.65-.75 6-1.71V11c0 1.66-2.69 3-6 3z"/></svg>
+              </div>
+              <div class="skill-name">Database</div>
+            </div>
+            <div class="skill-desc">Query SQL databases, run migrations, inspect schema</div>
+            <div class="skill-meta">
+              <span>6 actions</span>
+              <span>~2 min setup</span>
+            </div>
           </div>
-          <div class="skill-desc">Export analytics data, create reports, share with teams</div>
-          <div class="skill-meta">
-            <span>5 actions</span>
-            <span>~3 min setup</span>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/browser', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #4285F4; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="skill-name">Browser</div>
+            </div>
+            <div class="skill-desc">Scrape websites, take screenshots, fill forms</div>
+            <div class="skill-meta">
+              <span>7 actions</span>
+              <span>~2 min setup</span>
+            </div>
           </div>
-        </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">SL</div>
-            <div class="skill-name">Slack</div>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/email', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #EA4335; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </div>
+              <div class="skill-name">Email</div>
+            </div>
+            <div class="skill-desc">Send emails, read inbox, search messages</div>
+            <div class="skill-meta">
+              <span>4 actions</span>
+              <span>~2 min setup</span>
+            </div>
           </div>
-          <div class="skill-desc">Send notifications, upload files, alert teams</div>
-          <div class="skill-meta">
-            <span>4 actions</span>
-            <span>~2 min setup</span>
-          </div>
-        </div>
-        
-        <div class="skill-card">
-          <div class="skill-header">
-            <div class="skill-icon">WH</div>
-            <div class="skill-name">Webhook</div>
-          </div>
-          <div class="skill-desc">Trigger Zapier, Make, and custom endpoints</div>
-          <div class="skill-meta">
-            <span>3 actions</span>
-            <span>No setup</span>
+          
+          <div class="skill-card" onclick="window.open('https://github.com/tmoreton/kai-skills/tree/main/skills/web-tools', '_blank')">
+            <div class="skill-header">
+              <div class="skill-icon" style="background: #10B981; color: white;">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <div class="skill-name">Web Tools</div>
+            </div>
+            <div class="skill-desc">Fetch content, search web, URL utilities</div>
+            <div class="skill-meta">
+              <span>2 actions</span>
+              <span>No setup</span>
+            </div>
           </div>
         </div>
       </div>
@@ -764,43 +736,13 @@
   <section id="setup">
     <div class="container">
       <div class="section-header">
-        <h2>Works with Claude</h2>
-        <p class="section-subtitle">Use natural language to manage your social media. Kai skills integrate directly with Claude via MCP.</p>
-      </div>
-      
-      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 48px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
-          <div>
-            <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-              <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
-              Claude Desktop
-            </h4>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">GUI app with visual interface</p>
-            <div class="code-block" style="margin: 0;">claude mcp add kai-youtube -- node ~/.kai/skills/youtube/handler.js</div>
-            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 8px;">Then ask: "Get my YouTube stats"</p>
-          </div>
-          
-          <div>
-            <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-              <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
-              Claude Code
-            </h4>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">Terminal-based AI coding assistant</p>
-            <div class="code-block" style="margin: 0;">claude</div>
-            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 8px;">Then type: "Show my Instagram analytics"</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="section-header" style="margin-top: 64px;">
         <h2>Simple setup</h2>
-        <p class="section-subtitle">Choose your preferred method</p>
+        <p class="section-subtitle">Choose your preferred method. Works with Claude Desktop, Claude Code, or Kai CLI.</p>
       </div>
       
       <div class="tabs-wrapper">
         <div class="tabs">
           <button class="tab active" onclick="showTab('kai-mcp')">kai-mcp (Easiest)</button>
-          <button class="tab" onclick="showTab('dashboard')">Dashboard</button>
           <button class="tab" onclick="showTab('claude')">Claude Desktop</button>
           <button class="tab" onclick="showTab('code')">Claude Code</button>
           <button class="tab" onclick="showTab('kai')">Kai CLI</button>
@@ -844,108 +786,38 @@
           </div>
         </div>
         
-        <div id="dashboard" class="tab-content">
+        <div id="claude" class="tab-content">
           <div class="setup-card">
             <div class="step-list">
               <div class="step-item">
                 <div class="step-num">1</div>
                 <div class="step-text">
-                  <h4>Install dashboard</h4>
-                  <p>One command installs everything</p>
-                  <div class="code-block">kai-skill dashboard install</div>
+                  <h4>Install skills</h4>
+                  <p>Clone the skills repository</p>
+                  <div class="code-block">git clone https://github.com/tmoreton/kai-skills ~/.kai/skills</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">2</div>
                 <div class="step-text">
-                  <h4>Start the server</h4>
-                  <div class="code-block">kai-skill dashboard start</div>
+                  <h4>Add to Claude Desktop</h4>
+                  <p>Manually add each skill via MCP settings</p>
+                  <div class="code-block">Command+Shift+P → Add MCP Server</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">3</div>
                 <div class="step-text">
-                  <h4>Open dashboard</h4>
-                  <p>Visit http://localhost:3000 and connect your accounts</p>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">4</div>
-                <div class="step-text">
-                  <h4>Auto-fetches data</h4>
-                  <p>Dashboard automatically pulls stats from all connected platforms</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="claude" class="tab-content active">
-          <div class="setup-card">
-            <div class="step-list">
-              <div class="step-item">
-                <div class="step-num">1</div>
-                <div class="step-text">
-                  <h4>Install the helper</h4>
-                  <p>One command to add all skills to Claude</p>
-                  <div class="code-block">npm install -g kai-mcp-setup</div>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">2</div>
-                <div class="step-text">
-                  <h4>Add all skills</h4>
-                  <p>This configures all 20 skills automatically</p>
-                  <div class="code-block">kai-mcp-setup all</div>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">3</div>
-                <div class="step-text">
-                  <h4>Restart Claude</h4>
-                  <p>Quit completely and reopen Claude Desktop</p>
+                  <h4>Configure</h4>
+                  <p>For each skill, add:</p>
+                  <div class="code-block">Command: node<br>Args: ~/.kai/skills/youtube/handler.js</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">4</div>
                 <div class="step-text">
                   <h4>Start using</h4>
-                  <p>Just ask: "Get my YouTube stats for this week"</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="kai" class="tab-content">
-          <div class="setup-card">
-            <div class="step-list">
-              <div class="step-item">
-                <div class="step-num">1</div>
-                <div class="step-text">
-                  <h4>Install Kai</h4>
-                  <div class="code-block">npm install -g kai</div>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">2</div>
-                <div class="step-text">
-                  <h4>Start Kai</h4>
-                  <div class="code-block">npx kai</div>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">3</div>
-                <div class="step-text">
-                  <h4>Install skills</h4>
-                  <div class="code-block">/skill install youtube instagram notion</div>
-                </div>
-              </div>
-              <div class="step-item">
-                <div class="step-num">4</div>
-                <div class="step-text">
-                  <h4>Use them</h4>
-                  <div class="code-block">"Get my YouTube channel stats"</div>
+                  <p>Restart Claude and ask: "Get my YouTube stats"</p>
                 </div>
               </div>
             </div>
@@ -958,117 +830,69 @@
               <div class="step-item">
                 <div class="step-num">1</div>
                 <div class="step-text">
-                  <h4>Start Claude Code</h4>
-                  <div class="code-block">claude</div>
+                  <h4>Install Claude Code</h4>
+                  <div class="code-block">npm install -g @anthropic-ai/claude-code</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">2</div>
                 <div class="step-text">
-                  <h4>Export skills</h4>
-                  <div class="code-block">/skill export-to-claude all</div>
+                  <h4>Install kai-mcp</h4>
+                  <div class="code-block">npm install -g kai-mcp</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">3</div>
                 <div class="step-text">
-                  <h4>Restart</h4>
-                  <div class="code-block">exit && claude</div>
+                  <h4>Add skills</h4>
+                  <div class="code-block">kai-mcp add all</div>
                 </div>
               </div>
               <div class="step-item">
                 <div class="step-num">4</div>
                 <div class="step-text">
-                  <h4>Ask anything</h4>
-                  <div class="code-block">"Create a weekly social media report"</div>
+                  <h4>Start using</h4>
+                  <div class="code-block">claude<br>"Get my Instagram analytics"</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-  
-  <section id="api">
-    <div class="container">
-      <div class="section-header">
-        <h2>API Key Setup</h2>
-        <p class="section-subtitle">Three ways to get started, from easiest to manual</p>
-      </div>
-      
-      <div class="api-grid">
-        <div class="api-card">
-          <div class="api-number">1</div>
-          <h4>Interactive Wizard</h4>
-          <p>Step-by-step terminal guide that opens browsers and validates your keys automatically</p>
-          <div class="code-block">npx kai-api-setup</div>
-        </div>
         
-        <div class="api-card">
-          <div class="api-number">2</div>
-          <h4>One-Click Auth</h4>
-          <p>OAuth flow - no API keys to copy/paste. Just click approve and we handle the rest.</p>
-          <div class="code-block">npx kai-oauth youtube</div>
-        </div>
-        
-        <div class="api-card">
-          <div class="api-number">3</div>
-          <h4>Web Documentation</h4>
-          <p>Visual guides with screenshots for manual API key setup from each platform</p>
-          <a href="api-setup.html" style="color: var(--accent); font-size: 0.9rem; text-decoration: none;">View setup guides →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <section id="dashboard">
-    <div class="container">
-      <div class="section-header">
-        <h2>Visual Dashboard</h2>
-        <p class="section-subtitle">Local analytics that stays on your machine. No cloud, no subscriptions.</p>
-      </div>
-      
-      <div class="setup-card" style="max-width: 800px; margin: 0 auto;">
-        <div class="step-list">
-          <div class="step-item">
-            <div class="step-num">1</div>
-            <div class="step-text">
-              <h4>Clone the dashboard example</h4>
-              <p>Everything included, ready to run locally</p>
-              <div class="code-block">git clone https://github.com/tmoreton/kai-skills.git
-cd kai-skills/examples/social-media-dashboard</div>
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-num">2</div>
-            <div class="step-text">
-              <h4>Install and configure</h4>
-              <p>Set up API keys using our interactive wizard</p>
-              <div class="code-block">npm install
-npm run setup</div>
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-num">3</div>
-            <div class="step-text">
-              <h4>Run the dashboard</h4>
-              <p>Open localhost:3000 and connect your accounts</p>
-              <div class="code-block">npm start</div>
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-num">4</div>
-            <div class="step-text">
-              <h4>View your analytics</h4>
-              <p>Use Kai skills to fetch data, paste into the dashboard, see charts. Data never leaves your computer.</p>
+        <div id="kai" class="tab-content">
+          <div class="setup-card">
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                  <h4>Install Kai CLI</h4>
+                  <div class="code-block">npm install -g kai</div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                  <h4>Start Kai</h4>
+                  <div class="code-block">kai</div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                  <h4>Install skills</h4>
+                  <div class="code-block">/skill install youtube instagram twitter</div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-text">
+                  <h4>Use them</h4>
+                  <div class="code-block">"Get my YouTube channel stats"</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div style="text-align: center; margin-top: 40px;">
-        <a href="https://github.com/tmoreton/kai-skills/tree/main/examples/social-media-dashboard" class="hero-secondary" style="font-size: 1rem;">View Dashboard Code →</a>
       </div>
     </div>
   </section>
@@ -1078,17 +902,25 @@ npm run setup</div>
       <div class="footer-links">
         <a href="https://github.com/tmoreton/kai-skills">GitHub</a>
         <a href="https://docs.kai.dev">Documentation</a>
+        <a href="api-setup.html">API Setup Guide</a>
         <a href="https://discord.gg/kai">Discord</a>
       </div>
-      <p>Built for marketers who want AI superpowers</p>
+      <p>Built with ❤️ by the Kai team. Open source on GitHub.</p>
     </div>
   </footer>
   
   <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
+    function showTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
     }
   </script>
