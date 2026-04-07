@@ -558,3 +558,36 @@ cd ~/.kai/skills/twitter && TWITTER_API_KEY=$TWITTER_API_KEY node --input-type=m
     </script>
 </body>
 </html>
+<script>
+// Add to instructions
+const originalShowInstructions = showConnectInstructions;
+showConnectInstructions = function(platform) {
+  const instructions = {
+    youtube: `# Setup (one-time):
+echo "YOUTUBE_API_KEY=your_key" > ~/.kai/.env
+
+# Then run:
+kai-skill youtube get_channel '{"channel_id": "YOUR_CHANNEL_ID"}'
+
+# Copy output and paste below:`,
+    instagram: `# Setup (one-time):
+echo "INSTAGRAM_ACCESS_TOKEN=your_token" >> ~/.kai/.env
+
+# Then run:
+kai-skill instagram get_account '{"user_id": "YOUR_USER_ID"}'
+
+# Copy output and paste below:`,
+    twitter: `# Setup (one-time):
+echo "TWITTER_API_KEY=your_key" >> ~/.kai/.env
+
+# Then run:
+kai-skill twitter get_user '{"username": "YOUR_USERNAME"}'
+
+# Copy output and paste below:`
+  };
+  
+  document.getElementById('instructions-code').textContent = instructions[platform];
+  document.getElementById('instructions-area').style.display = 'block';
+  document.getElementById('instructions-area').dataset.platform = platform;
+};
+</script>
