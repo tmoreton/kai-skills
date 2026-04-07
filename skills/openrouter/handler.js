@@ -2,9 +2,8 @@
  * OpenRouter Skill Handler
  * 
  * AI-powered content generation using OpenRouter API:
- * - Image generation with Nano Banana and other models
+ * - Image generation with Gemini 3 Pro Image Preview
  * - Chat completions with any available model
- * - Model discovery and routing
  * 
  * Requires: OPENROUTER_API_KEY environment variable
  */
@@ -21,9 +20,7 @@ function loadOpenAI() {
     const require = createRequire(process.cwd() + "/package.json");
     return require("openai");
   } catch (e) {
-    throw new Error(
-      "openai package not installed. Run: npm install openai"
-    );
+    throw new Error("openai package not installed. Run: npm install openai");
   }
 }
 
@@ -48,27 +45,17 @@ function generateFilename(prompt) {
 }
 
 async function generateImage({ prompt, width = 1280, height = 720, model = "google/gemini-3-pro-image-preview", output_dir, reference_image }, config) {
-  // Priority: env var from web UI > config passed from MCP > process.env
   const apiKey = process.env.OPENROUTER_API_KEY || config?.OPENROUTER_API_KEY;
   if (!apiKey) {
     const error = new Error(`
 OpenRouter API Key Required
 ===========================
 
-To generate images and use AI models, you need an OpenRouter API key.
+To generate images, you need an OpenRouter API key.
 
-Get your free API key:
 1. Go to: https://openrouter.ai/keys
-2. Sign up (or sign in with Google/GitHub)
-3. Create a new API key
-4. Copy your key
-
-Set it via environment variable:
-  export OPENROUTER_API_KEY=your_api_key_here
-
-Or add to Claude Desktop config and restart.
-
-Note: You may need to add credits ($5-10) to generate images.
+2. Sign up and create an API key
+3. Set: export OPENROUTER_API_KEY=your_key
 `);
     error.code = 'MISSING_API_KEY';
     throw error;
@@ -89,72 +76,121 @@ Note: You may need to add credits ($5-10) to generate images.
   const filename = generateFilename(prompt);
   const outputPath = path.join(outDir, filename);
 
-  // Enhance prompt with reference image if provided
-  let enhancedPrompt = prompt;
-  let referenceUsed = false;
-  
-  if (reference_image && fs.existsSync(reference_image)) {
-    // For now, we enhance the prompt to reference the person
-    // True face-swapping requires specialized models (like InstantID, IP-Adapter)
-    enhancedPrompt = `${prompt}. Include the person from the reference photo ${reference_image} in the scene with consistent appearance and features.`;
-    referenceUsed = true;
-    console.log(`[openrouter] Using reference image: ${reference_image}`);
+  // Determine aspect ratio from dimensions
+  let aspectRatio = "16:9";
+  if (width && height) {
+    const ratio = width / height;
+    if (Math.abs(ratio - 1) < 0.1) aspectRatio = "1:1";
+    else if (Math.abs(ratio - 4/3) < 0.1) aspectRatio = "4:3";
+    else if (Math.abs(ratio - 3/4) < 0.1) aspectRatio = "3:4";
+    else if (Math.abs(ratio - 9/16) < 0.1) aspectRatio = "9:16";
   }
 
-  try {
-    // For image generation models that support it
-    const response = await client.images.generate({
-      model: model,
-      prompt: enhancedPrompt,
-      n: 1,
-      size: `${width}x${height}`,
-      response_format: "url",
+  // Build message content with optional reference image
+  const userContent = [];
+
+  if (reference_image && fs.existsSync(reference_image)) {
+    const ext = path.extname(reference_image).toLowerCase();
+    const mime = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" }[ext] || "image/jpeg";
+    const base64 = fs.readFileSync(reference_image).toString("base64");
+    userContent.push({
+      type: "image_url",
+      image_url: { url: `data:${mime};base64,${base64}` },
     });
+    console.log(`[openrouter] Using reference image: ${reference_image} (${Math.round(base64.length/1024)}KB)`);
+  }
 
-    if (!response.data || !response.data[0]) {
-      throw new Error("No image data returned from OpenRouter");
+  userContent.push({ type: "text", text: prompt });
+
+  // Retry up to 3 times
+  let response;
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) {
+        await new Promise(r => setTimeout(r, 5000 * attempt));
+      }
+
+      response = await client.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: userContent }],
+        modalities: ["image", "text"],
+        max_tokens: 2048,
+        image_config: { aspect_ratio: aspectRatio },
+      });
+      break;
+    } catch (err) {
+      lastError = err;
+      if (!err.message?.includes("timeout") && !err.message?.includes("50")) {
+        throw err;
+      }
     }
+  }
 
-    const imageUrl = response.data[0].url;
-    
-    // Download and save the image
-    const imageResponse = await fetch(imageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to download image: ${imageResponse.status}`);
+  if (!response) throw lastError || new Error("Image generation failed after 3 attempts");
+
+  // Extract images from response
+  const message = response.choices?.[0]?.message;
+
+  // OpenRouter returns images in message.images[] array
+  if (message?.images && Array.isArray(message.images)) {
+    for (const img of message.images) {
+      const url = img.image_url?.url || img.url;
+      if (url) {
+        const base64Match = url.match(/base64,(.+)/);
+        if (base64Match) {
+          fs.writeFileSync(outputPath, Buffer.from(base64Match[1], "base64"));
+          return {
+            success: true,
+            output_path: outputPath,
+            filename: filename,
+            model: model,
+            size: { width, height },
+            prompt: prompt,
+            reference_used: userContent.length > 1,
+          };
+        }
+      }
     }
-    
-    const buffer = await imageResponse.arrayBuffer();
-    fs.writeFileSync(outputPath, Buffer.from(buffer));
+  }
 
-    return {
-      success: true,
-      output_path: outputPath,
-      filename: filename,
-      url: imageUrl,
-      model: model,
-      size: { width, height },
-      prompt: enhancedPrompt,
-      reference_used: referenceUsed,
-      reference_image: referenceUsed ? reference_image : null,
-    };
-  } catch (error) {
-    // Fallback: return the URL if download fails but generation succeeded
-    if (error.message.includes("download") && response?.data?.[0]?.url) {
+  // Fallback: check content for base64 data URLs
+  const content = message?.content;
+  if (typeof content === "string") {
+    const match = content.match(/data:image\/[^;]+;base64,([A-Za-z0-9+/=]+)/);
+    if (match) {
+      fs.writeFileSync(outputPath, Buffer.from(match[1], "base64"));
       return {
         success: true,
-        output_path: null,
+        output_path: outputPath,
         filename: filename,
-        url: response.data[0].url,
         model: model,
         size: { width, height },
-        prompt: enhancedPrompt,
-        reference_used: referenceUsed,
-        reference_image: referenceUsed ? reference_image : null,
-        note: "Image generated but could not download. URL provided.",
+        prompt: prompt,
+        reference_used: userContent.length > 1,
       };
     }
-    throw error;
+  } else if (Array.isArray(content)) {
+    for (const part of content) {
+      if (part.type === "image_url" && part.image_url?.url) {
+        const base64Match = part.image_url.url.match(/base64,(.+)/);
+        if (base64Match) {
+          fs.writeFileSync(outputPath, Buffer.from(base64Match[1], "base64"));
+          return {
+            success: true,
+            output_path: outputPath,
+            filename: filename,
+            model: model,
+            size: { width, height },
+            prompt: prompt,
+            reference_used: userContent.length > 1,
+          };
+        }
+      }
+    }
   }
+
+  throw new Error("No image data found in response");
 }
 
 async function chatCompletion({ prompt, model, temperature = 0.7, max_tokens = 2048 }, config) {
@@ -199,100 +235,51 @@ async function listModels({ filter }, config) {
     throw new Error("OPENROUTER_API_KEY not configured");
   }
 
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/models", {
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://kai.dev",
-      },
-    });
+  const { default: OpenAI } = loadOpenAI();
+  const client = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey,
+    defaultHeaders: {
+      "HTTP-Referer": "https://kai.dev",
+      "X-Title": "Kai AI Assistant",
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.status}`);
-    }
+  const response = await client.models.list();
+  let models = response.data || [];
 
-    const data = await response.json();
-    let models = data.data || [];
-
-    // Filter by capability if specified
-    if (filter === "image") {
-      models = models.filter(m => 
-        m.id.includes("dall-e") || 
-        m.id.includes("gemma") || 
-        m.id.includes("image") ||
-        m.id.includes("banana") ||
-        m.id.includes("recraft") ||
-        m.id.includes("ideogram")
-      );
-    }
-
-    return {
-      success: true,
-      models: models.map(m => ({
-        id: m.id,
-        name: m.name,
-        description: m.description,
-        pricing: m.pricing,
-        context_length: m.context_length,
-        architecture: m.architecture,
-      })),
-      total: models.length,
-      filter: filter || "all",
-    };
-  } catch (error) {
-    throw new Error(`Failed to list models: ${error.message}`);
+  if (filter) {
+    const f = filter.toLowerCase();
+    models = models.filter(m => 
+      m.id?.toLowerCase().includes(f) || 
+      m.name?.toLowerCase().includes(f)
+    );
   }
-}
 
-async function getGenerationStatus({ generation_id }, config) {
-  // Note: OpenRouter doesn't have a separate status endpoint for most image models
-  // This is a placeholder for models that support async generation
   return {
     success: true,
-    generation_id,
-    status: "complete",
-    note: "Most OpenRouter image models are synchronous. Status is typically 'complete' immediately.",
+    models: models.map(m => ({
+      id: m.id,
+      name: m.name || m.id,
+      context_length: m.context_length,
+      pricing: m.pricing,
+    })),
   };
 }
 
 export default {
-  actions: {
-    generate_image: async (params, config) => {
-      const result = await generateImage(params, config);
-      return { content: JSON.stringify(result) };
-    },
-    chat_completion: async (params, config) => {
-      const result = await chatCompletion(params, config);
-      return { content: JSON.stringify(result) };
-    },
-    list_models: async (params, config) => {
-      const result = await listModels(params, config);
-      return { content: JSON.stringify(result) };
-    },
-    get_generation_status: async (params, config) => {
-      const result = await getGenerationStatus(params, config);
-      return { content: JSON.stringify(result) };
-    },
-    setup: async (params, config) => {
-      await setupCredentials('openrouter', { api_key: params.api_key });
-      if (params.api_key) process.env.OPENROUTER_API_KEY = params.api_key;
-      return { content: JSON.stringify({ success: true, message: "OpenRouter credentials saved" }) };
-    },
+  install: async (config) => {
+    const apiKey = process.env.OPENROUTER_API_KEY || config?.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      console.warn("[openrouter] Warning: OPENROUTER_API_KEY not configured. Image generation will fail until set.");
+    }
   },
 
-  // Install hook - validate API key on install
-  install: async (config) => {
-    // Inject stored credentials if available
-    const storedCreds = injectCredentials('openrouter');
-    // Support both conversation setup (api_key) and env vars (OPENROUTER_API_KEY)
-    const apiKey = storedCreds?.OPENROUTER_API_KEY || storedCreds?.api_key;
-    if (apiKey) process.env.OPENROUTER_API_KEY = apiKey;
+  uninstall: async () => {},
 
-    const finalApiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
-    if (!finalApiKey) {
-      console.warn("[openrouter] No OPENROUTER_API_KEY configured. Skill will work but requires API key to be set in environment.");
-    }
-    // Ensure default output directory exists
-    ensureOutputDir();
+  actions: {
+    generate_image: generateImage,
+    chat: chatCompletion,
+    list_models: listModels,
   },
 };
