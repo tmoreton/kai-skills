@@ -240,7 +240,7 @@ async function downloadAndExtract(url: string, targetDir: string): Promise<void>
 
       fileStream.on("finish", () => {
         fileStream.close();
-        // TODO: Extract tarball
+        // TODO: Extract tarball - requires tar dependency
         resolve();
       });
 
@@ -285,6 +285,6 @@ export async function uninstallSkill(skillId: string, options: InstallOptions): 
  * Update all installed skills
  */
 export async function updateSkills(options: InstallOptions): Promise<number> {
-  // TODO: Check versions and update outdated skills
-  return 0;
+  // NOT IMPLEMENTED: Requires version comparison logic and registry cache
+  throw new Error("Skill update not implemented. Please reinstall skills to get latest versions.");
 }

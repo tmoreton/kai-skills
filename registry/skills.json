@@ -951,5 +951,63 @@
       ],
       "configSchema": {}
     }
+    ,
+    {
+      "id": "dashboard",
+      "name": "Social Media Dashboard",
+      "version": "1.0.0",
+      "description": "Local social media analytics dashboard — auto-installs, stores API keys securely, fetches data, and displays visual charts. No cloud, 100% private.",
+      "author": "Kai",
+      "tags": [
+        "dashboard",
+        "analytics",
+        "social-media",
+        "visualization",
+        "local"
+      ],
+      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/dashboard.tar.gz",
+      "npmPackage": "@kai-skills/dashboard",
+      "tools": [
+        {
+          "name": "setup",
+          "description": "Install and configure the dashboard locally"
+        },
+        {
+          "name": "start",
+          "description": "Start the dashboard server"
+        },
+        {
+          "name": "add_account",
+          "description": "Add a social media account with API credentials"
+        },
+        {
+          "name": "fetch_all",
+          "description": "Fetch fresh data from all connected accounts"
+        },
+        {
+          "name": "fetch_platform",
+          "description": "Fetch data from a specific platform"
+        },
+        {
+          "name": "view",
+          "description": "Open dashboard in browser"
+        },
+        {
+          "name": "status",
+          "description": "Show dashboard status and connected accounts"
+        },
+        {
+          "name": "export_data",
+          "description": "Export dashboard data to JSON or CSV"
+        }
+      ],
+      "configSchema": {
+        "DASHBOARD_PORT": {
+          "type": "number",
+          "description": "Port for dashboard web server",
+          "default": 3000
+        }
+      }
+    }
   ]
 }
