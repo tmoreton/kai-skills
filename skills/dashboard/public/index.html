@@ -322,6 +322,7 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn" onclick="exportPDF()">Export PDF</button>
             <button class="btn" onclick="refreshData()">Refresh</button>
             <button class="btn btn-primary" onclick="showSetup()">Connect Accounts</button>
         </div>
@@ -554,6 +555,256 @@ cd ~/.kai/skills/twitter && TWITTER_API_KEY=$TWITTER_API_KEY node --input-type=m
         
         function refreshData() {
             location.reload();
+        }
+        
+        // PDF Export functionality
+        function exportPDF() {
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Generating...';
+            btn.disabled = true;
+            
+            // Create a clean report page
+            const reportHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Kai Analytics Report - ${new Date().toLocaleDateString()}</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        background: white;
+                        color: #1a1a2e;
+                        padding: 40px;
+                        line-height: 1.6;
+                    }
+                    .header {
+                        border-bottom: 2px solid #0f172a;
+                        padding-bottom: 20px;
+                        margin-bottom: 30px;
+                    }
+                    .header h1 {
+                        font-size: 2rem;
+                        color: #0f172a;
+                        margin-bottom: 8px;
+                    }
+                    .header p {
+                        color: #666;
+                        font-size: 0.9rem;
+                    }
+                    .summary-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 20px;
+                        margin-bottom: 30px;
+                    }
+                    .metric {
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                        padding: 20px;
+                    }
+                    .metric-label {
+                        font-size: 0.75rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        color: #666;
+                        margin-bottom: 8px;
+                    }
+                    .metric-value {
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        color: #1a1a2e;
+                    }
+                    .platform-section {
+                        margin-bottom: 30px;
+                        page-break-inside: avoid;
+                    }
+                    .platform-title {
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        color: #0f172a;
+                        margin-bottom: 15px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #e5e5e5;
+                    }
+                    .platform-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 15px;
+                    }
+                    .data-item {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 12px 0;
+                        border-bottom: 1px solid #f0f0f0;
+                    }
+                    .data-item:last-child { border-bottom: none; }
+                    .data-label { color: #666; font-size: 0.9rem; }
+                    .data-value { font-weight: 600; color: #1a1a2e; }
+                    .progress-section {
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                        padding: 20px;
+                        margin-top: 30px;
+                    }
+                    .progress-title {
+                        font-weight: 600;
+                        margin-bottom: 15px;
+                    }
+                    .progress-bar {
+                        height: 12px;
+                        background: #e5e5e5;
+                        border-radius: 6px;
+                        overflow: hidden;
+                        margin-bottom: 8px;
+                    }
+                    .progress-fill {
+                        height: 100%;
+                        background: #0f172a;
+                        border-radius: 6px;
+                    }
+                    .progress-stats {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.9rem;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        padding-top: 20px;
+                        border-top: 1px solid #e5e5e5;
+                        text-align: center;
+                        color: #999;
+                        font-size: 0.8rem;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                        .platform-section { page-break-inside: avoid; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Kai Analytics Report</h1>
+                    <p>Generated on ${new Date().toLocaleString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}</p>
+                </div>
+                
+                <div class="summary-grid">
+                    <div class="metric">
+                        <div class="metric-label">Total Followers</div>
+                        <div class="metric-value">${document.getElementById('total-followers').textContent}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Total Views</div>
+                        <div class="metric-value">${document.getElementById('total-views').textContent}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Total Content</div>
+                        <div class="metric-value">${document.getElementById('total-posts').textContent}</div>
+                    </div>
+                </div>
+                
+                ${generatePlatformSections()}
+                
+                <div class="progress-section">
+                    <div class="progress-title">Road to 100K Followers</div>
+                    ${generateProgressSection()}
+                </div>
+                
+                <div class="footer">
+                    Generated by Kai Command Center | kai-skills.com
+                </div>
+            </body>
+            </html>`;
+            
+            // Open in new window for print/PDF
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(reportHTML);
+            printWindow.document.close();
+            
+            // Trigger print dialog
+            setTimeout(() => {
+                printWindow.print();
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 500);
+        }
+        
+        function generatePlatformSections() {
+            let html = '';
+            
+            if (dataStore.youtube) {
+                const yt = Array.isArray(dataStore.youtube) ? dataStore.youtube[0] : dataStore.youtube;
+                html += `
+                <div class="platform-section">
+                    <div class="platform-title">YouTube</div>
+                    <div class="platform-grid">
+                        <div class="data-item"><span class="data-label">Channel</span><span class="data-value">${yt.title || 'N/A'}</span></div>
+                        <div class="data-item"><span class="data-label">Subscribers</span><span class="data-value">${(yt.subscribers || 0).toLocaleString()}</span></div>
+                        <div class="data-item"><span class="data-label">Total Views</span><span class="data-value">${(yt.total_views || 0).toLocaleString()}</span></div>
+                        <div class="data-item"><span class="data-label">Videos</span><span class="data-value">${yt.video_count || 0}</span></div>
+                    </div>
+                </div>`;
+            }
+            
+            if (dataStore.instagram) {
+                const ig = Array.isArray(dataStore.instagram) ? dataStore.instagram[0] : dataStore.instagram;
+                html += `
+                <div class="platform-section">
+                    <div class="platform-title">Instagram</div>
+                    <div class="platform-grid">
+                        <div class="data-item"><span class="data-label">Username</span><span class="data-value">@${ig.username || 'N/A'}</span></div>
+                        <div class="data-item"><span class="data-label">Followers</span><span class="data-value">${(ig.followers_count || 0).toLocaleString()}</span></div>
+                        <div class="data-item"><span class="data-label">Posts</span><span class="data-value">${ig.media_count || 0}</span></div>
+                        <div class="data-item"><span class="data-label">Following</span><span class="data-value">${(ig.follows_count || 0).toLocaleString()}</span></div>
+                    </div>
+                </div>`;
+            }
+            
+            if (dataStore.twitter) {
+                const tw = Array.isArray(dataStore.twitter) ? dataStore.twitter[0] : dataStore.twitter;
+                html += `
+                <div class="platform-section">
+                    <div class="platform-title">Twitter/X</div>
+                    <div class="platform-grid">
+                        <div class="data-item"><span class="data-label">Username</span><span class="data-value">@${tw.username || 'N/A'}</span></div>
+                        <div class="data-item"><span class="data-label">Followers</span><span class="data-value">${(tw.followers_count || 0).toLocaleString()}</span></div>
+                        <div class="data-item"><span class="data-label">Tweets</span><span class="data-value">${tw.tweet_count || 0}</span></div>
+                        <div class="data-item"><span class="data-label">Following</span><span class="data-value">${(tw.following_count || 0).toLocaleString()}</span></div>
+                    </div>
+                </div>`;
+            }
+            
+            return html || '<p style="color: #999; text-align: center; padding: 40px;">No data connected yet. Connect your accounts in the dashboard to see them here.</p>';
+        }
+        
+        function generateProgressSection() {
+            if (dataStore.youtube) {
+                const yt = Array.isArray(dataStore.youtube) ? dataStore.youtube[0] : dataStore.youtube;
+                const subs = yt.subscribers || 0;
+                const progress = Math.min((subs / 100000) * 100, 100);
+                const remaining = Math.max(100000 - subs, 0);
+                
+                return `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>${yt.title || 'YouTube'}</span>
+                        <span>${progress.toFixed(1)}%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
+                    <div class="progress-stats">
+                        <span>${subs.toLocaleString()} current</span>
+                        <span>${remaining.toLocaleString()} to 100K</span>
+                    </div>
+                </div>`;
+            }
+            return '<p style="color: #999;">Connect YouTube to track progress to 100K followers.</p>';
         }
     </script>
 </body>
