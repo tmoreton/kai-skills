@@ -5,8 +5,31 @@
  * Uses native fetch - no npm dependencies.
  */
 
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+
 export default {
+  install: async (config) => {
+    // Inject stored webhook secret if available
+    const storedCreds = injectCredentials('webhook');
+    if (storedCreds?.webhook_secret) {
+      config.webhook_secret = storedCreds.webhook_secret;
+    }
+  },
+
   actions: {
+    setup: async (params) => {
+      const result = setupCredentials('webhook', {
+        webhook_secret: params.webhook_secret
+      });
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: "Webhook secret saved",
+          next_steps: "Try: 'Send a webhook to my endpoint'"
+        }, null, 2)
+      };
+    },
+
     send_webhook: async (params) => {
       const url = params.url;
       const payload = params.payload || {};

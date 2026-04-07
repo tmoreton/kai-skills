@@ -10,6 +10,7 @@ import { createRequire } from "module";
 import fs from "fs";
 import path from "path";
 import { homedir } from "os";
+import { setupCredentials, injectCredentials, getCredentials } from "../lib/credentials.js";
 
 let browser = null;
 let page = null;
@@ -73,6 +74,26 @@ export default {
       config = { ...config, ...inputConfig };
     }
     loadConfig();
+
+    // Inject stored browser credentials (headless mode, etc.)
+    const creds = getCredentials('browser');
+    if (creds) {
+      injectCredentials('browser');
+      // Apply stored headless setting if present
+      if (creds.headless !== undefined) {
+        config.headless = creds.headless === true || creds.headless === 'true';
+      }
+      // Apply other stored config
+      if (creds.timeoutMs) {
+        config.timeoutMs = parseInt(creds.timeoutMs, 10);
+      }
+      if (creds.contentLimit) {
+        config.contentLimit = parseInt(creds.contentLimit, 10);
+      }
+      if (creds.outputDir) {
+        config.outputDir = creds.outputDir;
+      }
+    }
 
     // Ensure Playwright browsers are installed
     try {
@@ -245,6 +266,34 @@ export default {
         return { closed: true };
       }
       return { closed: false, message: "No browser session active" };
+    },
+
+    setup: async (params) => {
+      // Store browser configuration (headless mode, timeouts, etc.)
+      const credentials = {
+        headless: params.headless !== undefined ? params.headless : true,
+        timeoutMs: params.timeout_ms || params.timeoutMs || 30000,
+        contentLimit: params.content_limit || params.contentLimit || 80000,
+        outputDir: params.output_dir || params.outputDir || path.join(homedir(), ".kai", "agent-output", "browser"),
+      };
+      
+      const result = setupCredentials('browser', credentials);
+      
+      // Apply immediately to current config
+      config.headless = credentials.headless;
+      config.timeoutMs = parseInt(credentials.timeoutMs, 10);
+      config.contentLimit = parseInt(credentials.contentLimit, 10);
+      config.outputDir = credentials.outputDir;
+      
+      return {
+        ...result,
+        config: {
+          headless: config.headless,
+          timeoutMs: config.timeoutMs,
+          contentLimit: config.contentLimit,
+          outputDir: config.outputDir,
+        }
+      };
     },
   },
 };

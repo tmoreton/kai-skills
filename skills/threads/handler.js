@@ -6,6 +6,7 @@
  */
 
 import { createRequire } from "module";
+import { setupCredentials, injectCredentials } from "../lib/credentials.js";
 
 function loadCrypto() {
   try {
@@ -91,9 +92,36 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
+    // Inject stored credentials (access_token, etc.) from secure storage
+    const creds = injectCredentials('threads');
+    if (creds && creds.access_token) {
+      _config.access_token = creds.access_token;
+    }
   },
 
   actions: {
+    setup: async (params) => {
+      try {
+        const credentials = {};
+        if (params.access_token) credentials.access_token = params.access_token;
+        if (params.user_id) credentials.user_id = params.user_id;
+        
+        if (!credentials.access_token) {
+          return { content: JSON.stringify({ error: 'access_token is required', success: false }) };
+        }
+        
+        const result = setupCredentials('threads', credentials);
+        
+        // Also update current config
+        if (credentials.access_token) _config.access_token = credentials.access_token;
+        if (credentials.user_id) _config.user_id = credentials.user_id;
+        
+        return { content: JSON.stringify({ success: true, keys: result.keys }) };
+      } catch (error) {
+        return { content: JSON.stringify({ success: false, error: error.message }) };
+      }
+    },
+
     get_user_profile: async (params) => {
       const userId = params.user_id || process.env.THREADS_USER_ID;
       const targetUsername = params.username;

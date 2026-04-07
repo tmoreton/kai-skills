@@ -6,6 +6,7 @@
  */
 
 import { createRequire } from "module";
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 const FB_API_VERSION = 'v18.0';
 const FB_API_BASE = `https://graph.facebook.com/${FB_API_VERSION}`;
@@ -100,9 +101,70 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
+    // Inject stored Facebook credentials (access_token and page_id)
+    const stored = injectCredentials('facebook');
+    if (stored?.access_token) {
+      _config.access_token = stored.access_token;
+    }
+    if (stored?.page_id) {
+      _config.page_id = stored.page_id;
+    }
   },
 
   actions: {
+    // Setup action to store access_token and page_id
+    setup: async (params) => {
+      const accessToken = params.access_token || params.token;
+      const pageId = params.page_id || params.pageId;
+      
+      if (!accessToken) {
+        return {
+          content: JSON.stringify({
+            success: false,
+            error: 'access_token is required. Provide your Facebook Page access token.',
+            help: 'Get your token at: https://developers.facebook.com/tools/explorer/'
+          })
+        };
+      }
+
+      if (!pageId) {
+        return {
+          content: JSON.stringify({
+            success: false,
+            error: 'page_id is required. Provide your Facebook Page ID.',
+            help: 'Find your Page ID in Facebook Page Settings → Page Info'
+          })
+        };
+      }
+
+      const credentials = { access_token: accessToken };
+      if (pageId) {
+        credentials.page_id = pageId;
+      }
+      
+      const result = setupCredentials('facebook', credentials);
+      
+      // Update in-memory config
+      _config.access_token = accessToken;
+      if (pageId) {
+        _config.page_id = pageId;
+      }
+      
+      // Also set in environment for immediate use
+      process.env.FACEBOOK_ACCESS_TOKEN = accessToken;
+      if (pageId) {
+        process.env.FACEBOOK_PAGE_ID = pageId;
+      }
+
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: 'Facebook credentials saved securely',
+          keys: result.keys
+        })
+      };
+    },
+
     get_page_info: async (params) => {
       try {
         const { pageId } = getCredentials(_config);

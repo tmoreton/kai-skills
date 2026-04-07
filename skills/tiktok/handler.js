@@ -6,6 +6,7 @@
  */
 
 import { createRequire } from "module";
+import { injectCredentials, setupCredentials } from '../lib/credentials.js';
 
 const DEFAULT_MAX_RESULTS = 20;
 const TIKTOK_API_BASE = 'https://open-api.tiktok.com';
@@ -107,9 +108,37 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
+    
+    // Inject stored TikTok credentials (including access_token) into process.env
+    injectCredentials('tiktok');
   },
 
   actions: {
+    setup: async (params) => {
+      const credentials = {};
+      
+      // Store access_token if provided
+      if (params.access_token) {
+        credentials.access_token = params.access_token;
+      }
+      
+      // Store other optional credentials
+      if (params.research_api_key) {
+        credentials.research_api_key = params.research_api_key;
+      }
+      
+      if (Object.keys(credentials).length === 0) {
+        return { content: JSON.stringify({ error: 'No credentials provided. Required: access_token' }) };
+      }
+      
+      const result = setupCredentials('tiktok', credentials);
+      
+      // Also inject immediately for this session
+      injectCredentials('tiktok');
+      
+      return { content: JSON.stringify(result) };
+    },
+
     get_user_info: async (params) => {
       const username = (params.username || '').replace(/^@/, '');
       if (!username) {
