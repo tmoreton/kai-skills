@@ -94,7 +94,7 @@ tools:
       values:
         type: array
         required: true
-        description: Array of arrays (rows) to append. Example: [["Name", "Age"], ["John", 30]]
+        description: "Array of arrays (rows) to append. Example: [[Name, Age], [John, 30]]"
       range:
         type: string
         required: false
