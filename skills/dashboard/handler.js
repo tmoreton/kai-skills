@@ -24,7 +24,7 @@ const SERVER_PID_FILE = path.join(DASHBOARD_DIR, ".server.pid");
 // Simple encryption for local credentials (not military-grade but protects from casual snooping)
 function encrypt(text, key) {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipher('aes-256-gcm', key);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
   let encrypted = cipher.update(text, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   const authTag = cipher.getAuthTag();
@@ -36,7 +36,7 @@ function decrypt(text, key) {
   const iv = Buffer.from(parts[0], 'hex');
   const authTag = Buffer.from(parts[1], 'hex');
   const encrypted = parts[2];
-  const decipher = crypto.createDecipher('aes-256-gcm', key);
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
   decipher.setAuthTag(authTag);
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
