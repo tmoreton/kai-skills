@@ -138,8 +138,13 @@ function addSingleSkill(skillName, quiet = false) {
     // Check if claude CLI is available
     execSync('which claude', { stdio: 'pipe' });
     
-    // Add via claude CLI
-    execSync(`claude mcp add kai-${skillName} -- node "${handlerPath}"`, {
+    // Use MCP wrapper to run the skill
+    // Get the path to this CLI script to find the wrapper
+    const cliPath = new URL(import.meta.url).pathname;
+    const wrapperPath = join(dirname(cliPath), 'mcp-wrapper.js');
+    
+    // Add via claude CLI with wrapper
+    execSync(`claude mcp add kai-${skillName} -- node "${wrapperPath}" "${actualSkillDir}"`, {
       stdio: quiet ? 'pipe' : 'inherit'
     });
     
@@ -149,11 +154,11 @@ function addSingleSkill(skillName, quiet = false) {
     return true;
   } catch (e) {
     // Claude CLI not available, show manual command
-    const shortPath = `~/.kai/skills/${skillName}/handler.js`;
+    const wrapperShortPath = `$(npm root -g)/kai-skills/mcp-wrapper.js`;
     
     if (!quiet) {
       print('yellow', '\n⚠️  Claude CLI not found. Install it or run manually:\n');
-      print('cyan', `\n  claude mcp add kai-${skillName} -- node ${shortPath}\n`);
+      print('cyan', `\n  claude mcp add kai-${skillName} -- node ${wrapperShortPath} ~/.kai/skills/${skillName}\n`);
       print('dim', '\nOr edit Claude Desktop config directly:');
       print('dim', `  ${CLAUDE_CONFIG_FILE}\n`);
     }
