@@ -1,13 +1,12 @@
 /**
- * Twitter/X API Skill Handler v2 - Standalone MCP Compatible
+ * Twitter/X API Skill Handler - Real Twitter API v2
  * 
- * Research tools use web search via Tavily API (TAVILY_API_KEY required).
- * Posting tools use X API v2 OAuth 1.0a (X_API_KEY, X_API_SECRET, etc. required).
+ * Uses official Twitter API v2 with OAuth 1.0a
+ * Requires: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
  */
 
 import { createRequire } from "module";
 import crypto from 'crypto';
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 function loadOAuth() {
   try {
@@ -21,108 +20,88 @@ function loadOAuth() {
 const DEFAULT_MAX_RESULTS = 20;
 const X_API_BASE = 'https://api.twitter.com/2';
 
-async function webSearch(query, maxResults) {
-  const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) {
-    const error = new Error(`
-Tavily API Key Required
-=======================
+// Helper for missing credentials error
+function getCredentialsError() {
+  const error = new Error(`
+Twitter/X API Credentials Required
+===================================
 
-To search Twitter/X content, you need a Tavily API key for web search.
+To use Twitter API features, you need Twitter API v2 credentials.
 
-Get your free API key:
-1. Go to: https://tavily.com/
-2. Sign up for a free account
-3. Get your API key from the dashboard
+Get your credentials:
+1. Go to: https://developer.x.com/en/portal/dashboard
+2. Create a project and app
+3. Generate "User Authentication Tokens" with Read and Write permissions
+4. Copy these four values:
 
-Set it via environment variable:
-  export TAVILY_API_KEY=your_api_key_here
+Set them via kai-skills:
+  kai-skills config set twitter api_key your_consumer_key
+  kai-skills config set twitter api_secret your_consumer_secret
+  kai-skills config set twitter access_token your_access_token
+  kai-skills config set twitter access_token_secret your_access_token_secret
+  kai-skills sync-config
 
-Or add to Claude Desktop config and restart.
+Then restart Claude Desktop.
+
+Note: Twitter Free tier has limits (500 posts/month, limited search).
+For full search access, you need Basic tier ($100/month).
 `);
-    error.code = 'MISSING_API_KEY';
-    throw error;
-  }
-
-  const response = await fetch('https://api.tavily.com/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      api_key: apiKey,
-      query,
-      max_results: maxResults || 10,
-      search_depth: 'basic',
-      include_answer: false
-    })
-  });
-
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Tavily API error: ${response.status} - ${err}`);
-  }
-
-  const data = await response.json();
-  return {
-    results: data.results?.map(r => ({
-      title: r.title,
-      url: r.url,
-      content: r.content,
-      score: r.score,
-      published_date: r.published_date
-    })) || []
-  };
+  error.code = 'MISSING_API_KEY';
+  return error;
 }
 
-function createOAuthClient(config) {
-  const OAuth = loadOAuth();
-  const consumerKey = config.api_key || process.env.X_API_KEY;
-  const consumerSecret = config.api_secret || process.env.X_API_SECRET;
-  return OAuth({
-    consumer: { key: consumerKey, secret: consumerSecret },
-    signature_method: 'HMAC-SHA1',
-    hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64')
-  });
-}
-
-async function xApiPost(endpoint, data, config) {
+async function xApiRequest(method, endpoint, data, config) {
   const apiKey = config.api_key || process.env.X_API_KEY;
   const apiSecret = config.api_secret || process.env.X_API_SECRET;
   const accessToken = config.access_token || process.env.X_ACCESS_TOKEN;
   const accessTokenSecret = config.access_token_secret || process.env.X_ACCESS_TOKEN_SECRET;
 
   if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
-    throw new Error('X API credentials not configured. Set X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET.');
+    throw getCredentialsError();
   }
 
-  const oauth = createOAuthClient({ api_key: apiKey, api_secret: apiSecret });
-  const url = X_API_BASE + endpoint;
-  const token = { key: accessToken, secret: accessTokenSecret };
-  const authHeader = oauth.toHeader(oauth.authorize({ url, method: 'POST' }, token));
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Authorization': authHeader.Authorization, 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+  const OAuth = loadOAuth();
+  const oauth = OAuth({
+    consumer: { key: apiKey, secret: apiSecret },
+    signature_method: 'HMAC-SHA1',
+    hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64')
   });
+
+  let url;
+  if (method === 'GET') {
+    url = new URL(X_API_BASE + endpoint);
+    for (const [key, value] of Object.entries(data || {})) {
+      if (value !== undefined && value !== null) {
+        url.searchParams.set(key, String(value));
+      }
+    }
+  } else {
+    url = X_API_BASE + endpoint;
+  }
+
+  const token = { key: accessToken, secret: accessTokenSecret };
+  const authHeader = oauth.toHeader(oauth.authorize({ url: url.toString(), method }, token));
+
+  const options = {
+    method,
+    headers: { 'Authorization': authHeader.Authorization }
+  };
+
+  if (method === 'POST' && data) {
+    options.headers['Content-Type'] = 'application/json';
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(url.toString(), options);
 
   if (!response.ok) {
     const err = await response.text();
-    throw new Error(`X API error (${response.status}): ${err}`);
+    if (response.status === 403) {
+      throw new Error(`Twitter API access denied. Your API tier may not have search access. Free tier has limited endpoints. Upgrade at developer.x.com. Error: ${err}`);
+    }
+    throw new Error(`Twitter API error (${response.status}): ${err}`);
   }
   return response.json();
-}
-
-function extractUsername(url) {
-  if (!url) return null;
-  const match = url.match(/(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]{1,15})(?:\/|\?|$)/);
-  return match ? match[1] : null;
-}
-
-function extractThemes(tweets) {
-  if (!tweets?.length) return [];
-  const text = tweets.map(t => t.text || '').join(' ').toLowerCase();
-  const themes = ['ai', 'coding', 'startup', 'build', 'revenue', 'mrr', 'saas', 'indie', 'cursor', 'claude', 'developer', 'founder', 'product', 'marketing'];
-  return themes.filter(t => text.includes(t)).slice(0, 5);
 }
 
 let _config = {};
@@ -136,145 +115,112 @@ export default {
     search_tweets: async (params) => {
       const query = params.query || '';
       const maxResults = params.max_results || DEFAULT_MAX_RESULTS;
-      const allTweets = [];
 
-      for (const searchQuery of [`${query} site:twitter.com`, `${query} site:x.com`]) {
-        try {
-          const result = await webSearch(searchQuery, Math.ceil(maxResults / 2));
-          if (result?.results) {
-            allTweets.push(...result.results.map((r, i) => ({
-              id: `tweet_${allTweets.length + i}`,
-              text: r.content || r.title,
-              url: r.url,
-              author: extractUsername(r.url) || 'Unknown',
-              likes: Math.round((r.score || 0) * 10),
-              timestamp: r.published_date || new Date().toISOString()
-            })));
-          }
-        } catch (e) {
-          // Continue with next query
-        }
+      try {
+        // Try real Twitter API search (requires elevated access)
+        const result = await xApiRequest('GET', '/tweets/search/recent', {
+          query: query,
+          max_results: Math.min(maxResults, 100),
+          'tweet.fields': 'created_at,author_id,public_metrics'
+        }, _config);
+
+        const tweets = result.data?.map(t => ({
+          id: t.id,
+          text: t.text,
+          author_id: t.author_id,
+          created_at: t.created_at,
+          likes: t.public_metrics?.like_count || 0,
+          retweets: t.public_metrics?.retweet_count || 0,
+          url: `https://twitter.com/i/web/status/${t.id}`
+        })) || [];
+
+        return { content: JSON.stringify({ tweets, total: tweets.length, query, source: 'twitter_api' }) };
+      } catch (error) {
+        // If API fails (likely due to access tier), return helpful message
+        return { 
+          content: JSON.stringify({ 
+            error: error.message,
+            query,
+            note: 'Twitter search requires Basic tier ($100/month) or higher for full search. Free tier has limited access.',
+            docs: 'https://developer.x.com/en/docs/twitter-api'
+          }),
+          isError: true
+        };
       }
-
-      const unique = Array.from(new Map(allTweets.map(t => [t.url, t])).values());
-      const result = { tweets: unique.slice(0, maxResults), total: unique.length, query };
-      return { content: JSON.stringify(result) };
     },
 
     get_user_tweets: async (params) => {
       const username = (params.username || '').replace(/^@/, '');
       const maxResults = params.max_results || DEFAULT_MAX_RESULTS;
-      
-      const result = await webSearch(`from:${username} site:twitter.com OR site:x.com`, maxResults);
-      const tweets = result.results?.map((r, i) => ({
-        id: `tweet_${i}`,
-        text: r.content || r.title,
-        url: r.url,
-        author: username,
-        likes: Math.round((r.score || 0) * 10),
-        timestamp: r.published_date || new Date().toISOString()
-      })) || [];
 
-      return { content: JSON.stringify({ username, tweets, total: tweets.length }) };
+      if (!username) {
+        return { content: JSON.stringify({ error: 'Username required' }) };
+      }
+
+      try {
+        // First get user ID from username
+        const userResult = await xApiRequest('GET', `/users/by/username/${username}`, {}, _config);
+        const userId = userResult.data?.id;
+
+        if (!userId) {
+          return { content: JSON.stringify({ error: 'User not found', username }) };
+        }
+
+        // Get tweets from user
+        const result = await xApiRequest('GET', `/users/${userId}/tweets`, {
+          max_results: Math.min(maxResults, 100),
+          'tweet.fields': 'created_at,public_metrics'
+        }, _config);
+
+        const tweets = result.data?.map(t => ({
+          id: t.id,
+          text: t.text,
+          created_at: t.created_at,
+          likes: t.public_metrics?.like_count || 0,
+          retweets: t.public_metrics?.retweet_count || 0,
+          url: `https://twitter.com/${username}/status/${t.id}`
+        })) || [];
+
+        return { content: JSON.stringify({ username, tweets, total: tweets.length }) };
+      } catch (error) {
+        return { 
+          content: JSON.stringify({ error: error.message, username }),
+          isError: true 
+        };
+      }
     },
 
     analyze_user: async (params) => {
       const username = (params.username || '').replace(/^@/, '');
-      
-      // Get tweets via web search
-      const searchResult = await webSearch(`from:${username} site:twitter.com OR site:x.com`, 15);
-      const tweets = searchResult.results?.map(r => ({
-        text: r.content || r.title,
-        likes: Math.round((r.score || 0) * 10)
-      })) || [];
-      
-      const avgLikes = tweets.length ? tweets.reduce((s, t) => s + (t.likes || 0), 0) / tweets.length : 0;
 
-      const result = {
-        username,
-        profile_url: `https://twitter.com/${username}`,
-        recent_tweets_count: tweets.length,
-        avg_likes_per_tweet: Math.round(avgLikes),
-        activity_level: tweets.length > 5 ? 'High' : tweets.length > 0 ? 'Moderate' : 'Low',
-        content_themes: extractThemes(tweets)
-      };
-      return { content: JSON.stringify(result) };
-    },
+      try {
+        const userResult = await xApiRequest('GET', `/users/by/username/${username}`, {
+          'user.fields': 'public_metrics,description,created_at,verified'
+        }, _config);
 
-    find_influencers: async (params) => {
-      const topic = params.topic || '';
-      const minFollowers = params.min_followers || 5000;
-      const maxResults = params.max_results || 10;
-
-      const searchQueries = [
-        `${topic} "followers" site:twitter.com`,
-        `${topic} influencer site:twitter.com`,
-        `twitter.com ${topic} popular account`
-      ];
-
-      const allAccounts = [];
-      for (const query of searchQueries) {
-        try {
-          const result = await webSearch(query, 10);
-          if (result?.results) {
-            for (const r of result.results) {
-              const username = extractUsername(r.url);
-              if (username && !allAccounts.some(a => a.username === username)) {
-                allAccounts.push({
-                  username,
-                  profile_url: `https://twitter.com/${username}`,
-                  snippet: r.content?.substring(0, 200),
-                  source: r.url
-                });
-              }
-            }
-          }
-        } catch (e) {
-          // Continue with next query
+        const user = userResult.data;
+        if (!user) {
+          return { content: JSON.stringify({ error: 'User not found', username }) };
         }
+
+        const result = {
+          username,
+          name: user.name,
+          description: user.description,
+          followers: user.public_metrics?.followers_count || 0,
+          following: user.public_metrics?.following_count || 0,
+          tweets_count: user.public_metrics?.tweet_count || 0,
+          verified: user.verified || false,
+          profile_url: `https://twitter.com/${username}`,
+          created_at: user.created_at
+        };
+        return { content: JSON.stringify(result) };
+      } catch (error) {
+        return { 
+          content: JSON.stringify({ error: error.message, username }),
+          isError: true 
+        };
       }
-
-      const result = {
-        topic,
-        min_followers: minFollowers,
-        influencers: allAccounts.slice(0, maxResults),
-        total_found: allAccounts.length
-      };
-      return { content: JSON.stringify(result) };
-    },
-
-    track_topic_sentiment: async (params) => {
-      const topic = params.topic || '';
-      const discussions = [];
-
-      for (const query of [`${topic} twitter`, `${topic} opinion site:twitter.com`]) {
-        try {
-          const result = await webSearch(query, 15);
-          if (result?.results) discussions.push(...result.results.map(r => ({ text: r.content || r.title })));
-        } catch (e) {
-          // Continue
-        }
-      }
-
-      const unique = Array.from(new Map(discussions.map(d => [d.text, d])).values());
-      const positiveWords = ['love', 'great', 'awesome', 'best', 'amazing', 'win', 'excellent', 'fantastic', 'good', 'happy'];
-      const negativeWords = ['hate', 'terrible', 'worst', 'fail', 'bad', 'awful', 'disappointing', 'sad', 'angry'];
-      
-      const pos = positiveWords.filter(w => unique.some(d => d.text?.toLowerCase().includes(w))).length;
-      const neg = negativeWords.filter(w => unique.some(d => d.text?.toLowerCase().includes(w))).length;
-      const neutral = unique.length - pos - neg;
-
-      const result = {
-        topic,
-        sentiment: {
-          positive: { count: pos, percentage: unique.length ? Math.round((pos / unique.length) * 100) : 0 },
-          negative: { count: neg, percentage: unique.length ? Math.round((neg / unique.length) * 100) : 0 },
-          neutral: { count: neutral, percentage: unique.length ? Math.round((neutral / unique.length) * 100) : 0 }
-        },
-        total_discussions_analyzed: unique.length,
-        summary: unique.length ? `${pos > neg ? 'Positive' : neg > pos ? 'Negative' : 'Mixed'} sentiment. ${unique.length} discussions analyzed.` : 'No discussions found'
-      };
-      return { content: JSON.stringify(result) };
     },
 
     post_tweet: async (params) => {
@@ -283,63 +229,30 @@ export default {
         return { content: JSON.stringify({ error: 'Tweet text required', posted: false }) };
       }
 
-      if (!process.env.X_API_KEY) {
-        return { content: JSON.stringify({ error: 'X_API_KEY not configured', posted: false, note: 'Add credentials to environment or config' }) };
-      }
-
       try {
-        const result = await xApiPost('/tweets', { text }, _config);
-        const response = { posted: true, id: result.data?.id, url: `https://twitter.com/i/web/status/${result.data?.id}` };
-        return { content: JSON.stringify(response) };
+        const result = await xApiRequest('POST', '/tweets', { text }, _config);
+        return { content: JSON.stringify({ 
+          posted: true, 
+          id: result.data?.id, 
+          url: `https://twitter.com/i/web/status/${result.data?.id}`,
+          text: text.substring(0, 50)
+        })};
       } catch (error) {
-        return { content: JSON.stringify({ posted: false, error: error.message, text_preview: text.substring(0, 50) }) };
+        return { content: JSON.stringify({ posted: false, error: error.message }) };
       }
-    },
-
-    post_thread: async (params) => {
-      const tweets = params.tweets || [];
-      if (!Array.isArray(tweets) || tweets.length === 0) {
-        return { content: JSON.stringify({ error: 'Array of tweets required', posted: false }) };
-      }
-
-      if (!process.env.X_API_KEY) {
-        return { content: JSON.stringify({ error: 'X_API_KEY not configured', posted: false }) };
-      }
-
-      const posted = [];
-      let lastTweetId = null;
-
-      for (const text of tweets) {
-        try {
-          const payload = { text };
-          if (lastTweetId) {
-            payload.reply = { in_reply_to_tweet_id: lastTweetId };
-          }
-          const result = await xApiPost('/tweets', payload, _config);
-          lastTweetId = result.data?.id;
-          posted.push({ id: lastTweetId, text: text.substring(0, 50) });
-        } catch (error) {
-          posted.push({ error: error.message, text: text.substring(0, 50) });
-          break;
-        }
-      }
-
-      const result = {
-        posted: posted.every(p => p.id),
-        tweets_posted: posted.length,
-        tweets: posted,
-        thread_url: lastTweetId ? `https://twitter.com/i/web/status/${lastTweetId}` : null
-      };
-      return { content: JSON.stringify(result) };
     },
 
     get_rate_limits: async () => {
-      const result = {
-        credentials_configured: !!process.env.X_API_KEY,
-        tier: process.env.X_API_KEY ? 'Free (500 posts/month)' : 'Not configured',
-        note: 'Check https://developer.x.com/en/portal/dashboard for actual usage'
-      };
-      return { content: JSON.stringify(result) };
+      const hasCreds = !!(process.env.X_API_KEY && process.env.X_API_SECRET && 
+                        process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_TOKEN_SECRET);
+      return { content: JSON.stringify({
+        credentials_configured: hasCreds,
+        tier: hasCreds ? 'Configured (tier depends on your Twitter plan)' : 'Not configured',
+        free_limits: '500 posts/month, limited read access',
+        search_note: 'Full search requires Basic tier ($100/month) or higher',
+        upgrade: 'https://developer.x.com/en/portal/products'
+      })};
     }
   }
 };
+ENDOFFILE && echo "__KAI_CWD_1775580217802__" && pwd
