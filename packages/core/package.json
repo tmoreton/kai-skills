@@ -1,6 +1,6 @@
 {
   "name": "@kai-skills/core",
-  "version": "1.0.1",
+  "version": "1.0.9",
   "description": "Core types and utilities for Kai skills",
   "type": "module",
   "main": "./dist/index.js",
