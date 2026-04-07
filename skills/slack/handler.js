@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../lib/credentials.js';
 
 // Load @slack/web-api dynamically (optional dependency)
 function loadSlackWebApi() {
@@ -28,7 +28,7 @@ function getClient() {
   if (_client) return _client;
 
   const { WebClient } = loadSlackWebApi();
-  const token = _config.bot_token || process.env.SLACK_BOT_TOKEN;
+  const token = _config.bot_token || getCredential('slack', 'bot_token');
 
   if (!token) {
     const error = new Error(`
@@ -95,19 +95,27 @@ export default {
     _config = config;
     _client = null;
     // Load stored credentials if available
-    const storedCreds = injectCredentials('slack');
-    if (storedCreds?.bot_token) {
-      process.env.SLACK_BOT_TOKEN = storedCreds.bot_token;
+    const token = getCredential('slack', 'bot_token');
+    if (token) {
+      _config.bot_token = token;
     }
   },
 
   actions: {
     setup: async (params) => {
-      const result = setupCredentials('slack', {
-        bot_token: params.bot_token
-      });
-      process.env.SLACK_BOT_TOKEN = params.bot_token;
+      if (!params.bot_token) {
+        return {
+          content: JSON.stringify({
+            success: false,
+            error: "bot_token is required"
+          }, null, 2)
+        };
+      }
+      
+      setupCredentials('slack', 'bot_token', params.bot_token);
+      _config.bot_token = params.bot_token;
       _client = null;
+      
       return {
         content: JSON.stringify({
           success: true,

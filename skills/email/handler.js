@@ -7,7 +7,7 @@
 
 import { createRequire } from "module";
 import { connect as tlsConnect } from "tls";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../lib/credentials.js';
 
 let transporter = null;
 let smtpConfig = {};
@@ -245,26 +245,35 @@ export default {
   install: async (config) => {
     _config = config;
     
-    // Inject stored credentials if available
-    const storedCreds = injectCredentials('email');
+    // Use getCredential for all SMTP/IMAP credentials (checks env, config, then stored)
+    const smtpHost = getCredential('email', 'SMTP_HOST', config);
+    const smtpPort = getCredential('email', 'SMTP_PORT', config);
+    const smtpUser = getCredential('email', 'SMTP_USER', config);
+    const smtpPass = getCredential('email', 'SMTP_PASS', config);
+    const smtpSecure = getCredential('email', 'SMTP_SECURE', config);
+    const imapHost = getCredential('email', 'IMAP_HOST', config);
+    const imapPort = getCredential('email', 'IMAP_PORT', config);
     
-    // Merge stored credentials with provided config (provided config takes precedence)
+    // Build effective config from credential sources
     const effectiveConfig = {
-      SMTP_HOST: config.SMTP_HOST || storedCreds?.smtp_host || process.env.SMTP_HOST,
-      SMTP_PORT: config.SMTP_PORT || storedCreds?.smtp_port || process.env.SMTP_PORT,
-      SMTP_USER: config.SMTP_USER || storedCreds?.username || process.env.SMTP_USER,
-      SMTP_PASS: config.SMTP_PASS || storedCreds?.password || process.env.SMTP_PASS,
-      SMTP_SECURE: config.SMTP_SECURE || storedCreds?.smtp_secure || process.env.SMTP_SECURE,
-      IMAP_HOST: config.IMAP_HOST || storedCreds?.imap_host || process.env.IMAP_HOST,
-      IMAP_PORT: config.IMAP_PORT || storedCreds?.imap_port || process.env.IMAP_PORT,
+      SMTP_HOST: smtpHost,
+      SMTP_PORT: smtpPort,
+      SMTP_USER: smtpUser,
+      SMTP_PASS: smtpPass,
+      SMTP_SECURE: smtpSecure,
+      IMAP_HOST: imapHost,
+      IMAP_PORT: imapPort,
     };
     
     _config = { ...config, ...effectiveConfig };
     
-    try {
-      initTransporter(_config);
-    } catch {
-      // Will fail at action time with a clear message
+    // Only initialize if we have required credentials
+    if (smtpHost && smtpUser && smtpPass) {
+      try {
+        initTransporter(_config);
+      } catch {
+        // Will fail at action time with a clear message
+      }
     }
   },
 
@@ -277,6 +286,29 @@ export default {
 
   actions: {
     setup: async (params) => {
+      // Use getCredential to check if credentials already exist
+      const existingHost = getCredential('email', 'SMTP_HOST', _config);
+      const existingUser = getCredential('email', 'SMTP_USER', _config);
+      
+      // If no params provided but credentials exist, return current status
+      if (!params.smtp_host && !params.username && existingHost && existingUser) {
+        return {
+          content: JSON.stringify({
+            success: true,
+            message: "Email credentials already configured",
+            smtp_host: existingHost,
+            username: existingUser,
+            configured: true
+          }, null, 2)
+        };
+      }
+      
+      // Validate required params
+      if (!params.smtp_host || !params.username || !params.password) {
+        throw new Error("Missing required credentials: smtp_host, username, and password are required");
+      }
+      
+      // Store credentials using setupCredentials
       const result = setupCredentials('email', {
         smtp_host: params.smtp_host,
         smtp_port: params.smtp_port,
@@ -287,8 +319,9 @@ export default {
         imap_port: params.imap_port || 993,
       });
       
-      // Update config immediately after setup
-      const newConfig = {
+      // Update config with the new credentials using getCredential pattern
+      _config = {
+        ..._config,
         SMTP_HOST: params.smtp_host,
         SMTP_PORT: params.smtp_port,
         SMTP_USER: params.username,
@@ -298,14 +331,7 @@ export default {
         IMAP_PORT: params.imap_port || 993,
       };
       
-      _config = { ..._config, ...newConfig };
-      
-      // Update environment variables
-      process.env.SMTP_HOST = params.smtp_host;
-      process.env.SMTP_PORT = String(params.smtp_port);
-      process.env.SMTP_USER = params.username;
-      process.env.SMTP_PASS = params.password;
-      
+      // Initialize transporter with new config
       try {
         initTransporter(_config);
       } catch {

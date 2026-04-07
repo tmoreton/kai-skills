@@ -6,14 +6,14 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../lib/credentials.js';
 
 const FB_API_VERSION = 'v18.0';
 const FB_API_BASE = `https://graph.facebook.com/${FB_API_VERSION}`;
 
 function getCredentials(config) {
-  const accessToken = config.access_token || process.env.FACEBOOK_ACCESS_TOKEN;
-  const pageId = config.page_id || process.env.FACEBOOK_PAGE_ID;
+  const accessToken = getCredential('facebook', 'FACEBOOK_ACCESS_TOKEN', config);
+  const pageId = getCredential('facebook', 'FACEBOOK_PAGE_ID', config);
   
   if (!accessToken) {
     const error = new Error(`
@@ -101,18 +101,16 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
-    // Inject stored Facebook credentials (access_token and page_id)
-    const stored = injectCredentials('facebook');
-    if (stored?.access_token) {
-      _config.access_token = stored.access_token;
-    }
-    if (stored?.page_id) {
-      _config.page_id = stored.page_id;
-    }
+    // Load stored credentials using getCredential
+    const accessToken = getCredential('facebook', 'FACEBOOK_ACCESS_TOKEN', config);
+    const pageId = getCredential('facebook', 'FACEBOOK_PAGE_ID', config);
+    
+    if (accessToken) _config.FACEBOOK_ACCESS_TOKEN = accessToken;
+    if (pageId) _config.FACEBOOK_PAGE_ID = pageId;
   },
 
   actions: {
-    // Setup action to store access_token and page_id
+    // Setup action to store FACEBOOK_ACCESS_TOKEN and FACEBOOK_PAGE_ID
     setup: async (params) => {
       const accessToken = params.access_token || params.token;
       const pageId = params.page_id || params.pageId;
@@ -137,24 +135,20 @@ export default {
         };
       }
 
-      const credentials = { access_token: accessToken };
-      if (pageId) {
-        credentials.page_id = pageId;
-      }
+      const credentials = { 
+        FACEBOOK_ACCESS_TOKEN: accessToken,
+        FACEBOOK_PAGE_ID: pageId
+      };
       
       const result = setupCredentials('facebook', credentials);
       
       // Update in-memory config
-      _config.access_token = accessToken;
-      if (pageId) {
-        _config.page_id = pageId;
-      }
+      _config.FACEBOOK_ACCESS_TOKEN = accessToken;
+      _config.FACEBOOK_PAGE_ID = pageId;
       
       // Also set in environment for immediate use
       process.env.FACEBOOK_ACCESS_TOKEN = accessToken;
-      if (pageId) {
-        process.env.FACEBOOK_PAGE_ID = pageId;
-      }
+      process.env.FACEBOOK_PAGE_ID = pageId;
 
       return {
         content: JSON.stringify({

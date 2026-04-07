@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials, hasCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials, hasCredentials } from '../lib/credentials.js';
 
 // Dynamic requires for optional dependencies
 function loadInstagramAPI() {
@@ -21,9 +21,9 @@ function loadInstagramAPI() {
 const INSTAGRAM_GRAPH_API_BASE = 'https://graph.instagram.com';
 const INSTAGRAM_BASIC_API_BASE = 'https://graph.instagram.com';
 
-// Helper to get access token from config or environment
+// Helper to get access token using getCredential pattern
 function getAccessToken(config) {
-  const token = config.access_token || process.env.INSTAGRAM_ACCESS_TOKEN || process.env.INSTAGRAM_TOKEN;
+  const token = getCredential('instagram', 'INSTAGRAM_ACCESS_TOKEN', config);
   if (!token) {
     const error = new Error(`
 Instagram Access Token Required
@@ -100,17 +100,23 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
-    // Inject stored Instagram credentials (access_token)
-    const stored = injectCredentials('instagram');
-    if (stored?.access_token) {
-      _config.access_token = stored.access_token;
+    // Load credentials using getCredential pattern
+    const accessToken = getCredential('instagram', 'INSTAGRAM_ACCESS_TOKEN', config);
+    if (accessToken) {
+      _config.access_token = accessToken;
     }
   },
 
   actions: {
     // Setup action to store access_token
     setup: async (params) => {
-      const accessToken = params.access_token || params.token;
+      let accessToken = params.access_token || params.token;
+      
+      // Check for existing credential if not provided
+      if (!accessToken) {
+        accessToken = getCredential('instagram', 'INSTAGRAM_ACCESS_TOKEN', _config);
+      }
+      
       if (!accessToken) {
         return {
           content: JSON.stringify({

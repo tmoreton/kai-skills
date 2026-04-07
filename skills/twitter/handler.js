@@ -7,6 +7,7 @@
 
 import { createRequire } from "module";
 import crypto from 'crypto';
+import { getCredential } from '../lib/credentials.js';
 
 function loadOAuth() {
   try {
@@ -19,6 +20,8 @@ function loadOAuth() {
 
 const DEFAULT_MAX_RESULTS = 20;
 const X_API_BASE = 'https://api.twitter.com/2';
+
+let _config = {};
 
 // Helper for missing credentials error
 function getCredentialsError() {
@@ -50,11 +53,11 @@ For full search access, you need Basic tier ($100/month).
   return error;
 }
 
-async function xApiRequest(method, endpoint, data, config) {
-  const apiKey = config.api_key || process.env.X_API_KEY;
-  const apiSecret = config.api_secret || process.env.X_API_SECRET;
-  const accessToken = config.access_token || process.env.X_ACCESS_TOKEN;
-  const accessTokenSecret = config.access_token_secret || process.env.X_ACCESS_TOKEN_SECRET;
+async function xApiRequest(method, endpoint, data) {
+  const apiKey = getCredential('twitter', 'X_API_KEY', _config);
+  const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
+  const accessToken = getCredential('twitter', 'X_ACCESS_TOKEN', _config);
+  const accessTokenSecret = getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', _config);
 
   if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
     throw getCredentialsError();
@@ -104,11 +107,23 @@ async function xApiRequest(method, endpoint, data, config) {
   return response.json();
 }
 
-let _config = {};
-
 export default {
   install: async (config) => {
     _config = config;
+    // Set credentials in process.env for immediate use
+    const apiKey = getCredential('twitter', 'X_API_KEY', config);
+    const apiSecret = getCredential('twitter', 'X_API_SECRET', config);
+    const accessToken = getCredential('twitter', 'X_ACCESS_TOKEN', config);
+    const accessTokenSecret = getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', config);
+    
+    if (apiKey) process.env.X_API_KEY = apiKey;
+    if (apiSecret) process.env.X_API_SECRET = apiSecret;
+    if (accessToken) process.env.X_ACCESS_TOKEN = accessToken;
+    if (accessTokenSecret) process.env.X_ACCESS_TOKEN_SECRET = accessTokenSecret;
+    
+    if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
+      console.warn("[twitter] Warning: Twitter credentials not fully configured. Twitter tools will fail until credentials are set.");
+    }
   },
 
   actions: {
@@ -122,7 +137,7 @@ export default {
           query: query,
           max_results: Math.min(maxResults, 100),
           'tweet.fields': 'created_at,author_id,public_metrics'
-        }, _config);
+        });
 
         const tweets = result.data?.map(t => ({
           id: t.id,
@@ -159,7 +174,7 @@ export default {
 
       try {
         // First get user ID from username
-        const userResult = await xApiRequest('GET', `/users/by/username/${username}`, {}, _config);
+        const userResult = await xApiRequest('GET', `/users/by/username/${username}`, {});
         const userId = userResult.data?.id;
 
         if (!userId) {
@@ -170,7 +185,7 @@ export default {
         const result = await xApiRequest('GET', `/users/${userId}/tweets`, {
           max_results: Math.min(maxResults, 100),
           'tweet.fields': 'created_at,public_metrics'
-        }, _config);
+        });
 
         const tweets = result.data?.map(t => ({
           id: t.id,
@@ -196,7 +211,7 @@ export default {
       try {
         const userResult = await xApiRequest('GET', `/users/by/username/${username}`, {
           'user.fields': 'public_metrics,description,created_at,verified'
-        }, _config);
+        });
 
         const user = userResult.data;
         if (!user) {
@@ -230,7 +245,7 @@ export default {
       }
 
       try {
-        const result = await xApiRequest('POST', '/tweets', { text }, _config);
+        const result = await xApiRequest('POST', '/tweets', { text });
         return { content: JSON.stringify({ 
           posted: true, 
           id: result.data?.id, 
@@ -243,8 +258,12 @@ export default {
     },
 
     get_rate_limits: async () => {
-      const hasCreds = !!(process.env.X_API_KEY && process.env.X_API_SECRET && 
-                        process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_TOKEN_SECRET);
+      const apiKey = getCredential('twitter', 'X_API_KEY', _config);
+      const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
+      const accessToken = getCredential('twitter', 'X_ACCESS_TOKEN', _config);
+      const accessTokenSecret = getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', _config);
+      
+      const hasCreds = !!(apiKey && apiSecret && accessToken && accessTokenSecret);
       return { content: JSON.stringify({
         credentials_configured: hasCreds,
         tier: hasCreds ? 'Configured (tier depends on your Twitter plan)' : 'Not configured',
@@ -255,4 +274,3 @@ export default {
     }
   }
 };
-ENDOFFILE && echo "__KAI_CWD_1775580217802__" && pwd

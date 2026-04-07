@@ -6,14 +6,14 @@
  */
 
 import { createRequire } from "module";
-import { injectCredentials, setupCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../lib/credentials.js';
 
 const DEFAULT_MAX_RESULTS = 20;
 const TIKTOK_API_BASE = 'https://open-api.tiktok.com';
 const TIKTOK_RESEARCH_BASE = 'https://research.tiktok.com/v1';
 
-async function webSearch(query, maxResults) {
-  const apiKey = process.env.TAVILY_API_KEY;
+async function webSearch(query, maxResults, config) {
+  const apiKey = getCredential('tiktok', 'TAVILY_API_KEY', config);
   if (!apiKey) {
     const error = new Error(`
 Tavily API Key Required
@@ -108,9 +108,6 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
-    
-    // Inject stored TikTok credentials (including access_token) into process.env
-    injectCredentials('tiktok');
   },
 
   actions: {
@@ -125,16 +122,19 @@ export default {
       // Store other optional credentials
       if (params.research_api_key) {
         credentials.research_api_key = params.research_api_key;
+        credentials.TIKTOK_RESEARCH_API_KEY = params.research_api_key;
+      }
+      
+      if (params.tavily_api_key) {
+        credentials.tavily_api_key = params.tavily_api_key;
+        credentials.TAVILY_API_KEY = params.tavily_api_key;
       }
       
       if (Object.keys(credentials).length === 0) {
-        return { content: JSON.stringify({ error: 'No credentials provided. Required: access_token' }) };
+        return { content: JSON.stringify({ error: 'No credentials provided. Required: access_token, research_api_key, or tavily_api_key' }) };
       }
       
-      const result = setupCredentials('tiktok', credentials);
-      
-      // Also inject immediately for this session
-      injectCredentials('tiktok');
+      const result = await setupCredentials('tiktok', credentials);
       
       return { content: JSON.stringify(result) };
     },
@@ -146,7 +146,7 @@ export default {
       }
 
       // Try TikTok Research API if configured
-      const researchApiKey = _config.research_api_key || process.env.TIKTOK_RESEARCH_API_KEY;
+      const researchApiKey = getCredential('tiktok', 'TIKTOK_RESEARCH_API_KEY', _config);
       
       if (researchApiKey) {
         try {
@@ -182,7 +182,7 @@ export default {
 
       // Fallback: Web search
       try {
-        const result = await webSearch(`@${username} tiktok profile`, 5);
+        const result = await webSearch(`@${username} tiktok profile`, 5, _config);
         const profile = result.results?.find(r => r.url?.includes('tiktok.com/@')) || result.results?.[0];
         
         const userInfo = {
@@ -196,7 +196,7 @@ export default {
           video_count: null,
           verified: null,
           source: 'web_search',
-          note: 'For accurate stats, configure TIKTOK_RESEARCH_API_KEY'
+          note: 'For accurate stats, configure TIKTOK_RESEARCH_API_KEY or TAVILY_API_KEY'
         };
         
         return { content: JSON.stringify(userInfo) };
@@ -214,7 +214,7 @@ export default {
       }
 
       // Try TikTok Research API if configured
-      const researchApiKey = _config.research_api_key || process.env.TIKTOK_RESEARCH_API_KEY;
+      const researchApiKey = getCredential('tiktok', 'TIKTOK_RESEARCH_API_KEY', _config);
       
       if (researchApiKey) {
         try {
@@ -259,7 +259,7 @@ export default {
 
       // Fallback: Web search
       try {
-        const result = await webSearch(`@${username} tiktok video`, maxResults);
+        const result = await webSearch(`@${username} tiktok video`, maxResults, _config);
         const videos = result.results
           ?.filter(r => r.url?.includes('tiktok.com') && extractVideoId(r.url))
           ?.map(parseVideoFromSearchResult)
@@ -286,7 +286,7 @@ export default {
       }
 
       // Try TikTok Research API if configured
-      const researchApiKey = _config.research_api_key || process.env.TIKTOK_RESEARCH_API_KEY;
+      const researchApiKey = getCredential('tiktok', 'TIKTOK_RESEARCH_API_KEY', _config);
       
       if (researchApiKey) {
         try {
@@ -327,7 +327,7 @@ export default {
       // Fallback: Web search
       try {
         const url = videoUrl || `https://www.tiktok.com/video/${videoId}`;
-        const result = await webSearch(url, 5);
+        const result = await webSearch(url, 5, _config);
         const videoInfo = result.results?.[0];
         
         const stats = {
@@ -359,7 +359,7 @@ export default {
       }
 
       // Try TikTok Research API if configured
-      const researchApiKey = _config.research_api_key || process.env.TIKTOK_RESEARCH_API_KEY;
+      const researchApiKey = getCredential('tiktok', 'TIKTOK_RESEARCH_API_KEY', _config);
       
       if (researchApiKey) {
         try {
@@ -417,7 +417,7 @@ export default {
         const allVideos = [];
         for (const searchQuery of searchTerms) {
           try {
-            const result = await webSearch(searchQuery, Math.ceil(maxResults / 2));
+            const result = await webSearch(searchQuery, Math.ceil(maxResults / 2), _config);
             if (result?.results) {
               for (const r of result.results) {
                 const videoId = extractVideoId(r.url);

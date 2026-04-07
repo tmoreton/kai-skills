@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials } from "../lib/credentials.js";
+import { setupCredentials, getCredential } from "../lib/credentials.js";
 
 function loadCrypto() {
   try {
@@ -20,7 +20,7 @@ const THREADS_API_BASE = 'https://graph.threads.net/v1.0';
 
 // Helper to check for access token with helpful error message
 function getAccessToken(config) {
-  const token = config.access_token || process.env.THREADS_ACCESS_TOKEN;
+  const token = getCredential('threads', 'THREADS_ACCESS_TOKEN', config);
   if (!token) {
     const error = new Error(`
 Threads Access Token Required
@@ -92,10 +92,10 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
-    // Inject stored credentials (access_token, etc.) from secure storage
-    const creds = injectCredentials('threads');
-    if (creds && creds.access_token) {
-      _config.access_token = creds.access_token;
+    // Get credential using priority order: env > config > stored
+    const accessToken = getCredential('threads', 'THREADS_ACCESS_TOKEN', config);
+    if (accessToken) {
+      _config.access_token = accessToken;
     }
   },
 
@@ -123,7 +123,7 @@ export default {
     },
 
     get_user_profile: async (params) => {
-      const userId = params.user_id || process.env.THREADS_USER_ID;
+      const userId = params.user_id || getCredential('threads', 'THREADS_USER_ID', _config) || process.env.THREADS_USER_ID;
       const targetUsername = params.username;
       
       if (!userId) {
@@ -151,7 +151,7 @@ export default {
     },
 
     get_threads: async (params) => {
-      const userId = params.user_id || process.env.THREADS_USER_ID;
+      const userId = params.user_id || getCredential('threads', 'THREADS_USER_ID', _config) || process.env.THREADS_USER_ID;
       const since = params.since;
       const until = params.until;
       const limit = params.limit || 25;
@@ -193,7 +193,7 @@ export default {
     },
 
     post_thread: async (params) => {
-      const userId = params.user_id || process.env.THREADS_USER_ID;
+      const userId = params.user_id || getCredential('threads', 'THREADS_USER_ID', _config) || process.env.THREADS_USER_ID;
       const text = params.text || '';
       const mediaType = params.media_type || 'TEXT'; // TEXT, IMAGE, VIDEO, CAROUSEL
       const imageUrl = params.image_url;
@@ -209,7 +209,8 @@ export default {
         return { content: JSON.stringify({ error: 'Thread text required for text posts', posted: false }) };
       }
 
-      if (!process.env.THREADS_ACCESS_TOKEN) {
+      const accessToken = getCredential('threads', 'THREADS_ACCESS_TOKEN', _config);
+      if (!accessToken) {
         return { content: JSON.stringify({ error: 'THREADS_ACCESS_TOKEN not configured', posted: false, note: 'Add credentials to environment or config' }) };
       }
 
@@ -256,7 +257,7 @@ export default {
     },
 
     post_thread_carousel_item: async (params) => {
-      const userId = params.user_id || process.env.THREADS_USER_ID;
+      const userId = params.user_id || getCredential('threads', 'THREADS_USER_ID', _config) || process.env.THREADS_USER_ID;
       const mediaType = params.media_type || 'IMAGE'; // IMAGE or VIDEO
       const imageUrl = params.image_url;
       const videoUrl = params.video_url;
@@ -356,7 +357,8 @@ export default {
         return { content: JSON.stringify({ error: 'reply_id is required', hidden: false }) };
       }
 
-      if (!process.env.THREADS_ACCESS_TOKEN) {
+      const accessToken = getCredential('threads', 'THREADS_ACCESS_TOKEN', _config);
+      if (!accessToken) {
         return { content: JSON.stringify({ error: 'THREADS_ACCESS_TOKEN not configured', hidden: false }) };
       }
 
@@ -399,10 +401,12 @@ export default {
     },
 
     get_rate_limits: async () => {
+      const accessToken = getCredential('threads', 'THREADS_ACCESS_TOKEN', _config);
+      const userId = getCredential('threads', 'THREADS_USER_ID', _config);
       const result = {
-        credentials_configured: !!process.env.THREADS_ACCESS_TOKEN,
-        user_id_configured: !!process.env.THREADS_USER_ID,
-        tier: process.env.THREADS_ACCESS_TOKEN ? 'Standard' : 'Not configured',
+        credentials_configured: !!accessToken,
+        user_id_configured: !!userId,
+        tier: accessToken ? 'Standard' : 'Not configured',
         note: 'Rate limits vary by endpoint. Refer to https://developers.facebook.com/docs/threads/references/rate-limiting',
         endpoints: {
           'GET /me': '200 calls/user/hour',

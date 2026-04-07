@@ -5,14 +5,15 @@
  * Works with Kai, MCP servers, or direct API usage.
  */
 
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../lib/credentials.js';
 
 const NOTION_API_BASE = "https://api.notion.com/v1";
 
 let config = null;
 
 function getHeaders() {
-  if (!config || !config.apiKey) {
+  const apiKey = getCredential('notion', 'NOTION_API_KEY');
+  if (!apiKey) {
     const error = new Error(`
 Notion API Key Required
 =======================
@@ -34,9 +35,10 @@ Or say "Set up Notion" to configure via conversation.
     error.code = 'MISSING_API_KEY';
     throw error;
   }
+  const version = getCredential('notion', 'NOTION_VERSION') || "2022-06-28";
   return {
-    "Authorization": `Bearer ${config.apiKey}`,
-    "Notion-Version": config.version,
+    "Authorization": `Bearer ${apiKey}`,
+    "Notion-Version": version,
     "Content-Type": "application/json",
   };
 }
@@ -135,12 +137,20 @@ function formatBlock(block, indent = 0) {
 
 export default {
   install: async (inputConfig) => {
-    // Load stored credentials if available
-    const storedCreds = injectCredentials('notion');
+    // Get credentials using getCredential
+    const apiKey = getCredential('notion', 'NOTION_API_KEY') || 
+                   inputConfig.NOTION_API_KEY || 
+                   process.env.NOTION_API_KEY || 
+                   "";
+    
+    const version = getCredential('notion', 'NOTION_VERSION') || 
+                    inputConfig.NOTION_VERSION || 
+                    process.env.NOTION_VERSION || 
+                    "2022-06-28";
     
     config = {
-      apiKey: inputConfig.NOTION_API_KEY || process.env.NOTION_API_KEY || storedCreds?.api_key || "",
-      version: inputConfig.NOTION_VERSION || process.env.NOTION_VERSION || storedCreds?.version || "2022-06-28",
+      apiKey,
+      version,
     };
     
     if (!config.apiKey) {
@@ -154,16 +164,18 @@ export default {
 
   actions: {
     setup: async (params) => {
-      const result = setupCredentials('notion', {
-        api_key: params.api_key,
-        version: params.version || '2022-06-28'
+      // Save credentials using setupCredentials
+      const result = await setupCredentials('notion', {
+        NOTION_API_KEY: params.api_key,
+        NOTION_VERSION: params.version || '2022-06-28'
       });
+      
       // Update config immediately
       config = {
         apiKey: params.api_key,
         version: params.version || '2022-06-28'
       };
-      process.env.NOTION_API_KEY = params.api_key;
+      
       return {
         content: JSON.stringify({
           success: true,

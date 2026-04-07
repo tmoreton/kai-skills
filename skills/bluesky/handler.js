@@ -6,7 +6,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../lib/credentials.js';
 
 // Load @atproto/api dynamically (optional dependency)
 function loadAtproto() {
@@ -42,9 +42,9 @@ async function getAgent() {
 
   const { Agent, CredentialSession } = loadAtproto();
 
-  const identifier = _config.identifier || process.env.BLUESKY_IDENTIFIER;
-  const password = _config.password || process.env.BLUESKY_PASSWORD;
-  const service = _config.service || process.env.BLUESKY_SERVICE || DEFAULT_SERVICE;
+  const identifier = getCredential('bluesky', 'BLUESKY_IDENTIFIER', _config);
+  const password = getCredential('bluesky', 'BLUESKY_PASSWORD', _config);
+  const service = getCredential('bluesky', 'BLUESKY_SERVICE', _config) || DEFAULT_SERVICE;
 
   if (!identifier || !password) {
     throw new Error(
@@ -76,30 +76,27 @@ export default {
   install: async (config) => {
     _config = config;
     _agent = null;
-    // Load stored credentials if available
-    const storedCreds = injectCredentials('bluesky');
-    if (storedCreds) {
-      if (storedCreds.identifier) process.env.BLUESKY_IDENTIFIER = storedCreds.identifier;
-      if (storedCreds.password) process.env.BLUESKY_PASSWORD = storedCreds.password;
-      if (storedCreds.service) process.env.BLUESKY_SERVICE = storedCreds.service;
-    }
+    // Check for stored credentials using getCredential
+    const identifier = getCredential('bluesky', 'BLUESKY_IDENTIFIER', config);
+    const password = getCredential('bluesky', 'BLUESKY_PASSWORD', config);
+    const service = getCredential('bluesky', 'BLUESKY_SERVICE', config);
+    
+    if (identifier) process.env.BLUESKY_IDENTIFIER = identifier;
+    if (password) process.env.BLUESKY_PASSWORD = password;
+    if (service) process.env.BLUESKY_SERVICE = service;
   },
 
   actions: {
     setup: async (params) => {
-      const result = setupCredentials('bluesky', {
-        identifier: params.identifier,
-        password: params.password,
-        service: params.service || 'https://bsky.social'
+      const result = await setupCredentials('bluesky', {
+        BLUESKY_IDENTIFIER: params.identifier,
+        BLUESKY_PASSWORD: params.password,
+        BLUESKY_SERVICE: params.service || 'https://bsky.social'
       });
-      // Set immediately for this session
-      process.env.BLUESKY_IDENTIFIER = params.identifier;
-      process.env.BLUESKY_PASSWORD = params.password;
-      process.env.BLUESKY_SERVICE = params.service || 'https://bsky.social';
       _agent = null; // Force re-auth
       return {
         content: JSON.stringify({
-          success: true,
+          success: result.success,
           message: "Bluesky credentials saved",
           handle: params.identifier,
           next_steps: "Try: 'Post to Bluesky: Hello from Kai!'"

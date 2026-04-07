@@ -5,7 +5,7 @@
  * Works with Kai and Claude Desktop via MCP.
  */
 
-import { setupCredentials, injectCredentials, hasCredentials } from '../lib/credentials.js';
+import { setupCredentials, getCredential } from '../lib/credentials.js';
 
 const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
 const FETCH_TIMEOUT_MS = 15000;
@@ -14,7 +14,7 @@ let _config = {};
 let _apiKeyValid = null; // null = not checked, true = valid, false = invalid
 
 function getApiKey() {
-  const key = _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
+  const key = getCredential('youtube', 'YOUTUBE_API_KEY', _config) || _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
   if (!key) {
     const error = new Error(`
 YouTube API Key Required
@@ -95,8 +95,9 @@ export default {
     _config = config;
     // Don't validate API key during install - let it fail when tools are used
     // This allows the MCP server to start even with invalid/missing keys
-    const key = _config.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
-    if (!key) {
+    const apiKey = getCredential('youtube', 'YOUTUBE_API_KEY', config);
+    if (apiKey) process.env.YOUTUBE_API_KEY = apiKey;
+    if (!apiKey) {
       console.warn("[youtube] Warning: YOUTUBE_API_KEY not configured. YouTube tools will fail until a valid API key is set.");
     }
   },

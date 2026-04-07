@@ -12,7 +12,7 @@
  */
 
 import { createRequire } from "module";
-import { setupCredentials, injectCredentials } from '../lib/credentials.js';
+import { getCredential, setupCredentials } from '../lib/credentials.js';
 
 let googleapis = null;
 
@@ -31,7 +31,7 @@ function getAuthClient(config) {
   const { google } = loadGoogleApis();
   
   // Service Account authentication
-  const serviceAccountJson = config.service_account_json || process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  const serviceAccountJson = getCredential('google-sheets', 'GOOGLE_SERVICE_ACCOUNT_JSON', config);
   if (serviceAccountJson) {
     let credentials;
     try {
@@ -46,16 +46,17 @@ function getAuthClient(config) {
   }
   
   // OAuth 2.0 authentication
-  const clientId = config.client_id || process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = config.client_secret || process.env.GOOGLE_CLIENT_SECRET;
-  const refreshToken = config.refresh_token || process.env.GOOGLE_REFRESH_TOKEN;
-  const accessToken = config.access_token || process.env.GOOGLE_ACCESS_TOKEN;
+  const clientId = getCredential('google-sheets', 'GOOGLE_CLIENT_ID', config);
+  const clientSecret = getCredential('google-sheets', 'GOOGLE_CLIENT_SECRET', config);
+  const refreshToken = getCredential('google-sheets', 'GOOGLE_REFRESH_TOKEN', config);
+  const accessToken = getCredential('google-sheets', 'GOOGLE_ACCESS_TOKEN', config);
+  const redirectUri = getCredential('google-sheets', 'GOOGLE_REDIRECT_URI', config) || 'http://localhost';
   
   if (clientId && clientSecret) {
     const oauth2Client = new google.auth.OAuth2(
       clientId,
       clientSecret,
-      config.redirect_uri || process.env.GOOGLE_REDIRECT_URI || 'http://localhost'
+      redirectUri
     );
     
     if (refreshToken) {
@@ -91,43 +92,33 @@ let _config = {};
 
 export default {
   install: async (config) => {
-    // Inject stored credentials from ~/.kai/skills/google-sheets/.credentials
-    const storedCreds = injectCredentials('google-sheets');
-    
-    // Merge stored credentials with provided config (stored take priority for keys they have)
-    _config = {
-      client_id: storedCreds?.client_id || config?.client_id,
-      client_secret: storedCreds?.client_secret || config?.client_secret,
-      refresh_token: storedCreds?.refresh_token || config?.refresh_token,
-      service_account_json: storedCreds?.service_account_json || config?.service_account_json,
-      ...config
-    };
+    _config = config || {};
   },
 
   actions: {
     setup: async (params) => {
-      const { client_id, client_secret, refresh_token, service_account_json } = params;
+      const { client_id, client_secret, refresh_token, service_account_json, access_token, redirect_uri } = params;
       
-      if (!client_id && !client_secret && !refresh_token && !service_account_json) {
+      if (!client_id && !client_secret && !refresh_token && !service_account_json && !access_token) {
         return { 
           content: JSON.stringify({ 
             success: false, 
-            error: 'At least one credential is required. Provide client_id, client_secret, refresh_token, or service_account_json.' 
+            error: 'At least one credential is required. Provide client_id, client_secret, refresh_token, service_account_json, or access_token.' 
           }) 
         };
       }
       
+      // Map to env-style keys for getCredential compatibility
       const credentials = {};
-      if (client_id) credentials.client_id = client_id;
-      if (client_secret) credentials.client_secret = client_secret;
-      if (refresh_token) credentials.refresh_token = refresh_token;
-      if (service_account_json) credentials.service_account_json = service_account_json;
+      if (client_id) credentials.GOOGLE_CLIENT_ID = client_id;
+      if (client_secret) credentials.GOOGLE_CLIENT_SECRET = client_secret;
+      if (refresh_token) credentials.GOOGLE_REFRESH_TOKEN = refresh_token;
+      if (access_token) credentials.GOOGLE_ACCESS_TOKEN = access_token;
+      if (service_account_json) credentials.GOOGLE_SERVICE_ACCOUNT_JSON = service_account_json;
+      if (redirect_uri) credentials.GOOGLE_REDIRECT_URI = redirect_uri;
       
       try {
-        const result = setupCredentials('google-sheets', credentials);
-        
-        // Also update the current config
-        Object.assign(_config, credentials);
+        const result = await setupCredentials('google-sheets', credentials);
         
         return { 
           content: JSON.stringify({ 
