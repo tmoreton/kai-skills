@@ -1,6 +1,6 @@
 {
   "name": "kai-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portable skill library for Kai - works with Claude, ChatGPT, and other AI assistants",
   "private": true,
   "type": "module",
