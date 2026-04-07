@@ -1,0 +1,25 @@
+{
+  "name": "kai-mcp",
+  "version": "1.0.0",
+  "description": "Quickly connect Kai skills to Claude Desktop/Code",
+  "type": "module",
+  "bin": {
+    "kai-mcp": "./cli.js",
+    "kmcp": "./cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "kai",
+    "mcp",
+    "claude",
+    "ai",
+    "skills"
+  ],
+  "author": "Kai",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
