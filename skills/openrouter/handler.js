@@ -48,7 +48,8 @@ function generateFilename(prompt) {
 }
 
 async function generateImage({ prompt, width = 1280, height = 720, model = "google/gemma-3-27b-it", output_dir, reference_image }, config) {
-  const apiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+  // Priority: env var from web UI > config passed from MCP > process.env
+  const apiKey = process.env.OPENROUTER_API_KEY || config?.OPENROUTER_API_KEY;
   if (!apiKey) {
     const error = new Error(`
 OpenRouter API Key Required
@@ -283,10 +284,12 @@ export default {
   install: async (config) => {
     // Inject stored credentials if available
     const storedCreds = injectCredentials('openrouter');
-    if (storedCreds?.api_key) process.env.OPENROUTER_API_KEY = storedCreds.api_key;
+    // Support both conversation setup (api_key) and env vars (OPENROUTER_API_KEY)
+    const apiKey = storedCreds?.OPENROUTER_API_KEY || storedCreds?.api_key;
+    if (apiKey) process.env.OPENROUTER_API_KEY = apiKey;
 
-    const apiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
+    const finalApiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+    if (!finalApiKey) {
       console.warn("[openrouter] No OPENROUTER_API_KEY configured. Skill will work but requires API key to be set in environment.");
     }
     // Ensure default output directory exists
