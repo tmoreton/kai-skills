@@ -30,15 +30,27 @@ function print(color, message) {
 }
 
 function getSkills() {
-  if (!existsSync(SKILLS_DIR)) return [];
+  // Check both locations (direct or in skills/ subdirectory)
+  const locations = [
+    SKILLS_DIR,
+    join(SKILLS_DIR, 'skills')  // When cloned from GitHub, skills are in subfolder
+  ];
   
-  return readdirSync(SKILLS_DIR, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => ({
-      name: d.name,
-      path: join(SKILLS_DIR, d.name, 'handler.js')
-    }))
-    .filter(s => existsSync(s.path));
+  for (const dir of locations) {
+    if (!existsSync(dir)) continue;
+    
+    const skills = readdirSync(dir, { withFileTypes: true })
+      .filter(d => d.isDirectory() && !d.name.startsWith('.') && d.name !== 'node_modules')
+      .map(d => ({
+        name: d.name,
+        path: join(dir, d.name, 'handler.js')
+      }))
+      .filter(s => existsSync(s.path));
+    
+    if (skills.length > 0) return skills;
+  }
+  
+  return [];
 }
 
 function listSkills() {
