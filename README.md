@@ -31,23 +31,29 @@ Then open http://localhost:3000 — dashboard auto-fetches from all connected pl
 
 ## Quick Start
 
-### Option 1: Claude Desktop (Recommended)
+### Option 1: Dashboard (Easiest)
+```bash
+# Install dashboard
+kai-skill dashboard install
+kai-skill dashboard start
+
+# Open http://localhost:3000 and follow setup instructions
+```
+
+See [SETUP-GUIDE.md](SETUP-GUIDE.md) for detailed platform-by-platform instructions.
+
+### Option 2: Claude Desktop
 ```bash
 npm install -g kai-mcp-setup
 kai-mcp-setup all
 ```
 Then restart Claude and ask: *"Get my YouTube stats"*
 
-### Option 2: Kai CLI
+### Option 3: Kai CLI
 ```bash
 npm install -g kai
 npx kai
 /skill install youtube
-```
-
-### Option 3: Interactive Setup Wizard
-```bash
-npx kai-api-setup
 ```
 
 ---
