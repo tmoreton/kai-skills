@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * kai-mcp - Quick MCP setup for Kai skills
+ * kai-skills - Quick MCP setup for Kai skills
  * No Kai CLI required! Just Node.js and Claude Desktop/Code
  */
 
@@ -81,7 +81,7 @@ function listSkills() {
   }
   
   print('dim', '# Or add all at once:');
-  print('cyan', `kai-mcp add all\n`);
+  print('cyan', `kai-skills add all\n`);
 }
 
 function addSkill(skillName, all = false) {
@@ -169,7 +169,7 @@ function installSkills() {
       { stdio: 'inherit' }
     );
     print('green', '\n✅ Skills installed to ~/.kai/skills\n');
-    print('dim', 'Now run: kai-mcp add all\n');
+    print('dim', 'Now run: kai-skills add all\n');
   } catch (e) {
     print('red', '\n❌ Failed to clone. Try manually:\n');
     print('cyan', '  git clone https://github.com/tmoreton/kai-skills ~/.kai/skills\n');
@@ -178,24 +178,24 @@ function installSkills() {
 
 function showHelp() {
   console.log(`
-${colors.bold}kai-mcp${colors.reset} - Connect Kai skills to Claude
+${colors.bold}kai-skills${colors.reset} - Connect Kai skills to Claude
 
 ${colors.dim}Usage:${colors.reset}
-  kai-mcp                    List installed skills
-  kai-mcp add <skill|all>    Add skill(s) to Claude
-  kai-mcp remove <skill>     Remove skill from Claude
-  kai-mcp install            Install Kai skills from GitHub
+  kai-skills                    List installed skills
+  kai-skills add <skill|all>    Add skill(s) to Claude
+  kai-skills remove <skill>     Remove skill from Claude
+  kai-skills install            Install Kai skills from GitHub
 
 ${colors.dim}Examples:${colors.reset}
-  kai-mcp                    # See what's available
-  kai-mcp add youtube        # Add YouTube skill
-  kai-mcp add all            # Add ALL skills
-  kai-mcp remove twitter     # Remove Twitter skill
+  kai-skills                    # See what's available
+  kai-skills add youtube        # Add YouTube skill
+  kai-skills add all            # Add ALL skills
+  kai-skills remove twitter     # Remove Twitter skill
 
 ${colors.dim}Quick Start:${colors.reset}
-  1. npm install -g kai-mcp
-  2. kai-mcp install
-  3. kai-mcp add all
+  1. npm install -g kai-skills
+  2. kai-skills install
+  3. kai-skills add all
   4. Restart Claude Desktop
 
 ${colors.dim}No Kai CLI required!${colors.reset} Just Node.js + Claude Desktop/Code.
@@ -211,14 +211,14 @@ if (!command || command === 'list') {
 } else if (command === 'add') {
   const skillName = args[1];
   if (!skillName) {
-    print('red', 'Usage: kai-mcp add <skill-name> or kai-mcp add all\n');
+    print('red', 'Usage: kai-skills add <skill-name> or kai-skills add all\n');
     process.exit(1);
   }
   addSkill(skillName);
 } else if (command === 'remove') {
   const skillName = args[1];
   if (!skillName) {
-    print('red', 'Usage: kai-mcp remove <skill-name>\n');
+    print('red', 'Usage: kai-skills remove <skill-name>\n');
     process.exit(1);
   }
   removeSkill(skillName);

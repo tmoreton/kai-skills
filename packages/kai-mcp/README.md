@@ -8,7 +8,7 @@ Quickly connect Kai skills to Claude Desktop or Claude Code.
 
 ```bash
 # Option 1: From npm (when published)
-npm install -g kai-skills-cli
+npm install -g kai-skills
 
 # Option 2: From GitHub (current)
 git clone https://github.com/tmoreton/kai-skills.git

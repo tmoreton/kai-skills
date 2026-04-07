@@ -4,11 +4,11 @@
 
 ---
 
-## Test 1: Install kai-skills-cli Helper
+## Test 1: Install kai-skills Helper
 
 ```bash
 # As a new user, first install the helper
-npm install -g kai-skills-cli
+npm install -g kai-skills
 
 # Verify it works
 kai-skills
@@ -133,7 +133,7 @@ Repeat Test 6 for:
 
 ## Test Checklist
 
-- [ ] kai-skills-cli installs cleanly
+- [ ] kai-skills installs cleanly
 - [ ] Skills download without errors
 - [ ] Claude MCP add works
 - [ ] Dashboard starts on localhost:3000
