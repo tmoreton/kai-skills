@@ -45,7 +45,7 @@ tools:
       model:
         type: string
         description: Image generation model to use
-        default: google/gemma-3-27b-it
+        default: google/gemini-3-pro-image-preview
       output_dir:
         type: string
         description: Directory to save generated images
