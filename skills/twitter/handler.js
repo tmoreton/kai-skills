@@ -7,6 +7,7 @@
 
 import { createRequire } from "module";
 import crypto from 'crypto';
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 function loadOAuth() {
   try {

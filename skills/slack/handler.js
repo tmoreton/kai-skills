@@ -94,9 +94,29 @@ export default {
   install: async (config) => {
     _config = config;
     _client = null;
+    // Load stored credentials if available
+    const storedCreds = injectCredentials('slack');
+    if (storedCreds?.bot_token) {
+      process.env.SLACK_BOT_TOKEN = storedCreds.bot_token;
+    }
   },
 
   actions: {
+    setup: async (params) => {
+      const result = setupCredentials('slack', {
+        bot_token: params.bot_token
+      });
+      process.env.SLACK_BOT_TOKEN = params.bot_token;
+      _client = null;
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: "Slack bot token saved",
+          next_steps: "Try: 'Send a Slack message to my team'"
+        }, null, 2)
+      };
+    },
+
     /**
      * Send a direct message to a user
      * @param {Object} params
