@@ -30,6 +30,15 @@ config_schema:
     default: ~/.kai/agent-output/browser
 
 tools:
+  - name: setup
+    description: Set up browser automation credentials (optional)
+    parameters:
+      headless:
+        type: boolean
+        required: false
+        default: true
+        description: Run browser in headless mode
+
   - name: open
     description: Open a URL and return page content as text. Use for JS-rendered pages or when web_fetch isn't enough.
     parameters:

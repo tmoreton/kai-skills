@@ -16,6 +16,13 @@ config_schema:
     env: THREADS_USER_ID
     description: Threads User ID (from /me endpoint or app dashboard)
 tools:
+  - name: setup
+    description: Set up Threads API credentials
+    parameters:
+      access_token:
+        type: string
+        required: true
+        description: Threads API access token
   # === PROFILE TOOLS ===
   - name: get_user_profile
     description: Get the authenticated user's Threads profile information

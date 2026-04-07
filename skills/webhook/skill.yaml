@@ -9,6 +9,14 @@ config_schema:
 dependencies:
   # No npm dependencies - uses native fetch
 tools:
+  - name: setup
+    description: Set up webhook configuration
+    parameters:
+      secret:
+        type: string
+        required: false
+        description: Webhook signing secret for verification
+
   - name: send_webhook
     description: Send a POST request with JSON payload to any webhook URL
     parameters:
