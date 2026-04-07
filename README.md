@@ -1,349 +1,236 @@
-# Kai Skills Library
+# Kai Skills
 
-A portable skill library that works with **Kai**, **Claude Desktop**, **ChatGPT**, and any MCP-compatible AI assistant.
+**20 AI-powered tools for social media, automation, and productivity.**
 
-**Distribution Format:** All skills are **pre-compiled to plain JavaScript** — no build step needed. Just install and use.
+No coding required. Works with ChatGPT, Claude, and the Kai app.
 
-## Quick Start: Social Media Dashboard
+---
 
-Build a cross-platform analytics dashboard in 5 minutes:
+## 🚀 Quick Start
 
+### Option 1: Kai App (Easiest)
 ```bash
-# 1. Clone the repo
-git clone https://github.com/kai-skills/kai-skills.git
-cd kai-skills
-
-# 2. Edit Claude Desktop config
-# Mac: ~/Library/Application Support/Claude/claude_desktop_config.json
-# Windows: %APPDATA%\Claude\claude_desktop_config.json
+npx kai
+# Then type: /skill install youtube
 ```
 
-Add YouTube + Twitter skills:
-
-```json
-{
-  "mcpServers": {
-    "youtube": {
-      "command": "npx",
-      "args": ["-y", "kai-skill-mcp", "/path/to/kai-skills/skills/youtube"],
-      "env": { "YOUTUBE_API_KEY": "your-youtube-api-key" }
-    },
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "kai-skill-mcp", "/path/to/kai-skills/skills/twitter"],
-      "env": { 
-        "TAVILY_API_KEY": "your-tavily-key",
-        "X_API_KEY": "your-x-api-key"
-      }
-    }
-  }
-}
-```
-
-**Restart Claude Desktop**, then ask:
-
-> "Show me a dashboard comparing my YouTube and Twitter performance this week"
-
-Claude will pull stats from both platforms and create a unified view.
-
----
-
-## IMPORTANT: These Are MCP Server Skills (Not Claude Code Skills)
-
-These skills are **MCP servers** for **Claude Desktop** (the Mac/Windows chat app), NOT for Claude Code (the CLI coding agent).
-
-- **Claude Desktop** = Chat app with tool support ← **These skills work here**
-- **Claude Code** = CLI coding agent (`claude` command in terminal) ← Uses different skill format
-
-If you're looking for Claude Code skills (markdown instructions for the CLI agent), check out [claude-skills](https://github.com/alirezarezvani/claude-skills) instead.
-
----
-
-## Claude Desktop Installation (Step by Step)
-
-### Step 1: Install the MCP adapter
-
+### Option 2: Claude Desktop
 ```bash
-npm install -g @kai-skills/mcp-adapter
+# 1. Install this skill pack
+npx kai-mcp-setup all
+
+# 2. Restart Claude
+# 3. Ask: "Get my YouTube stats"
 ```
 
-### Step 2: Download skills
+---
 
+## 📦 20 Skills Included
+
+### Social Media Analytics (8)
+| Skill | What It Does | Setup Time |
+|-------|--------------|------------|
+| **YouTube** | Channel stats, video metrics, trending | 2 min |
+| **Instagram** | Followers, posts, hashtags, insights | 2 min |
+| **Twitter/X** | Tweet search, user analysis, posting | 2 min |
+| **Facebook** | Page analytics, publishing, insights | 2 min |
+| **LinkedIn** | Professional network analytics | 2 min |
+| **TikTok** | Video stats, hashtag research | 2 min |
+| **Threads** | Posting, replies, engagement | 2 min |
+| **Bluesky** | AT Protocol social analytics | 2 min |
+
+### Automation (4)
+| Skill | What It Does |
+|-------|--------------|
+| **OpenRouter** | AI image generation, chat completions |
+| **Google Sheets** | Export reports to spreadsheets |
+| **Slack** | Send team notifications |
+| **Webhook** | Trigger Zapier, Make, custom URLs |
+
+### Utilities (8)
+| Skill | What It Does |
+|-------|--------------|
+| **Browser** | Web scraping, screenshots |
+| **Notion** | Query databases, create pages |
+| **Email** | Send reports via Gmail/Outlook |
+| **Database** | Store analytics data |
+| **Git** | Version control for dashboards |
+| **Docker** | Deploy dashboard containers |
+| **Data Storage** | Read/write JSON, CSV, Markdown |
+| **Web Tools** | Web search, page fetching |
+
+---
+
+## 🔌 Integration Guide
+
+### For ChatGPT (Pro Users)
+
+**Note:** ChatGPT Pro supports MCP through the Actions API.
+
+1. Go to [chat.openai.com](https://chat.openai.com) → Settings → Beta
+2. Enable "Plugins" or "Actions"
+3. Use our hosted endpoints (coming soon)
+
+---
+
+### For Claude Desktop App
+
+**Step 1:** Install the helper
 ```bash
-# Clone the repo
-git clone https://github.com/kai-skills/kai-skills.git
-
-# Or install via CLI
-npx kai-skills install youtube
-npx kai-skills install twitter
+npm install -g kai-mcp-setup
 ```
 
-### Step 3: Add to Claude Desktop Config
-
-Edit your Claude Desktop config file:
-
-**Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-Add each skill as an MCP server:
-
-```json
-{
-  "mcpServers": {
-    "git": {
-      "command": "npx",
-      "args": ["-y", "kai-skill-mcp", "/path/to/skills/git"]
-    },
-    "youtube": {
-      "command": "npx",
-      "args": ["-y", "kai-skill-mcp", "/path/to/skills/youtube"],
-      "env": { "YOUTUBE_API_KEY": "..." }
-    },
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "kai-skill-mcp", "/path/to/skills/twitter"],
-      "env": { "TAVILY_API_KEY": "..." }
-    }
-  }
-}
-```
-
-**Restart Claude Desktop** — skills appear as tools Claude can use.
-
----
-
-## Quick Start (Kai Users)
-
-### One-Line Install
-
+**Step 2:** Add all skills
 ```bash
-# Install into Kai
-npx kai-skills install youtube
-npx kai-skills install twitter
+kai-mcp-setup all
+```
 
-# Install all skills
-npx kai-skills install --all
+**Step 3:** Restart Claude Desktop
+
+**Step 4:** Start using
+```
+You: Get my YouTube channel stats
+Claude: [Fetches real data from YouTube API]
 ```
 
 ---
 
-## Available Skills
+### For Claude Code CLI
 
-### Social Media & Analytics
-
-| Skill | Description | Config Required |
-|-------|-------------|-----------------|
-| **youtube** | YouTube analytics — channel stats, video metrics, comments, reports | `YOUTUBE_API_KEY` |
-| **twitter** | Twitter/X — research + posting, sentiment tracking, analytics | `TAVILY_API_KEY`, X OAuth |
-
-### Development & DevOps
-
-| Skill | Description | Config Required |
-|-------|-------------|-----------------|
-| **git** | Smart commits, PR workflows, branch management | None |
-| **docker** | Container management, compose operations | None |
-| **browser** | Web browsing with Playwright | None |
-| **database** | Migrations, queries, schema inspection | `DATABASE_URL` |
-
-### Productivity & Communication
-
-| Skill | Description | Config Required |
-|-------|-------------|-----------------|
-| **notion** | Query databases, create pages, search content | `NOTION_API_KEY` |
-| **email** | Send/read emails via SMTP/IMAP | `SMTP_HOST`, `SMTP_USER` |
-| **web-tools** | Web fetch and Tavily search | `TAVILY_API_KEY` |
-| **data-storage** | Read/write JSON, Markdown, text files | None |
-
-All skills work with **Kai**, **Claude Desktop (MCP)**, and **Standalone** usage.
-
-### NPM Dependencies (Optional)
-
-Some skills benefit from npm packages for enhanced functionality:
-
+**Step 1:** In your terminal with Claude Code running
 ```bash
-# For Browser skill (if you want to run Playwright)
-cd ~/.kai/skills/browser && npm install playwright
-
-# For Database skill (already included in most Node projects)
-cd ~/.kai/skills/database && npm install glob
-
-# For Email skill (for SMTP/IMAP functionality)
-cd ~/.kai/skills/email && npm install nodemailer
-
-# Or install globally in Kai's directory
-cd /path/to/kai && npm install playwright glob nodemailer
+claude
 ```
 
-Skills **work without these** — they'll throw clear error messages telling users exactly what to install if a specific feature needs it.
+**Step 2:** Type the command
+```
+/skill export-to-claude youtube
+/skill export-to-claude all
+```
+
+**Step 3:** Ask anything
+```
+Create a weekly social media report with YouTube, Instagram, and Twitter data
+```
 
 ---
 
-## How It Works
+### For Kai CLI
 
-### 1. Skill Structure
-
-Each skill is a self-contained package:
-
-```
-skills/youtube/
-├── skill.yaml      # Manifest with tools and schema
-├── handler.js      # Implementation (ESM)
-├── package.json    # Dependencies (if any)
-└── README.md       # Documentation
-```
-
-### 2. Dual-Mode Compatibility
-
-**Kai Mode** (injected config):
-```javascript
-// Kai loads skill and injects config
-await skill.install({ YOUTUBE_API_KEY: "..." });
-await skill.actions.get_channel({ channel_id: "..." });
-```
-
-**MCP Mode** (stdio server for Claude):
+**Step 1:** Install Kai
 ```bash
-# Claude Desktop spawns skill as MCP server
-npx kai-skill-mcp ./skills/youtube
+npm install -g kai
 ```
 
-**Standalone Mode** (direct import):
-```javascript
-import youtubeSkill from "@kai-skills/youtube";
-await youtubeSkill.actions.get_channel({ channel_id: "..." });
-```
-
-### 3. Configuration
-
-Skills read config from (in order):
-1. Claude Desktop config JSON (for MCP mode)
-2. Kai's environment/config
-3. Default values from schema
-
-```yaml
-# skill.yaml
-config_schema:
-  YOUTUBE_API_KEY:
-    type: string
-    env: YOUTUBE_API_KEY
-    required: true
-```
-
----
-
-## Architecture
-
-```
-kai-skills/
-├── packages/
-│   ├── core/          # Shared types & utilities
-│   ├── mcp-adapter/   # MCP protocol wrapper
-│   └── cli/           # One-click installer
-├── skills/            # Individual skill packages
-│   ├── youtube/       # YouTube Analytics
-│   ├── twitter/       # Twitter/X
-│   ├── git/
-│   ├── docker/
-│   └── ...
-└── registry/          # Skill registry (JSON)
-```
-
-### Packages
-
-#### `@kai-skills/core`
-Core types and utilities for skill development.
-
-#### `@kai-skills/mcp-adapter`
-Converts Kai skills to MCP servers for Claude Desktop.
-
-#### `@kai-skills/cli`
-One-click installer: `npx kai-skills install <skill>`
-
----
-
-## Creating a New Skill
-
-### 1. Use the Template
-
+**Step 2:** Install skills
 ```bash
-npm run new-skill my-skill
+kai skill install youtube
+kai skill install instagram
+kai skill install notion
 ```
 
-### 2. Define Tools (skill.yaml)
-
-```yaml
-id: my-skill
-name: My Skill
-version: 1.0.0
-description: Does something useful
-author: You
-
-tools:
-  - name: do_something
-    description: Performs an action
-    parameters:
-      input:
-        type: string
-        description: Input value
-        required: true
-```
-
-### 3. Implement Handler (handler.js)
-
-```javascript
-export default {
-  actions: {
-    do_something: async (params) => {
-      const { input } = params;
-      const result = await someOperation(input);
-      return { content: JSON.stringify(result) };
-    }
-  }
-};
-```
-
-### 4. Test Locally
-
+**Step 3:** Use them
 ```bash
-# Test with Kai
-cp -r my-skill ~/.kai/skills/
-kai
-
-# Test as MCP server
-npx kai-skill-mcp ./my-skill
+kai use youtube get_channel_report channel_id=UCxxx
 ```
 
-### 5. Publish
+---
 
-Submit a PR to add your skill to the registry.
+## 🔑 API Key Setup
+
+### YouTube
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create project → Enable YouTube Data API v3
+3. Create API Key → Copy key
+4. Set: `export YOUTUBE_API_KEY=your_key_here`
+
+### Instagram
+1. Go to [Meta for Developers](https://developers.facebook.com)
+2. Create app → Add Instagram Basic Display
+3. Get Access Token
+4. Set: `export INSTAGRAM_ACCESS_TOKEN=your_token`
+
+### Twitter/X
+1. Go to [Twitter Developer Portal](https://developer.twitter.com)
+2. Create app → Get API Key & Secret
+3. Set: `export X_API_KEY=your_key`
+
+### OpenRouter (AI Images)
+1. Go to [openrouter.ai/keys](https://openrouter.ai/keys)
+2. Create API Key
+3. Set: `export OPENROUTER_API_KEY=your_key`
+
+### All Others
+See individual skill folders in `/skills/` for specific setup instructions.
 
 ---
 
-## Roadmap
+## 💡 Example Use Cases
 
-- [x] Core packages and types
-- [x] MCP adapter
-- [x] CLI installer
-- [x] Git, Docker, Browser skills
-- [x] YouTube, Twitter/X skills (social media analytics)
-- [x] Notion, Email, Database, Web Tools, Data Storage skills
-- [ ] Instagram, LinkedIn, Facebook skills
-- [ ] Cross-platform analytics dashboard skill
-- [ ] Web-based skill marketplace
-- [ ] Skill versioning and auto-updates
-- [ ] VS Code extension for skill development
+### Marketing Manager
+```
+"Create a weekly report with YouTube views, Instagram engagement, 
+and Twitter impressions. Export to Google Sheets and Slack it to #marketing."
+```
+
+### Content Creator
+```
+"Analyze my top 10 YouTube videos. What's working? Generate a thumbnail 
+for my next video about [topic]."
+```
+
+### Social Media Agency
+```
+"Monitor 5 client Instagram accounts. Alert me in Slack if any account 
+loses followers or engagement drops."
+```
 
 ---
 
-## Contributing
+## 📊 Dashboard Example
 
-1. Fork the repository
-2. Create a new skill or improve existing
-3. Add tests and documentation
-4. Submit a PR
+See the full example at [`examples/social-media-dashboard.md`](examples/social-media-dashboard.md)
 
-See `CONTRIBUTING.md` for details.
+Quick preview:
+```bash
+# Collect data
+kai use youtube get_channel_report channel_id=UCxxx
+kai use instagram get_account_insights username=yourbrand
 
-## License
+# Export
+kai use google-sheets create_spreadsheet title="Q1 Analytics"
 
-MIT
+# Notify
+kai use slack send_to_channel channel="#team" message="Report ready!"
+```
+
+---
+
+## ❓ Common Issues
+
+**"Claude can't find my skills"**
+→ Restart Claude Desktop after adding skills
+
+**"API key not working"**
+→ Make sure you exported the env variable: `export KEY=value`
+
+**"Permission denied"**
+→ Check API key has correct permissions (YouTube Data API, etc.)
+
+---
+
+## 🆘 Support
+
+- **Discord:** [Join our community](https://discord.gg/kai)
+- **Issues:** [GitHub Issues](https://github.com/tmoreton/kai-skills/issues)
+- **Docs:** [Full Documentation](https://docs.kai.dev)
+
+---
+
+## 📝 License
+
+MIT - Use freely for personal and commercial projects.
+
+---
+
+**Made with ❤️ for marketers who want AI superpowers.**
