@@ -2,11 +2,11 @@
   "name": "kai-skills",
   "version": "1.0.9",
   "description": "Portable skill library for Kai - works with Claude, ChatGPT, and other AI assistants",
-  "private": true,
   "type": "module",
   "bin": {
     "kai-mcp": "./bin/kai-mcp.js"
   },
+  "main": "./lib/credentials.js",
   "workspaces": [
     "packages/*",
     "skills/*"
