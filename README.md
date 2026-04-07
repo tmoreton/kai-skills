@@ -8,56 +8,46 @@ Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT. No coding r
 
 ---
 
-## Dashboard Skill (New!)
-
-The easiest way to view all your social media analytics in one place. One command setup, auto-fetches data, 100% private.
-
-```bash
-# Install and start dashboard
-kai-skill dashboard setup
-
-# Add your accounts
-kai-skill dashboard add_youtube '{"api_key": "xxx", "channel_id": "xxx"}'
-kai-skill dashboard add_instagram '{"access_token": "xxx"}'
-kai-skill dashboard add_twitter '{"api_key": "xxx", "api_secret": "xxx"}'
-
-# View unified dashboard
-kai-skill dashboard view
-```
-
-Then open http://localhost:3000 — dashboard auto-fetches from all connected platforms!
-
----
-
 ## Works With Claude
 
 Kai skills integrate directly with **Claude Desktop** and **Claude Code** via MCP (Model Context Protocol).
 
-### Claude Desktop (GUI App)
+### Using kai-mcp (Recommended)
 
-Add skills to Claude and use natural language:
+No Kai CLI required! Just install the helper and go:
 
 ```bash
-# Add dashboard skill
-claude mcp add kai-dashboard -- node ~/.kai/skills/dashboard/handler.js
+# Install kai-mcp helper
+npm install -g kai-mcp
 
-# Add individual platform skills  
-claude mcp add kai-youtube -- node ~/.kai/skills/youtube/handler.js
-claude mcp add kai-instagram -- node ~/.kai/skills/instagram/handler.js
-claude mcp add kai-twitter -- node ~/.kai/skills/twitter/handler.js
+# Install skills from GitHub
+kai-mcp install
+
+# Add all skills to Claude
+kai-mcp add all
+
+# Or add individually
+kai-mcp add youtube
+kai-mcp add instagram
+kai-mcp add twitter
 ```
 
-Then in Claude Desktop, just ask:
+Then restart Claude Desktop and use natural language:
 - *"Get my YouTube stats for this week"*
 - *"Show my Instagram follower growth"*
 - *"Create a social media report comparing all platforms"*
 - *"Start my dashboard and add my YouTube account"*
 
-Claude automatically:
-- Calls the right skill
-- Handles API authentication
-- Formats the response
-- Suggests next steps
+### Manual MCP Setup
+
+If you prefer to add skills manually:
+
+```bash
+# Add individual skills
+claude mcp add kai-youtube -- node ~/.kai/skills/youtube/handler.js
+claude mcp add kai-instagram -- node ~/.kai/skills/instagram/handler.js
+claude mcp add kai-twitter -- node ~/.kai/skills/twitter/handler.js
+```
 
 ### Claude Code (CLI)
 
@@ -70,33 +60,6 @@ claude
 ```
 
 ---
-
-## Quick Start
-
-### Option 1: Dashboard (Easiest)
-```bash
-# Install dashboard
-kai-skill dashboard install
-kai-skill dashboard start
-
-# Open http://localhost:3000 and follow setup instructions
-```
-
-See [SETUP-GUIDE.md](SETUP-GUIDE.md) for detailed platform-by-platform instructions.
-
-### Option 2: Claude Desktop
-```bash
-npm install -g kai-mcp-setup
-kai-mcp-setup all
-```
-Then restart Claude and ask: *"Get my YouTube stats"*
-
-### Option 3: Kai CLI
-```bash
-npm install -g kai
-npx kai
-/skill install youtube
-```
 
 ---
 
