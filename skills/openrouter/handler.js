@@ -47,7 +47,7 @@ function generateFilename(prompt) {
   return `${timestamp}-${slug}.png`;
 }
 
-async function generateImage({ prompt, width = 1280, height = 720, model = "google/gemma-3-27b-it", output_dir, reference_image }, config) {
+async function generateImage({ prompt, width = 1280, height = 720, model = "google/gemini-3-pro-image-preview", output_dir, reference_image }, config) {
   // Priority: env var from web UI > config passed from MCP > process.env
   const apiKey = process.env.OPENROUTER_API_KEY || config?.OPENROUTER_API_KEY;
   if (!apiKey) {
