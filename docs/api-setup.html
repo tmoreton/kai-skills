@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Key Setup Guide - Kai Skills</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #3b82f6;
+      --text: #334155;
+      --text-light: #64748b;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --radius: 8px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+    
+    .method-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      background: var(--bg-alt);
+      padding: 6px;
+      border-radius: var(--radius);
+      width: fit-content;
+    }
+    
+    .method-tab {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+    
+    .method-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .method-content {
+      display: none;
+    }
+    
+    .method-content.active {
+      display: block;
+    }
+    
+    .platform-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    
+    .platform-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .platform-icon {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    
+    .platform-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .difficulty {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-left: auto;
+      padding: 4px 12px;
+      background: white;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+    
+    .difficulty.easy { color: var(--success); border-color: var(--success); }
+    .difficulty.medium { color: #f59e0b; border-color: #f59e0b; }
+    .difficulty.hard { color: #ef4444; border-color: #ef4444; }
+    
+    .steps {
+      counter-reset: step;
+    }
+    
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    
+    .step-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .step-link:hover {
+      text-decoration: underline;
+    }
+    
+    .screenshot-placeholder {
+      background: white;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+    
+    .copy-box {
+      background: var(--primary);
+      color: #e2e8f0;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-family: 'Monaco', monospace;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .copy-box:hover {
+      background: #1e293b;
+    }
+    
+    .copy-btn {
+      color: #94a3b8;
+      font-size: 0.75rem;
+      border: 1px solid #475569;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    
+    .oauth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dcfce7;
+      color: #166534;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    
+    .help-box {
+      background: #eff6ff;
+      border-left: 3px solid var(--accent);
+      padding: 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-top: 24px;
+    }
+    
+    .help-box h4 {
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .help-box p {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin: 0;
+    }
+    
+    .alternative {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .alternative h5 {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    
+    .wizard-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      margin-top: 24px;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    
+    @media (max-width: 600px) {
+      .platform-header {
+        flex-wrap: wrap;
+      }
+      
+      .difficulty {
+        margin-left: 0;
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>API Key Setup</h1>
+      <p class="subtitle">Choose the easiest method for each platform</p>
+    </header>
+    
+    <div class="method-tabs">
+      <button class="method-tab active" onclick="showMethod('guided')">Guided Setup</button>
+      <button class="method-tab" onclick="showMethod('oauth')">One-Click Auth</button>
+      <button class="method-tab" onclick="showMethod('manual')">Manual Setup</button>
+    </div>
+    
+    <!-- GUIDED SETUP -->
+    <div id="guided" class="method-content active">
+      <p style="margin-bottom: 24px;">We walk you through each step with screenshots and explanations.</p>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">YT</div>
+          <div class="platform-title">YouTube</div>
+          <div class="difficulty easy">Easy - 5 min</div>
+        </div>
+        
+        <div class="steps">
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Go to Google Cloud Console</div>
+              <div class="step-desc">Click the button below to open the console</div>
+              <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="step-link">
+                Open Google Cloud Console →
+              </a>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Create a new project</div>
+              <div class="step-desc">Click "Select a project" → "New Project" → Name it "My Social Analytics"</div>
+              <div class="screenshot-placeholder">
+                Screenshot: Project selector dropdown
+              </div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Enable YouTube API</div>
+              <div class="step-desc">Search "YouTube Data API v3" and click "Enable"</div>
+              <div class="screenshot-placeholder">
+                Screenshot: API Library search
+              </div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Create API Key</div>
+              <div class="step-desc">Go to "Credentials" → "Create Credentials" → "API Key"</div>
+              <div class="screenshot-placeholder">
+                Screenshot: Create credentials button
+              </div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Copy your key</div>
+              <div class="step-desc">A popup will show your key. Copy it and paste below:</div>
+              <div class="copy-box" onclick="copyToClipboard('export YOUTUBE_API_KEY=your_key_here')">
+                <span>export YOUTUBE_API_KEY=your_key_here</span>
+                <span class="copy-btn">Click to Copy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="help-box">
+          <h4>Stuck?</h4>
+          <p>Watch our <a href="#" style="color: var(--accent);">2-minute video walkthrough</a> or <a href="#" style="color: var(--accent);">join Discord</a> for help.</p>
+        </div>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">IG</div>
+          <div class="platform-title">Instagram</div>
+          <div class="difficulty medium">Medium - 10 min</div>
+        </div>
+        
+        <div class="steps">
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Go to Meta for Developers</div>
+              <a href="https://developers.facebook.com/apps/" target="_blank" class="step-link">
+                Open Meta Developer Portal →
+              </a>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Create an app</div>
+              <div class="step-desc">Click "Create App" → Select "Other" → Name it "Social Analytics"</div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Add Instagram Basic Display</div>
+              <div class="step-desc">In the left sidebar, click "Add Product" → Find "Instagram Basic Display" → Click "Set Up"</div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Create a test user</div>
+              <div class="step-desc">Go to "Roles" → "Instagram Testers" → "Add Instagram Testers" → Enter your Instagram username</div>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Generate token</div>
+              <div class="step-desc">Go back to "Basic Display" → "User Token Generator" → Click "Generate Token"</div>
+              <div class="copy-box" onclick="copyToClipboard('export INSTAGRAM_TOKEN=your_token_here')">
+                <span>export INSTAGRAM_TOKEN=your_token_here</span>
+                <span class="copy-btn">Click to Copy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">OR</div>
+          <div class="platform-title">OpenRouter (AI)</div>
+          <div class="difficulty easy">Easiest - 2 min</div>
+        </div>
+        
+        <div class="steps">
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Sign up on OpenRouter</div>
+              <a href="https://openrouter.ai/keys" target="_blank" class="step-link">
+                Go to OpenRouter →
+              </a>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-content">
+              <div class="step-title">Create API Key</div>
+              <div class="step-desc">Click "Create API Key" → Name it "Kai" → Copy the key</div>
+              <div class="copy-box" onclick="copyToClipboard('export OPENROUTER_API_KEY=your_key_here')">
+                <span>export OPENROUTER_API_KEY=your_key_here</span>
+                <span class="copy-btn">Click to Copy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- OAUTH SETUP -->
+    <div id="oauth" class="method-content">
+      <div class="oauth-badge">Recommended for beginners</div>
+      <p style="margin-bottom: 24px;">Click to authorize - no API keys needed. We handle the technical stuff.</p>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">YT</div>
+          <div class="platform-title">YouTube</div>
+          <div class="difficulty easy">One Click</div>
+        </div>
+        <p style="margin-bottom: 16px;">Connect your YouTube account directly:</p>
+        <a href="#" class="wizard-btn" onclick="alert('Coming soon: OAuth flow')">
+          Connect YouTube Account
+        </a>
+        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-light);">
+          You'll be redirected to Google to approve access. No API keys needed.
+        </p>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">IG</div>
+          <div class="platform-title">Instagram</div>
+          <div class="difficulty easy">One Click</div>
+        </div>
+        <p style="margin-bottom: 16px;">Connect your Instagram Business account:</p>
+        <a href="#" class="wizard-btn" onclick="alert('Coming soon: OAuth flow')">
+          Connect Instagram Account
+        </a>
+        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-light);">
+          Requires Instagram Business or Creator account. Personal accounts need API keys.
+        </p>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">LI</div>
+          <div class="platform-title">LinkedIn</div>
+          <div class="difficulty easy">One Click</div>
+        </div>
+        <p style="margin-bottom: 16px;">Connect your LinkedIn account:</p>
+        <a href="#" class="wizard-btn" onclick="alert('Coming soon: OAuth flow')">
+          Connect LinkedIn Account
+        </a>
+      </div>
+      
+      <div class="help-box">
+        <h4>How does this work?</h4>
+        <p>OAuth lets you grant permission without sharing passwords or creating API keys. You'll see a popup asking to approve access, then you're done. <a href="#" style="color: var(--accent);">Learn more about OAuth</a>.</p>
+      </div>
+    </div>
+    
+    <!-- MANUAL SETUP -->
+    <div id="manual" class="method-content">
+      <p style="margin-bottom: 24px;">For advanced users who prefer the official documentation.</p>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">YT</div>
+          <div class="platform-title">YouTube Data API</div>
+        </div>
+        <a href="https://developers.google.com/youtube/registering_an_application" target="_blank" class="step-link">
+          Official Google Documentation →
+        </a>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">IG</div>
+          <div class="platform-title">Instagram Basic Display API</div>
+        </div>
+        <a href="https://developers.facebook.com/docs/instagram-basic-display-api/getting-started" target="_blank" class="step-link">
+          Official Meta Documentation →
+        </a>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">TW</div>
+          <div class="platform-title">Twitter/X API</div>
+        </div>
+        <a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api" target="_blank" class="step-link">
+          Official Twitter Documentation →
+        </a>
+      </div>
+      
+      <div class="platform-card">
+        <div class="platform-header">
+          <div class="platform-icon">LI</div>
+          <div class="platform-title">LinkedIn API</div>
+        </div>
+        <a href="https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow" target="_blank" class="step-link">
+          Official LinkedIn Documentation →
+        </a>
+      </div>
+    </div>
+    
+    <footer>
+      <p>Need help? <a href="https://discord.gg/kai">Join our Discord</a> or <a href="mailto:support@kai.dev">email support</a></p>
+    </footer>
+  </div>
+  
+  <script>
+    function showMethod(method) {
+      document.querySelectorAll('.method-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.method-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById(method).classList.add('active');
+      event.target.classList.add('active');
+    }
+    
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard! Paste in your terminal.');
+      });
+    }
+  </script>
+</body>
+</html>
