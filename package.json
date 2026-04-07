@@ -12,7 +12,7 @@
     "skills/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspace=packages/core --workspace=packages/cli --workspace=packages/mcp-adapter",
     "dev": "npm run dev --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
   },
