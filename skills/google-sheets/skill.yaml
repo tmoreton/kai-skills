@@ -37,7 +37,7 @@ config_schema:
     type: string
     required: false
     env: GOOGLE_REDIRECT_URI
-    description: OAuth redirect URI (default: http://localhost)
+    description: "OAuth redirect URI (default: http://localhost)"
   
   # Sheet-specific options
   default_spreadsheet_id:

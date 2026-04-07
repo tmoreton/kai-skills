@@ -1,6 +1,7 @@
 {
   "name": "kai-social-dashboard",
   "version": "1.0.0",
+  "type": "module",
   "description": "Local social media analytics dashboard using Kai skills",
   "main": "server.js",
   "scripts": {

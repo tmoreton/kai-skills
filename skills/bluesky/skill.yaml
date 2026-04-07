@@ -20,7 +20,7 @@ config_schema:
     type: string
     required: false
     env: BLUESKY_SERVICE
-    description: AT Protocol service URL (default: https://bsky.social)
+    description: "AT Protocol service URL (default: https://bsky.social)"
     default: https://bsky.social
 dependencies:
   - name: @atproto/api
