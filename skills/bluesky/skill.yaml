@@ -23,7 +23,7 @@ config_schema:
     description: "AT Protocol service URL (default: https://bsky.social)"
     default: https://bsky.social
 dependencies:
-  - name: @atproto/api
+  - name: "@atproto/api"
     version: ^0.12.0
     required: true
     description: Official AT Protocol JavaScript client
