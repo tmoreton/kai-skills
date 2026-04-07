@@ -1,11 +1,16 @@
 {
   "name": "kai-skills",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Quickly connect Kai skills to Claude Desktop/Code - 21 AI-powered social media tools",
   "type": "module",
   "bin": {
     "kai-skills": "./cli.js"
   },
+  "files": [
+    "cli.js",
+    "mcp-wrapper.js",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

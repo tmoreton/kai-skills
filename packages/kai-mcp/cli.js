@@ -57,17 +57,17 @@ function saveConfig(config) {
 
 function setSkillConfig(skill, key, value) {
   const config = loadConfig();
-  if (!config.skills[skill]) {
-    config.skills[skill] = {};
-  }
+  if (!config.skills) config.skills = {};
+  if (!config.skills[skill]) config.skills[skill] = {};
   config.skills[skill][key] = value;
   saveConfig(config);
 }
 
 function getSkillConfig(skill, key) {
   const config = loadConfig();
-  if (!config.skills[skill]) return undefined;
-  return key ? config.skills[skill][key] : config.skills[skill];
+  if (!config.skills || !config.skills[skill]) return undefined;
+  if (key) return config.skills[skill][key];
+  return config.skills[skill];
 }
 
 function removeSkillConfig(skill, key) {
@@ -105,12 +105,74 @@ function listConfig() {
   print('');
 }
 
+// Load Claude Desktop config
+function loadClaudeConfig() {
+  if (!existsSync(CLAUDE_CONFIG_FILE)) {
+    return { mcpServers: {} };
+  }
+  try {
+    return JSON.parse(readFileSync(CLAUDE_CONFIG_FILE, 'utf-8'));
+  } catch {
+    return { mcpServers: {} };
+  }
+}
+
+function saveClaudeConfig(config) {
+  if (!existsSync(CLAUDE_CONFIG_DIR)) {
+    mkdirSync(CLAUDE_CONFIG_DIR, { recursive: true });
+  }
+  writeFileSync(CLAUDE_CONFIG_FILE, JSON.stringify(config, null, 2));
+}
+
+// Sync Kai config to Claude Desktop config
+function syncConfig() {
+  const kaiConfig = loadConfig();
+  const claudeConfig = loadClaudeConfig();
+  
+  if (!kaiConfig.skills || Object.keys(kaiConfig.skills).length === 0) {
+    print('yellow', '\n⚠️  No skill configurations to sync.\n');
+    print('dim', 'Set config first: kai-skills config set <skill> <key> <value>\n');
+    return false;
+  }
+
+  let updated = 0;
+  
+  for (const [skillName, config] of Object.entries(kaiConfig.skills)) {
+    const serverName = `kai-${skillName}`;
+    
+    if (!claudeConfig.mcpServers[serverName]) {
+      print('dim', `  Skipping ${skillName} - not added to Claude Desktop yet\n`);
+      continue;
+    }
+    
+    // Add env section if not exists
+    if (!claudeConfig.mcpServers[serverName].env) {
+      claudeConfig.mcpServers[serverName].env = {};
+    }
+    
+    // Copy all config keys to env
+    for (const [key, value] of Object.entries(config)) {
+      if (key.startsWith('_')) continue; // Skip metadata
+      claudeConfig.mcpServers[serverName].env[key] = value;
+      updated++;
+    }
+    
+    print('green', `  ✅ Synced ${skillName}`);
+  }
+  
+  if (updated > 0) {
+    saveClaudeConfig(claudeConfig);
+    print('bold', `\n✅ Synced ${updated} API keys to Claude Desktop config\n`);
+    print('dim', 'Restart Claude Desktop for changes to take effect.\n');
+    return true;
+  } else {
+    print('yellow', '\n⚠️  No skills to sync. Add skills first with: kai-skills add <skill>\n');
+    return false;
+  }
+}
+
 function getSkills() {
-  // Check both locations (direct or in skills/ subdirectory)
-  const locations = [
-    SKILLS_DIR,
-    join(SKILLS_DIR, 'skills')  // When cloned from GitHub, skills are in subfolder
-  ];
+  const locations = [SKILLS_DIR, join(SKILLS_DIR, 'skills')];
   
   for (const dir of locations) {
     if (!existsSync(dir)) continue;
@@ -133,23 +195,25 @@ function listSkills() {
   const skills = getSkills();
   
   if (skills.length === 0) {
-    print('yellow', '\n⚠️  No Kai skills found.\n');
-    print('dim', 'Install skills first:\n');
-    print('cyan', '  git clone https://github.com/tmoreton/kai-skills ~/.kai/skills\n');
+    print('red', '\n❌ No skills installed\n');
+    print('dim', 'Run: kai-skills install\n');
     return;
   }
+  
+  const config = loadConfig();
   
   print('bold', '\n📦 Kai Skills Available');
   print('dim', '=======================\n');
   
   for (const skill of skills) {
-    print('green', `  ✓ ${skill.name}`);
+    const hasConfig = config.skills?.[skill.name];
+    const status = hasConfig ? '✓' : '○';
+    print(hasConfig ? 'green' : 'dim', `  ${status} ${skill.name}`);
   }
   
   print('bold', '\n\n🔌 Quick MCP Commands');
   print('dim', '====================\n');
   
-  // Generate short commands using ~ instead of full path
   for (const skill of skills) {
     const shortPath = `~/.kai/skills/${skill.name}/handler.js`;
     print('dim', `# Add ${skill.name}:`);
@@ -168,15 +232,12 @@ function addSkill(skillName, all = false) {
       return;
     }
     
-    print('bold', `\n🚀 Adding ${skills.length} skills to Claude...\n`);
-    
+    let success = 0;
     for (const skill of skills) {
-      addSingleSkill(skill.name, true);
+      if (addSingleSkill(skill.name, true)) success++;
     }
-    
-    print('green', '\n✅ All skills added!');
-    print('dim', '\nRestart Claude Desktop or run \'claude\' to use them.\n');
-    print('yellow', 'Test: "Get my YouTube stats for channel UCBa659QWEk1AI4Tg--mrJ2A"\n');
+    print('green', `\n✅ Added ${success}/${skills.length} skills\n`);
+    print('dim', 'Next: kai-skills sync-config (to copy API keys)\n');
     return;
   }
   
@@ -184,7 +245,6 @@ function addSkill(skillName, all = false) {
 }
 
 function addSingleSkill(skillName, quiet = false) {
-  // Check both locations (direct or in skills/ subdirectory)
   const locations = [
     join(SKILLS_DIR, skillName, 'handler.js'),
     join(SKILLS_DIR, 'skills', skillName, 'handler.js')
@@ -211,25 +271,22 @@ function addSingleSkill(skillName, quiet = false) {
   }
   
   try {
-    // Check if claude CLI is available
     execSync('which claude', { stdio: 'pipe' });
     
-    // Use MCP wrapper to run the skill
-    // Get the path to this CLI script to find the wrapper
     const cliPath = new URL(import.meta.url).pathname;
     const wrapperPath = join(dirname(cliPath), 'mcp-wrapper.js');
     
-    // Add via claude CLI with wrapper
     execSync(`claude mcp add kai-${skillName} -- node "${wrapperPath}" "${actualSkillDir}"`, {
       stdio: quiet ? 'pipe' : 'inherit'
     });
     
     if (!quiet) {
       print('green', `\n✅ Added kai-${skillName}\n`);
+      print('dim', 'Next: kai-skills config set ' + skillName + ' <API_KEY> <value>\n');
+      print('dim', 'Then: kai-skills sync-config\n');
     }
     return true;
   } catch (e) {
-    // Claude CLI not available, show manual command
     const wrapperShortPath = `$(npm root -g)/kai-skills/mcp-wrapper.js`;
     
     if (!quiet) {
@@ -264,26 +321,22 @@ function installSkills() {
   }
   
   try {
-    // Clean up temp dir if it exists from previous failed attempt
     if (existsSync(tempDir)) {
       print('dim', 'Cleaning up temp directory...\n');
       execSync(`rm -rf "${tempDir}"`);
     }
     
-    // Clone to temp location
     print('dim', 'Cloning kai-skills repo...\n');
     execSync(
       `git clone https://github.com/tmoreton/kai-skills.git "${tempDir}"`,
       { stdio: 'inherit' }
     );
     
-    // Clean up existing skills BEFORE moving new ones
     if (existsSync(skillsDir)) {
       print('dim', 'Removing old skills...\n');
       execSync(`rm -rf "${skillsDir}"`);
     }
     
-    // Move skills/* to ~/.kai/skills/
     const skillsSource = join(tempDir, 'skills');
     if (existsSync(skillsSource)) {
       print('dim', 'Installing skills...\n');
@@ -292,66 +345,63 @@ function installSkills() {
       throw new Error('Skills folder not found in cloned repo');
     }
     
-    // Also copy lib/ folder for shared utilities (credentials.js)
     const libSource = join(tempDir, 'skills', 'lib');
     const libDest = join(skillsDir, 'lib');
     if (existsSync(libSource)) {
       if (!existsSync(libDest)) {
-        mkdirSync(libDest, { recursive: true });
+        execSync(`cp -r "${libSource}" "${libDest}"`);
       }
-      execSync(`cp -r "${libSource}"/* "${libDest}/" 2>/dev/null || true`);
     }
     
-    // Clean up temp repo
-    execSync(`rm -rf "${tempDir}"`);
-    
-    print('green', '\n✅ Skills installed to ~/.kai/skills\n');
-    print('dim', 'Now run: kai-skills add all\n');
-  } catch (e) {
-    // Clean up temp on error
     if (existsSync(tempDir)) {
       execSync(`rm -rf "${tempDir}"`);
     }
-    print('red', '\n❌ Failed to install. Try manually:\n');
-    print('cyan', '  rm -rf ~/.kai/skills\n');
-    print('cyan', '  git clone https://github.com/tmoreton/kai-skills /tmp/kai-skills\n');
-    print('cyan', '  mv /tmp/kai-skills/skills ~/.kai/skills\n');
-    print('cyan', '  rm -rf /tmp/kai-skills\n');
+    
+    print('green', '\n✅ Skills installed to ~/.kai/skills\n');
+    print('dim', 'Next steps:\n');
+    print('dim', '  1. kai-skills add all\n');
+    print('dim', '  2. kai-skills config set youtube YOUTUBE_API_KEY your_key\n');
+    print('dim', '  3. kai-skills sync-config\n');
+    print('dim', '  4. Restart Claude Desktop\n');
+  } catch (e) {
+    if (existsSync(tempDir)) {
+      execSync(`rm -rf "${tempDir}"`);
+    }
+    print('red', '\n❌ Failed to install\n');
+    print('dim', e.message + '\n');
   }
 }
 
 function showHelp() {
   console.log(`
-${colors.bold}kai-skills${colors.reset} - Connect Kai skills to Claude
+${colors.bold}kai-skills${colors.reset} - Connect Kai skills to Claude Desktop
 
 ${colors.dim}Usage:${colors.reset}
   kai-skills                    List installed skills
   kai-skills add <skill|all>    Add skill(s) to Claude
   kai-skills remove <skill>     Remove skill from Claude
   kai-skills install            Install Kai skills from GitHub
-  kai-skills config             Manage skill configurations
+  kai-skills config             Manage API keys (see below)
+  kai-skills sync-config        Copy API keys to Claude Desktop
 
 ${colors.dim}Config Commands:${colors.reset}
-  kai-skills config list        List all configurations
-  kai-skills config get <skill> [key]     Get config for a skill
-  kai-skills config set <skill> <key> <value>   Set config value
-  kai-skills config remove <skill> [key]  Remove config
+  kai-skills config list                    Show all API keys
+  kai-skills config get <skill>             Show keys for a skill
+  kai-skills config set <skill> <key> <value>   Set an API key
+  kai-skills config remove <skill>          Remove all keys for skill
 
-${colors.dim}Examples:${colors.reset}
-  kai-skills config set youtube YOUTUBE_API_KEY your_key_here
-  kai-skills config set bluesky identifier your_handle
-  kai-skills config set bluesky password your_password
-  kai-skills config get youtube
-  kai-skills config list
-
-${colors.dim}Quick Start:${colors.reset}
+${colors.dim}Quick Start for Non-Developers:${colors.reset}
   1. npm install -g kai-skills
   2. kai-skills install
   3. kai-skills add all
-  4. kai-skills config set youtube YOUTUBE_API_KEY xxx
-  5. Restart Claude Desktop
+  4. kai-skills config set youtube YOUTUBE_API_KEY your_key_here
+  5. kai-skills sync-config
+  6. Restart Claude Desktop
 
-${colors.dim}No Kai CLI required!${colors.reset} Just Node.js + Claude Desktop/Code.
+${colors.dim}Where to get API keys:${colors.reset}
+  • YouTube: https://console.cloud.google.com/apis/credentials
+  • OpenRouter: https://openrouter.ai/keys
+  • Tavily (Twitter/TikTok search): https://tavily.com/
 `);
 }
 
@@ -377,6 +427,8 @@ if (!command || command === 'list') {
   removeSkill(skillName);
 } else if (command === 'install') {
   installSkills();
+} else if (command === 'sync-config') {
+  syncConfig();
 } else if (command === 'config') {
   const subcommand = args[1];
   const skill = args[2];
@@ -399,7 +451,7 @@ if (!command || command === 'list') {
       } else if (typeof result === 'object') {
         print('green', `\n${skill}:`);
         for (const [k, v] of Object.entries(result)) {
-          print('dim', `  ${k}: ${v}`);
+          print('dim', `  ${k}: ${v.substring(0, 4)}****`);
         }
         print('');
       } else {
@@ -414,6 +466,7 @@ if (!command || command === 'list') {
       }
       setSkillConfig(skill, key, value);
       print('green', `\n✅ Set ${skill}/${key}\n`);
+      print('dim', 'Run "kai-skills sync-config" to apply to Claude Desktop\n');
       break;
     case 'remove':
     case 'rm':

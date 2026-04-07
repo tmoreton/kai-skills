@@ -1,148 +1,142 @@
 /**
- * Kai Credentials Helper - Secure local credential storage for skills
+ * Shared credential management for Kai skills
  * 
- * Usage in your skill:
- *   import { setupCredentials, getCredentials, hasCredentials } from '../lib/credentials.js';
- * 
- *   // In your handler:
- *   case 'setup':
- *     return setupCredentials('youtube', params);
- *   
- *   case 'get_stats':
- *     const creds = getCredentials('youtube');
- *     if (!creds) throw new Error('Run setup first');
- *     // Use creds.api_key...
+ * Provides secure storage and retrieval of API keys.
+ * Skills use this to get credentials from Kai CLI config.
  */
 
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
 import { homedir } from 'os';
+import { fileURLToPath } from 'url';
 
-const KAI_DIR = path.join(homedir(), '.kai');
-const KAI_CONFIG_FILE = path.join(KAI_DIR, 'config.json');
+const KAI_DIR = join(homedir(), '.kai');
+const CONFIG_FILE = join(KAI_DIR, 'config.json');
+const CREDENTIALS_DIR = join(KAI_DIR, '.credentials');
 
-// Get or create encryption key (derived from machine + user path)
-function getEncryptionKey() {
-  const seed = `${homedir()}-${process.platform}-${process.getuid?.() || 0}`;
-  return crypto.createHash('sha256').update(seed).digest();
+// Get skill name from calling module
+function getCallerSkill() {
+  // This is a heuristic - assumes skill is in ~/.kai/skills/{skillName}/
+  const stack = new Error().stack;
+  const match = stack.match(/\/\.kai\/skills\/([^\/]+)\//);
+  return match ? match[1] : null;
 }
 
-function encrypt(text) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-gcm', getEncryptionKey(), iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  const authTag = cipher.getAuthTag();
-  return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
-}
-
-function decrypt(text) {
-  try {
-    const parts = text.split(':');
-    const iv = Buffer.from(parts[0], 'hex');
-    const authTag = Buffer.from(parts[1], 'hex');
-    const encrypted = parts[2];
-    const decipher = crypto.createDecipheriv('aes-256-gcm', getEncryptionKey(), iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  } catch {
-    return null;
+/**
+ * Check if credentials are configured for a skill
+ */
+export function hasCredentials(skillName) {
+  const name = skillName || getCallerSkill();
+  if (!name) return false;
+  
+  // Check Kai CLI config
+  const kaiConfig = loadKaiConfig();
+  if (kaiConfig.skills?.[name]) {
+    return Object.keys(kaiConfig.skills[name]).length > 0;
   }
+  
+  // Check environment variables
+  const envPrefix = name.toUpperCase().replace(/-/g, '_');
+  const requiredKeys = getRequiredEnvKeys(name);
+  return requiredKeys.some(key => process.env[key] || process.env[`${envPrefix}_${key}`]);
 }
 
-function getCredsFile(skillId) {
-  const skillDir = path.join(KAI_DIR, 'skills', skillId);
-  if (!fs.existsSync(skillDir)) {
-    fs.mkdirSync(skillDir, { recursive: true });
-  }
-  return path.join(skillDir, '.credentials');
+/**
+ * Get required environment variable names for a skill
+ */
+function getRequiredEnvKeys(skillName) {
+  const defaults = {
+    youtube: ['YOUTUBE_API_KEY'],
+    twitter: ['TAVILY_API_KEY'],
+    instagram: ['INSTAGRAM_ACCESS_TOKEN'],
+    facebook: ['FACEBOOK_ACCESS_TOKEN', 'FACEBOOK_PAGE_ID'],
+    linkedin: ['LINKEDIN_ACCESS_TOKEN'],
+    notion: ['NOTION_API_KEY'],
+    slack: ['SLACK_BOT_TOKEN'],
+    openrouter: ['OPENROUTER_API_KEY'],
+    threads: ['THREADS_ACCESS_TOKEN'],
+    tiktok: ['TAVILY_API_KEY'],
+    bluesky: ['BLUESKY_IDENTIFIER', 'BLUESKY_PASSWORD'],
+    'google-sheets': ['GOOGLE_SERVICE_ACCOUNT_JSON'],
+  };
+  
+  return defaults[skillName] || [`${skillName.toUpperCase()}_API_KEY`];
 }
 
-// Load central Kai config (from kai-skills CLI)
+/**
+ * Load Kai CLI configuration
+ */
 function loadKaiConfig() {
-  if (!fs.existsSync(KAI_CONFIG_FILE)) {
+  if (!existsSync(CONFIG_FILE)) {
     return { skills: {} };
   }
   try {
-    return JSON.parse(fs.readFileSync(KAI_CONFIG_FILE, 'utf-8'));
+    const content = readFileSync(CONFIG_FILE, 'utf-8');
+    return JSON.parse(content);
   } catch {
     return { skills: {} };
   }
 }
 
-export function setupCredentials(skillId, credentials) {
-  if (!credentials || Object.keys(credentials).length === 0) {
-    throw new Error('No credentials provided');
+/**
+ * Setup credentials for a skill
+ * This is called by the skill's 'setup' tool
+ */
+export async function setupCredentials(skillName, credentials) {
+  const kaiConfig = loadKaiConfig();
+  
+  if (!kaiConfig.skills) {
+    kaiConfig.skills = {};
   }
   
-  const credsFile = getCredsFile(skillId);
-  const encrypted = encrypt(JSON.stringify(credentials));
-  fs.writeFileSync(credsFile, encrypted, { mode: 0o600 });
+  kaiConfig.skills[skillName] = {
+    ...kaiConfig.skills[skillName],
+    ...credentials,
+    _updated: new Date().toISOString()
+  };
   
-  return { 
-    success: true, 
-    message: `Credentials for ${skillId} saved securely`,
-    keys: Object.keys(credentials)
+  // Ensure Kai directory exists
+  if (!existsSync(KAI_DIR)) {
+    mkdirSync(KAI_DIR, { recursive: true });
+  }
+  
+  writeFileSync(CONFIG_FILE, JSON.stringify(kaiConfig, null, 2));
+  
+  return { success: true, skill: skillName, keys: Object.keys(credentials) };
+}
+
+/**
+ * Inject credentials into environment for a skill
+ * Called by MCP wrapper before spawning skill process
+ */
+export function injectCredentials(skillName, env = {}) {
+  const kaiConfig = loadKaiConfig();
+  const skillConfig = kaiConfig.skills?.[skillName] || {};
+  
+  // Merge: env vars > Kai config > existing env
+  return {
+    ...process.env,
+    ...skillConfig,
+    ...env  // Passed env vars (e.g., from web UI) take highest priority
   };
 }
 
-export function getCredentials(skillId) {
-  // Priority 1: Per-skill encrypted storage (conversation setup)
-  const credsFile = getCredsFile(skillId);
-  if (fs.existsSync(credsFile)) {
-    try {
-      const encrypted = fs.readFileSync(credsFile, 'utf8');
-      const decrypted = decrypt(encrypted);
-      if (decrypted) return JSON.parse(decrypted);
-    } catch {
-      // Fall through to next source
-    }
-  }
-  
-  // Priority 2: Central Kai config (CLI: kai-skills config set)
+/**
+ * Get credential value for a skill
+ */
+export function getCredential(skillName, key) {
   const kaiConfig = loadKaiConfig();
-  if (kaiConfig.skills?.[skillId]) {
-    return kaiConfig.skills[skillId];
-  }
+  const skillConfig = kaiConfig.skills?.[skillName] || {};
   
-  return null;
+  // Priority: direct key in config > env var with skill prefix > plain env var
+  return skillConfig[key] || 
+         process.env[`${skillName.toUpperCase()}_${key}`] ||
+         process.env[key];
 }
 
-export function hasCredentials(skillId) {
-  return getCredentials(skillId) !== null;
-}
-
-export function clearCredentials(skillId) {
-  const credsFile = getCredsFile(skillId);
-  if (fs.existsSync(credsFile)) {
-    fs.unlinkSync(credsFile);
-  }
-  return { success: true, message: `Credentials for ${skillId} cleared` };
-}
-
-// Inject credentials into process.env for this skill
-// Also checks environment variables as final fallback
-export function injectCredentials(skillId) {
-  // Get stored credentials (encrypted store or kai config)
-  const storedCreds = getCredentials(skillId);
-  
-  // Build effective config: stored creds + env vars (env vars win if conflict)
-  const effectiveCreds = { ...storedCreds };
-  
-  // Check environment variables (from web UI or system)
-  for (const [key, value] of Object.entries(process.env)) {
-    if (key.includes(skillId.toUpperCase()) || key.includes('API_KEY') || key.includes('TOKEN')) {
-      effectiveCreds[key] = value;
-    }
-  }
-  
-  // Inject into process.env
-  for (const [key, value] of Object.entries(effectiveCreds)) {
-    if (value) process.env[key] = value;
-  }
-  
-  return effectiveCreds;
-}
+export default {
+  setupCredentials,
+  injectCredentials,
+  hasCredentials,
+  getCredential
+};
