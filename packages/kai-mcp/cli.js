@@ -5,11 +5,13 @@
  */
 
 import { homedir } from 'os';
-import { readdirSync, existsSync, mkdirSync } from 'fs';
+import { readdirSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { execSync } from 'child_process';
 
-const SKILLS_DIR = join(homedir(), '.kai', 'skills');
+const KAI_DIR = join(homedir(), '.kai');
+const SKILLS_DIR = join(KAI_DIR, 'skills');
+const CONFIG_FILE = join(KAI_DIR, 'config.json');
 const CLAUDE_CONFIG_DIR = join(homedir(), 'Library/Application Support/Claude');
 const CLAUDE_CONFIG_FILE = join(CLAUDE_CONFIG_DIR, 'claude_desktop_config.json');
 
@@ -27,6 +29,80 @@ const colors = {
 
 function print(color, message) {
   console.log(`${colors[color] || ''}${message}${colors.reset}`);
+}
+
+// Config management functions
+function ensureKaiDir() {
+  if (!existsSync(KAI_DIR)) {
+    mkdirSync(KAI_DIR, { recursive: true });
+  }
+}
+
+function loadConfig() {
+  ensureKaiDir();
+  if (!existsSync(CONFIG_FILE)) {
+    return { skills: {} };
+  }
+  try {
+    return JSON.parse(readFileSync(CONFIG_FILE, 'utf-8'));
+  } catch {
+    return { skills: {} };
+  }
+}
+
+function saveConfig(config) {
+  ensureKaiDir();
+  writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+}
+
+function setSkillConfig(skill, key, value) {
+  const config = loadConfig();
+  if (!config.skills[skill]) {
+    config.skills[skill] = {};
+  }
+  config.skills[skill][key] = value;
+  saveConfig(config);
+}
+
+function getSkillConfig(skill, key) {
+  const config = loadConfig();
+  if (!config.skills[skill]) return undefined;
+  return key ? config.skills[skill][key] : config.skills[skill];
+}
+
+function removeSkillConfig(skill, key) {
+  const config = loadConfig();
+  if (!config.skills[skill]) return;
+  if (key) {
+    delete config.skills[skill][key];
+  } else {
+    delete config.skills[skill];
+  }
+  saveConfig(config);
+}
+
+function listConfig() {
+  const config = loadConfig();
+  if (Object.keys(config.skills).length === 0) {
+    print('yellow', '\n⚠️  No skill configurations set.\n');
+    print('dim', 'Set config with: kai-skills config set <skill> <key> <value>\n');
+    return;
+  }
+
+  print('bold', '\n🔐 Skill Configurations');
+  print('dim', '======================\n');
+
+  for (const [skill, keys] of Object.entries(config.skills)) {
+    print('green', `${skill}:`);
+    for (const key of Object.keys(keys)) {
+      const value = keys[key];
+      const masked = value.length > 8 
+        ? value.substring(0, 4) + '****' + value.substring(value.length - 4)
+        : '****';
+      print('dim', `  ${key}: ${masked}`);
+    }
+  }
+  print('');
 }
 
 function getSkills() {
@@ -236,18 +312,27 @@ ${colors.dim}Usage:${colors.reset}
   kai-skills add <skill|all>    Add skill(s) to Claude
   kai-skills remove <skill>     Remove skill from Claude
   kai-skills install            Install Kai skills from GitHub
+  kai-skills config             Manage skill configurations
+
+${colors.dim}Config Commands:${colors.reset}
+  kai-skills config list        List all configurations
+  kai-skills config get <skill> [key]     Get config for a skill
+  kai-skills config set <skill> <key> <value>   Set config value
+  kai-skills config remove <skill> [key]  Remove config
 
 ${colors.dim}Examples:${colors.reset}
-  kai-skills                    # See what's available
-  kai-skills add youtube        # Add YouTube skill
-  kai-skills add all            # Add ALL skills
-  kai-skills remove twitter     # Remove Twitter skill
+  kai-skills config set youtube YOUTUBE_API_KEY your_key_here
+  kai-skills config set bluesky identifier your_handle
+  kai-skills config set bluesky password your_password
+  kai-skills config get youtube
+  kai-skills config list
 
 ${colors.dim}Quick Start:${colors.reset}
   1. npm install -g kai-skills
   2. kai-skills install
   3. kai-skills add all
-  4. Restart Claude Desktop
+  4. kai-skills config set youtube YOUTUBE_API_KEY xxx
+  5. Restart Claude Desktop
 
 ${colors.dim}No Kai CLI required!${colors.reset} Just Node.js + Claude Desktop/Code.
 `);
@@ -275,6 +360,61 @@ if (!command || command === 'list') {
   removeSkill(skillName);
 } else if (command === 'install') {
   installSkills();
+} else if (command === 'config') {
+  const subcommand = args[1];
+  const skill = args[2];
+  const key = args[3];
+  const value = args.slice(4).join(' ');
+
+  switch (subcommand) {
+    case 'list':
+    case 'ls':
+      listConfig();
+      break;
+    case 'get':
+      if (!skill) {
+        print('red', 'Usage: kai-skills config get <skill> [key]\n');
+        process.exit(1);
+      }
+      const result = getSkillConfig(skill, key);
+      if (result === undefined) {
+        print('yellow', `\n⚠️  No config found for ${skill}${key ? `/${key}` : ''}\n`);
+      } else if (typeof result === 'object') {
+        print('green', `\n${skill}:`);
+        for (const [k, v] of Object.entries(result)) {
+          print('dim', `  ${k}: ${v}`);
+        }
+        print('');
+      } else {
+        console.log(result);
+      }
+      break;
+    case 'set':
+      if (!skill || !key || !value) {
+        print('red', 'Usage: kai-skills config set <skill> <key> <value>\n');
+        print('dim', 'Example: kai-skills config set youtube YOUTUBE_API_KEY xxx\n');
+        process.exit(1);
+      }
+      setSkillConfig(skill, key, value);
+      print('green', `\n✅ Set ${skill}/${key}\n`);
+      break;
+    case 'remove':
+    case 'rm':
+    case 'delete':
+      if (!skill) {
+        print('red', 'Usage: kai-skills config remove <skill> [key]\n');
+        process.exit(1);
+      }
+      removeSkillConfig(skill, key);
+      print('green', `\n✅ Removed ${skill}${key ? `/${key}` : ''}\n`);
+      break;
+    default:
+      print('yellow', '\nConfig Commands:\n');
+      print('dim', '  kai-skills config list\n');
+      print('dim', '  kai-skills config get <skill> [key]\n');
+      print('dim', '  kai-skills config set <skill> <key> <value>\n');
+      print('dim', '  kai-skills config remove <skill> [key]\n');
+  }
 } else if (command === 'help' || command === '--help' || command === '-h') {
   showHelp();
 } else {
