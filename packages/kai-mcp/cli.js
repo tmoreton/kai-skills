@@ -264,26 +264,32 @@ function installSkills() {
   }
   
   try {
-    // Remove temp dir if it exists from previous failed attempt
+    // Clean up temp dir if it exists from previous failed attempt
     if (existsSync(tempDir)) {
+      print('dim', 'Cleaning up temp directory...\n');
       execSync(`rm -rf "${tempDir}"`);
     }
     
     // Clone to temp location
+    print('dim', 'Cloning kai-skills repo...\n');
     execSync(
       `git clone https://github.com/tmoreton/kai-skills.git "${tempDir}"`,
       { stdio: 'inherit' }
     );
     
-    // Clean up existing skills if any
+    // Clean up existing skills BEFORE moving new ones
     if (existsSync(skillsDir)) {
+      print('dim', 'Removing old skills...\n');
       execSync(`rm -rf "${skillsDir}"`);
     }
     
     // Move skills/* to ~/.kai/skills/
     const skillsSource = join(tempDir, 'skills');
     if (existsSync(skillsSource)) {
+      print('dim', 'Installing skills...\n');
       execSync(`mv "${skillsSource}" "${skillsDir}"`);
+    } else {
+      throw new Error('Skills folder not found in cloned repo');
     }
     
     // Also copy lib/ folder for shared utilities (credentials.js)
@@ -307,6 +313,7 @@ function installSkills() {
       execSync(`rm -rf "${tempDir}"`);
     }
     print('red', '\n❌ Failed to install. Try manually:\n');
+    print('cyan', '  rm -rf ~/.kai/skills\n');
     print('cyan', '  git clone https://github.com/tmoreton/kai-skills /tmp/kai-skills\n');
     print('cyan', '  mv /tmp/kai-skills/skills ~/.kai/skills\n');
     print('cyan', '  rm -rf /tmp/kai-skills\n');
