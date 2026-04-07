@@ -5,22 +5,22 @@ description: Twitter/X API v2 — real Twitter API for search, user analysis, an
 author: Kai
 tags: ["social-media", "twitter", "x", "analytics", "posting"]
 config_schema:
-  api_key:
+  - key: api_key
     type: string
     required: true
     env: X_API_KEY
     description: Twitter API Key (Consumer Key from developer.x.com)
-  api_secret:
+  - key: api_secret
     type: string
     required: true
     env: X_API_SECRET
     description: Twitter API Secret (Consumer Secret)
-  access_token:
+  - key: access_token
     type: string
     required: true
     env: X_ACCESS_TOKEN
     description: Twitter Access Token
-  access_token_secret:
+  - key: access_token_secret
     type: string
     required: true
     env: X_ACCESS_TOKEN_SECRET

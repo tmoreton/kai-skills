@@ -5,24 +5,24 @@ description: TikTok videos — user profiles, video stats, hashtag search
 author: kai
 config_schema:
   # Web Search API (Required for basic functionality)
-  tavily_api_key:
+  - key: tavily_api_key
     type: string
     required: true
     env: TAVILY_API_KEY
     description: Tavily API Key for web search (required)
   # TikTok Research API (Optional for enhanced data)
-  research_api_key:
+  - key: research_api_key
     type: string
     required: false
     env: TIKTOK_RESEARCH_API_KEY
     description: TikTok Research API Key (optional, for accurate stats)
   # Alternative: Display API credentials
-  client_key:
+  - key: client_key
     type: string
     required: false
     env: TIKTOK_CLIENT_KEY
     description: TikTok App Client Key (Display API)
-  client_secret:
+  - key: client_secret
     type: string
     required: false
     env: TIKTOK_CLIENT_SECRET

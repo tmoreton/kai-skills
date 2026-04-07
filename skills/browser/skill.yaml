@@ -1,5 +1,5 @@
 id: browser
-name: browser
+name: Browser
 description: Browse the web — navigate, click, fill forms, take screenshots
 version: 1.0.0
 author: Kai
@@ -12,19 +12,19 @@ dependencies:
     description: "Required for browser automation. Install with: npm install playwright && npx playwright install chromium"
 
 config_schema:
-  BROWSER_HEADLESS:
+  - key: BROWSER_HEADLESS
     type: boolean
     description: Run browser in headless mode
     default: true
-  BROWSER_TIMEOUT_MS:
+  - key: BROWSER_TIMEOUT_MS
     type: number
     description: Navigation timeout in milliseconds
     default: 30000
-  BROWSER_CONTENT_LIMIT:
+  - key: BROWSER_CONTENT_LIMIT
     type: number
     description: Max characters to return from page content
     default: 80000
-  BROWSER_OUTPUT_DIR:
+  - key: BROWSER_OUTPUT_DIR
     type: string
     description: Directory for screenshots and downloads
     default: ~/.kai/agent-output/browser

@@ -6,44 +6,49 @@ author: Kai
 tags: ["google", "sheets", "spreadsheets", "data", "export", "reports"]
 config_schema:
   # Service Account Authentication (Recommended for server-side)
-  service_account_json:
+  - key: service_account_json
     type: string
     required: false
     env: GOOGLE_SERVICE_ACCOUNT_JSON
     description: Service account JSON key (full JSON content as string). Get from Google Cloud Console > IAM & Admin > Service Accounts > Create Key.
-  
+
   # OAuth 2.0 Authentication (User-level access)
-  client_id:
+  - key: client_id
     type: string
     required: false
     env: GOOGLE_CLIENT_ID
     description: OAuth 2.0 Client ID from Google Cloud Console
-  client_secret:
+
+  - key: client_secret
     type: string
     required: false
     env: GOOGLE_CLIENT_SECRET
     description: OAuth 2.0 Client Secret
-  refresh_token:
+
+  - key: refresh_token
     type: string
     required: false
     env: GOOGLE_REFRESH_TOKEN
     description: OAuth 2.0 Refresh Token (obtained after user consent flow)
-  access_token:
+
+  - key: access_token
     type: string
     required: false
     env: GOOGLE_ACCESS_TOKEN
     description: OAuth 2.0 Access Token (short-lived, refresh_token preferred)
-  redirect_uri:
+
+  - key: redirect_uri
     type: string
     required: false
     env: GOOGLE_REDIRECT_URI
     description: "OAuth redirect URI (default: http://localhost)"
-  
+
   # Sheet-specific options
-  default_spreadsheet_id:
+  - key: default_spreadsheet_id
     type: string
     required: false
     description: Default spreadsheet ID to use when not specified in actions
+
 dependencies:
   - googleapis
 tools:
@@ -78,7 +83,7 @@ tools:
         type: array
         required: false
         description: "Array of sheet objects with 'title' property (default: one sheet named 'Sheet1')"
-  
+
   - name: append_rows
     description: Append rows of data to a spreadsheet
     parameters:
@@ -111,7 +116,7 @@ tools:
         default: INSERT_ROWS
         enum: [INSERT_ROWS, OVERWRITE]
         description: Whether to insert new rows or overwrite existing
-  
+
   - name: update_cell
     description: Update a specific cell or range with a value
     parameters:
@@ -138,7 +143,7 @@ tools:
         default: RAW
         enum: [RAW, USER_ENTERED]
         description: How to interpret input values
-  
+
   - name: get_values
     description: Read values from a spreadsheet range
     parameters:
@@ -173,7 +178,7 @@ tools:
         default: SERIAL_NUMBER
         enum: [SERIAL_NUMBER, FORMATTED_STRING]
         description: How dates should be rendered
-  
+
   - name: share_spreadsheet
     description: Share a spreadsheet with users or make it public
     parameters:

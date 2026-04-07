@@ -6,25 +6,22 @@ author: Kai
 icon: instagram
 tags: ["social-media", "instagram", "photos", "analytics", "content"]
 config_schema:
-  # Instagram Graph API / Basic Display API Access Token
-  access_token:
+  - key: access_token
     type: string
     required: false
     env: INSTAGRAM_ACCESS_TOKEN
     description: Instagram access token (from Basic Display API or Graph API)
-  # Optional: Alternative token env var
-  token:
+  - key: token
     type: string
     required: false
     env: INSTAGRAM_TOKEN
     description: Alternative env var for access token
-  # App credentials for Graph API
-  app_id:
+  - key: app_id
     type: string
     required: false
     env: INSTAGRAM_APP_ID
     description: Instagram App ID (for Graph API hashtag search)
-  app_secret:
+  - key: app_secret
     type: string
     required: false
     env: INSTAGRAM_APP_SECRET

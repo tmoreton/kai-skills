@@ -6,7 +6,7 @@ author: Kai
 tags: ["dashboard", "analytics", "social-media", "visualization", "local"]
 
 config_schema:
-  DASHBOARD_PORT:
+  - key: DASHBOARD_PORT
     type: number
     description: Port for dashboard web server
     default: 3000

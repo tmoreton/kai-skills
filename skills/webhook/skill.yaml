@@ -4,8 +4,7 @@ version: 1.0.0
 description: Webhook triggers — POST to Zapier, Make, custom endpoints
 author: Kai
 tags: ["webhook", "automation", "zapier", "make", "api", "integration"]
-config_schema:
-  # No required configuration - all params passed per-action
+config_schema: []  # No required configuration - all params passed per-action
 dependencies:
   # No npm dependencies - uses native fetch
 tools:

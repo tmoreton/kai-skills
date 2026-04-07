@@ -8,23 +8,23 @@ dependencies:
   - node-fetch (built-in)
 config_schema:
   # LinkedIn API v2 OAuth 2.0 Credentials
-  access_token:
+  - key: access_token
     type: string
     required: false
     env: LINKEDIN_ACCESS_TOKEN
     description: LinkedIn OAuth 2.0 Access Token (from linkedin.com/developers)
-  client_id:
+  - key: client_id
     type: string
     required: false
     env: LINKEDIN_CLIENT_ID
     description: LinkedIn App Client ID
-  client_secret:
+  - key: client_secret
     type: string
     required: false
     env: LINKEDIN_CLIENT_SECRET
     description: LinkedIn App Client Secret
   # Optional Tavily API for web search fallback
-  tavily_api_key:
+  - key: tavily_api_key
     type: string
     required: false
     env: TAVILY_API_KEY

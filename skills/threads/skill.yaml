@@ -5,12 +5,12 @@ description: Threads posts — profiles, publishing, replies, insights
 author: kai
 config_schema:
   # Threads API Credentials (from Meta for Developers)
-  access_token:
+  - key: access_token
     type: string
     required: false
     env: THREADS_ACCESS_TOKEN
     description: Threads Access Token (from Meta OAuth flow)
-  user_id:
+  - key: user_id
     type: string
     required: false
     env: THREADS_USER_ID

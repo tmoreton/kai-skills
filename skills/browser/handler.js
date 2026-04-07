@@ -97,6 +97,7 @@ export default {
 
     // Ensure Playwright browsers are installed
     try {
+      const playwright = loadPlaywright();
       const execPath = playwright.chromium.executablePath();
       if (!fs.existsSync(execPath)) {
         console.log("  Installing Playwright Chromium...");

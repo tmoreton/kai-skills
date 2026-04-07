@@ -5,18 +5,17 @@ description: Bluesky social — profiles, feeds, posts, AT Protocol
 author: kai
 icon: https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f98b.svg
 config_schema:
-  # Bluesky AT Protocol credentials
-  identifier:
+  - key: identifier
     type: string
     required: true
     env: BLUESKY_IDENTIFIER
     description: Your Bluesky handle or DID (e.g., user.bsky.social)
-  password:
+  - key: password
     type: string
     required: true
     env: BLUESKY_PASSWORD
     description: Your Bluesky app password (create at Settings > App Passwords)
-  service:
+  - key: service
     type: string
     required: false
     env: BLUESKY_SERVICE

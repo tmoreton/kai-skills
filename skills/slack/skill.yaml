@@ -5,8 +5,7 @@ description: Slack notifications — send messages, upload files, create threads
 author: Kai
 icon: https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4ac.svg
 config_schema:
-  # Slack Bot Token (xoxb- prefix)
-  bot_token:
+  - key: bot_token
     type: string
     required: true
     env: SLACK_BOT_TOKEN

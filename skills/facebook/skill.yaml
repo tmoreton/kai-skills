@@ -5,13 +5,12 @@ description: Facebook Pages — page info, posts, insights, publishing
 author: Kai
 tags: ["social-media", "facebook", "pages", "publishing"]
 config_schema:
-  # Facebook Graph API Credentials
-  access_token:
+  - key: access_token
     type: string
     required: true
     env: FACEBOOK_ACCESS_TOKEN
     description: Facebook Page Access Token (from developers.facebook.com/tools/explorer/)
-  page_id:
+  - key: page_id
     type: string
     required: true
     env: FACEBOOK_PAGE_ID

@@ -6,11 +6,10 @@ author: Kai
 tags: ["social-media", "youtube", "analytics", "video"]
 
 config_schema:
-  YOUTUBE_API_KEY:
+  - key: YOUTUBE_API_KEY
     type: string
     description: YouTube Data API v3 key from Google Cloud Console
     required: true
-    env: YOUTUBE_API_KEY
 
 tools:
   - name: setup

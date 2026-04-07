@@ -10,34 +10,34 @@ dependencies:
     description: "Required for SMTP email sending. Install with: npm install nodemailer"
 
 config_schema:
-  SMTP_HOST:
+  - key: SMTP_HOST
     type: string
     description: SMTP server hostname (e.g. smtp.gmail.com)
-  SMTP_PORT:
+  - key: SMTP_PORT
     type: number
     description: SMTP server port (465 for SSL, 587 for TLS)
     default: 587
-  SMTP_USER:
+  - key: SMTP_USER
     type: string
     description: SMTP username / email address
-  SMTP_PASS:
+  - key: SMTP_PASS
     type: string
     description: SMTP password or app password
-  SMTP_SECURE:
+  - key: SMTP_SECURE
     type: boolean
     description: Use SSL/TLS (true for port 465, false for STARTTLS on 587)
     default: false
-  IMAP_HOST:
+  - key: IMAP_HOST
     type: string
     description: IMAP server hostname for reading email (e.g. imap.gmail.com)
-  IMAP_PORT:
+  - key: IMAP_PORT
     type: number
     description: IMAP server port (993 for SSL)
     default: 993
-  IMAP_USER:
+  - key: IMAP_USER
     type: string
     description: IMAP username (defaults to SMTP_USER if not set)
-  IMAP_PASS:
+  - key: IMAP_PASS
     type: string
     description: IMAP password (defaults to SMTP_PASS if not set)
 tools:

@@ -6,12 +6,12 @@ author: Kai
 tags: ["notion", "notes", "wiki", "database", "productivity"]
 
 config_schema:
-  NOTION_API_KEY:
+  - key: NOTION_API_KEY
     type: string
     description: Notion integration API key (from notion.so/my-integrations)
     required: true
     env: NOTION_API_KEY
-  NOTION_VERSION:
+  - key: NOTION_VERSION
     type: string
     description: Notion API version
     default: "2022-06-28"
