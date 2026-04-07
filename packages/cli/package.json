@@ -1,6 +1,6 @@
 {
   "name": "@kai-skills/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI for installing and managing Kai skills",
   "type": "module",
   "main": "./dist/index.js",
