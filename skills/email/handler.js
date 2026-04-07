@@ -7,6 +7,7 @@
 
 import { createRequire } from "module";
 import { connect as tlsConnect } from "tls";
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 let transporter = null;
 let smtpConfig = {};
@@ -243,8 +244,25 @@ let _config = null;
 export default {
   install: async (config) => {
     _config = config;
+    
+    // Inject stored credentials if available
+    const storedCreds = injectCredentials('email');
+    
+    // Merge stored credentials with provided config (provided config takes precedence)
+    const effectiveConfig = {
+      SMTP_HOST: config.SMTP_HOST || storedCreds?.smtp_host || process.env.SMTP_HOST,
+      SMTP_PORT: config.SMTP_PORT || storedCreds?.smtp_port || process.env.SMTP_PORT,
+      SMTP_USER: config.SMTP_USER || storedCreds?.username || process.env.SMTP_USER,
+      SMTP_PASS: config.SMTP_PASS || storedCreds?.password || process.env.SMTP_PASS,
+      SMTP_SECURE: config.SMTP_SECURE || storedCreds?.smtp_secure || process.env.SMTP_SECURE,
+      IMAP_HOST: config.IMAP_HOST || storedCreds?.imap_host || process.env.IMAP_HOST,
+      IMAP_PORT: config.IMAP_PORT || storedCreds?.imap_port || process.env.IMAP_PORT,
+    };
+    
+    _config = { ...config, ...effectiveConfig };
+    
     try {
-      initTransporter(config);
+      initTransporter(_config);
     } catch {
       // Will fail at action time with a clear message
     }
@@ -258,6 +276,53 @@ export default {
   },
 
   actions: {
+    setup: async (params) => {
+      const result = setupCredentials('email', {
+        smtp_host: params.smtp_host,
+        smtp_port: params.smtp_port,
+        username: params.username,
+        password: params.password,
+        smtp_secure: params.smtp_secure || false,
+        imap_host: params.imap_host || params.smtp_host?.replace('smtp.', 'imap.'),
+        imap_port: params.imap_port || 993,
+      });
+      
+      // Update config immediately after setup
+      const newConfig = {
+        SMTP_HOST: params.smtp_host,
+        SMTP_PORT: params.smtp_port,
+        SMTP_USER: params.username,
+        SMTP_PASS: params.password,
+        SMTP_SECURE: params.smtp_secure || false,
+        IMAP_HOST: params.imap_host || params.smtp_host?.replace('smtp.', 'imap.'),
+        IMAP_PORT: params.imap_port || 993,
+      };
+      
+      _config = { ..._config, ...newConfig };
+      
+      // Update environment variables
+      process.env.SMTP_HOST = params.smtp_host;
+      process.env.SMTP_PORT = String(params.smtp_port);
+      process.env.SMTP_USER = params.username;
+      process.env.SMTP_PASS = params.password;
+      
+      try {
+        initTransporter(_config);
+      } catch {
+        // May fail if incomplete config, that's ok
+      }
+      
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: "Email credentials saved",
+          smtp_host: params.smtp_host,
+          username: params.username,
+          next_steps: "Try: 'Send a test email' or 'Check my inbox'"
+        }, null, 2)
+      };
+    },
+
     send: async (params) => {
       const t = ensureTransporter(_config);
 

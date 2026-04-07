@@ -9,6 +9,7 @@
  */
 
 import { createRequire } from "module";
+import { injectCredentials, setupCredentials, getCredentials, hasCredentials } from '../lib/credentials.js';
 
 // Dynamic require for optional dependencies
 function loadDependency(name) {
@@ -126,9 +127,43 @@ let _config = {};
 export default {
   install: async (config) => {
     _config = config;
+    // Inject stored LinkedIn credentials (access_token)
+    const stored = injectCredentials('linkedin');
+    if (stored?.access_token) {
+      _config.access_token = stored.access_token;
+    }
   },
 
   actions: {
+    // Setup action to store access_token
+    setup: async (params) => {
+      const accessToken = params.access_token || params.token;
+      if (!accessToken) {
+        return {
+          content: JSON.stringify({
+            success: false,
+            error: 'access_token is required. Provide your LinkedIn access token.',
+            help: 'Get your token at: https://www.linkedin.com/developers/apps'
+          })
+        };
+      }
+
+      const result = setupCredentials('linkedin', { access_token: accessToken });
+      
+      // Update in-memory config
+      _config.access_token = accessToken;
+      
+      // Also set in environment for immediate use
+      process.env.LINKEDIN_ACCESS_TOKEN = accessToken;
+
+      return {
+        content: JSON.stringify({
+          success: true,
+          message: 'LinkedIn credentials saved securely',
+          keys: result.keys
+        })
+      };
+    },
     // Get profile info for the authenticated user or a specific user
     get_profile_info: async (params) => {
       const token = getAccessToken(_config);

@@ -13,6 +13,7 @@ import { createRequire } from "module";
 import path from "path";
 import os from "os";
 import fs from "fs";
+import { setupCredentials, injectCredentials } from '../lib/credentials.js';
 
 // Dynamic import for optional dependency
 function loadOpenAI() {
@@ -87,11 +88,23 @@ Note: You may need to add credits ($5-10) to generate images.
   const filename = generateFilename(prompt);
   const outputPath = path.join(outDir, filename);
 
+  // Enhance prompt with reference image if provided
+  let enhancedPrompt = prompt;
+  let referenceUsed = false;
+  
+  if (reference_image && fs.existsSync(reference_image)) {
+    // For now, we enhance the prompt to reference the person
+    // True face-swapping requires specialized models (like InstantID, IP-Adapter)
+    enhancedPrompt = `${prompt}. Include the person from the reference photo ${reference_image} in the scene with consistent appearance and features.`;
+    referenceUsed = true;
+    console.log(`[openrouter] Using reference image: ${reference_image}`);
+  }
+
   try {
     // For image generation models that support it
     const response = await client.images.generate({
       model: model,
-      prompt: prompt,
+      prompt: enhancedPrompt,
       n: 1,
       size: `${width}x${height}`,
       response_format: "url",
@@ -119,7 +132,9 @@ Note: You may need to add credits ($5-10) to generate images.
       url: imageUrl,
       model: model,
       size: { width, height },
-      prompt: prompt,
+      prompt: enhancedPrompt,
+      reference_used: referenceUsed,
+      reference_image: referenceUsed ? reference_image : null,
     };
   } catch (error) {
     // Fallback: return the URL if download fails but generation succeeded
@@ -131,7 +146,9 @@ Note: You may need to add credits ($5-10) to generate images.
         url: response.data[0].url,
         model: model,
         size: { width, height },
-        prompt: prompt,
+        prompt: enhancedPrompt,
+        reference_used: referenceUsed,
+        reference_image: referenceUsed ? reference_image : null,
         note: "Image generated but could not download. URL provided.",
       };
     }
@@ -255,10 +272,19 @@ export default {
       const result = await getGenerationStatus(params, config);
       return { content: JSON.stringify(result) };
     },
+    setup: async (params, config) => {
+      await setupCredentials('openrouter', { api_key: params.api_key });
+      if (params.api_key) process.env.OPENROUTER_API_KEY = params.api_key;
+      return { content: JSON.stringify({ success: true, message: "OpenRouter credentials saved" }) };
+    },
   },
 
   // Install hook - validate API key on install
   install: async (config) => {
+    // Inject stored credentials if available
+    const storedCreds = injectCredentials('openrouter');
+    if (storedCreds?.api_key) process.env.OPENROUTER_API_KEY = storedCreds.api_key;
+
     const apiKey = config.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       console.warn("[openrouter] No OPENROUTER_API_KEY configured. Skill will work but requires API key to be set in environment.");
