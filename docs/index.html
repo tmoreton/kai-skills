@@ -3,8 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kai Skills - AI Tools for Social Media</title>
+  <title>Kai Skills - AI Tools for Social Media Analytics</title>
   <style>
+    :root {
+      --primary: #0f172a;
+      --primary-light: #1e293b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #334155;
+      --text-light: #64748b;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --border: #e2e8f0;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
     * {
       margin: 0;
       padding: 0;
@@ -14,481 +29,548 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
-      color: #333;
-      background: #fafafa;
+      color: var(--text);
+      background: var(--bg);
     }
     
     .container {
-      max-width: 800px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 0 24px;
     }
     
+    /* Header */
     header {
+      padding: 80px 0 60px;
       text-align: center;
-      margin-bottom: 60px;
+      border-bottom: 1px solid var(--border);
     }
     
-    h1 {
+    .logo {
       font-size: 2.5rem;
-      margin-bottom: 10px;
-      color: #1a1a1a;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
     }
     
     .tagline {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 30px;
+      font-size: 1.25rem;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      font-weight: 400;
     }
     
-    .quick-start {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--accent);
       color: white;
-      padding: 30px;
-      border-radius: 12px;
-      margin-bottom: 50px;
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      transition: background 0.2s;
     }
     
-    .quick-start h2 {
-      margin-bottom: 20px;
-      font-size: 1.5rem;
+    .cta:hover {
+      background: var(--accent-hover);
     }
     
-    .options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    
-    .option {
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    
-    .option h3 {
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-    }
-    
-    .code {
-      background: rgba(0,0,0,0.3);
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-family: 'Monaco', monospace;
-      font-size: 0.9rem;
-      margin-top: 10px;
-      overflow-x: auto;
-    }
-    
+    /* Section */
     section {
-      margin-bottom: 50px;
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
     }
     
     h2 {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
-      color: #1a1a1a;
-      padding-bottom: 10px;
-      border-bottom: 3px solid #667eea;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
     }
     
-    .skills-grid {
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 32px 0 16px;
+    }
+    
+    p {
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    
+    /* Quick Start */
+    .quick-options {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
     }
     
-    .skill-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
+    @media (max-width: 600px) {
+      .quick-options {
+        grid-template-columns: 1fr;
+      }
     }
     
-    .skill-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .option-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
     }
     
-    .skill-card h4 {
-      color: #667eea;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
+    .option-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 4px;
     }
     
-    .skill-card p {
-      color: #666;
-      font-size: 0.9rem;
+    .option-card .label {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-bottom: 12px;
     }
     
-    .platform-tabs {
+    /* Code Blocks */
+    .code-block {
+      background: var(--primary);
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: var(--radius);
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    
+    .code-block .comment {
+      color: #64748b;
+    }
+    
+    /* Skills List */
+    .skill-category {
+      margin-bottom: 32px;
+    }
+    
+    .skill-category h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+    
+    .skills-row {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
       flex-wrap: wrap;
+      gap: 8px;
     }
     
-    .platform-tab {
-      padding: 10px 20px;
-      background: white;
-      border: 2px solid #ddd;
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+    
+    .skill-tag strong {
+      color: var(--primary);
+      margin-right: 4px;
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--bg-alt);
+      padding: 4px;
+      border-radius: var(--radius);
+      width: fit-content;
+    }
+    
+    .tab {
+      padding: 8px 16px;
       border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-light);
       cursor: pointer;
+      border: none;
+      background: transparent;
       transition: all 0.2s;
     }
     
-    .platform-tab:hover,
-    .platform-tab.active {
-      border-color: #667eea;
-      background: #667eea;
-      color: white;
+    .tab:hover {
+      color: var(--text);
     }
     
-    .platform-content {
-      display: none;
+    .tab.active {
       background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      color: var(--primary);
+      box-shadow: var(--shadow);
     }
     
-    .platform-content.active {
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
       display: block;
     }
     
+    /* Steps */
     .step {
       display: flex;
-      gap: 15px;
+      gap: 16px;
       margin-bottom: 20px;
-      align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .step:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
     
     .step-number {
-      background: #667eea;
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
       color: white;
-      width: 30px;
-      height: 30px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
+      font-size: 0.875rem;
+      font-weight: 600;
       flex-shrink: 0;
     }
     
-    .step-content h4 {
-      margin-bottom: 5px;
+    .step-content h5 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
     }
     
+    .step-content p {
+      color: var(--text-light);
+      font-size: 0.875rem;
+      margin-bottom: 0;
+    }
+    
+    /* API Cards */
     .api-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    @media (max-width: 600px) {
+      .api-grid {
+        grid-template-columns: 1fr;
+      }
     }
     
     .api-card {
-      background: white;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .api-card h4 {
-      color: #667eea;
-      margin-bottom: 10px;
+    .api-card h5 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
     }
     
     .api-card ol {
-      margin-left: 20px;
-      color: #666;
+      margin-left: 16px;
+      font-size: 0.875rem;
+      color: var(--text);
     }
     
     .api-card li {
       margin-bottom: 8px;
     }
     
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #667eea;
-      color: white;
+    .api-card a {
+      color: var(--accent);
       text-decoration: none;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: background 0.2s;
     }
     
-    .btn:hover {
-      background: #5568d3;
+    .api-card a:hover {
+      text-decoration: underline;
     }
     
+    /* Examples */
     .example {
-      background: #f8f9fa;
+      background: var(--bg-alt);
+      border-left: 3px solid var(--accent);
       padding: 20px;
-      border-radius: 8px;
-      border-left: 4px solid #667eea;
-      margin: 20px 0;
+      margin-bottom: 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    
+    .example h5 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     
     .example p {
       font-style: italic;
-      color: #555;
+      color: var(--text);
+      margin: 0;
     }
     
+    /* Footer */
     footer {
+      padding: 40px 0;
       text-align: center;
-      padding: 40px 20px;
-      color: #666;
-      border-top: 1px solid #eee;
+      color: var(--text-light);
+      font-size: 0.875rem;
     }
     
-    .links {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .links a {
-      color: #667eea;
+    footer a {
+      color: var(--text);
       text-decoration: none;
+      margin: 0 12px;
     }
     
-    .links a:hover {
-      text-decoration: underline;
+    footer a:hover {
+      color: var(--accent);
     }
     
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .options {
-        grid-template-columns: 1fr;
-      }
-      
-      .skills-grid {
-        grid-template-columns: 1fr;
-      }
+    .tip {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 24px;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+    
+    .tip strong {
+      color: var(--accent);
+    }
+    
+    code {
+      font-family: 'Monaco', monospace;
+      font-size: 0.9em;
+      background: var(--bg-alt);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🚀 Kai Skills</h1>
-      <p class="tagline">20 AI-powered tools for social media analytics & automation</p>
-      <a href="#get-started" class="btn">Get Started →</a>
-    </header>
-    
-    <div class="quick-start">
-      <h2>⚡ Quick Start (Choose One)</h2>
-      <div class="options">
-        <div class="option">
-          <h3>Kai App</h3>
-          <p>Easiest option</p>
-          <div class="code">npx kai<br>/skill install youtube</div>
+  <header>
+    <div class="container">
+      <div class="logo">Kai Skills</div>
+      <p class="tagline">20 AI-powered tools for social media analytics and automation.<br>No coding required.</p>
+      <a href="#get-started" class="cta">Get Started</a>
+    </div>
+  </header>
+  
+  <section id="quick-start">
+    <div class="container">
+      <h2>Quick Start</h2>
+      <p>Choose the option that works best for you:</p>
+      
+      <div class="quick-options">
+        <div class="option-card">
+          <h4>Kai App</h4>
+          <div class="label">Recommended for beginners</div>
+          <div class="code-block">npx kai
+<span class="comment"># Then type:</span>
+/skill install youtube</div>
         </div>
-        <div class="option">
-          <h3>Claude Desktop</h3>
-          <p>For Claude users</p>
-          <div class="code">npx kai-mcp-setup all</div>
+        
+        <div class="option-card">
+          <h4>Claude Desktop</h4>
+          <div class="label">For Claude AI users</div>
+          <div class="code-block">npx kai-mcp-setup all
+<span class="comment"># Restart Claude, then ask:</span>
+"Get my YouTube stats"</div>
         </div>
       </div>
     </div>
-    
-    <section id="skills">
-      <h2>📦 20 Skills Included</h2>
+  </section>
+  
+  <section id="skills">
+    <div class="container">
+      <h2>Included Skills</h2>
       
-      <h3 style="margin: 30px 0 15px; color: #667eea;">Social Media Analytics</h3>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <h4>📺 YouTube</h4>
-          <p>Channel stats, video metrics, trending</p>
-        </div>
-        <div class="skill-card">
-          <h4>📸 Instagram</h4>
-          <p>Followers, posts, hashtags, insights</p>
-        </div>
-        <div class="skill-card">
-          <h4>🐦 Twitter/X</h4>
-          <p>Tweet search, user analysis, posting</p>
-        </div>
-        <div class="skill-card">
-          <h4>👥 Facebook</h4>
-          <p>Page analytics, publishing, insights</p>
-        </div>
-        <div class="skill-card">
-          <h4>💼 LinkedIn</h4>
-          <p>Professional network analytics</p>
-        </div>
-        <div class="skill-card">
-          <h4>🎵 TikTok</h4>
-          <p>Video stats, hashtag research</p>
-        </div>
-        <div class="skill-card">
-          <h4>🧵 Threads</h4>
-          <p>Posting, replies, engagement</p>
-        </div>
-        <div class="skill-card">
-          <h4>☁️ Bluesky</h4>
-          <p>AT Protocol social analytics</p>
+      <div class="skill-category">
+        <h4>Social Media Analytics</h4>
+        <div class="skills-row">
+          <span class="skill-tag"><strong>YouTube</strong> Analytics</span>
+          <span class="skill-tag"><strong>Instagram</strong> Insights</span>
+          <span class="skill-tag"><strong>Twitter/X</strong> Search</span>
+          <span class="skill-tag"><strong>Facebook</strong> Pages</span>
+          <span class="skill-tag"><strong>LinkedIn</strong> Network</span>
+          <span class="skill-tag"><strong>TikTok</strong> Video Stats</span>
+          <span class="skill-tag"><strong>Threads</strong> Posts</span>
+          <span class="skill-tag"><strong>Bluesky</strong> Social</span>
         </div>
       </div>
       
-      <h3 style="margin: 30px 0 15px; color: #667eea;">Automation</h3>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <h4>🤖 OpenRouter</h4>
-          <p>AI image generation, chat completions</p>
-        </div>
-        <div class="skill-card">
-          <h4>📊 Google Sheets</h4>
-          <p>Export reports to spreadsheets</p>
-        </div>
-        <div class="skill-card">
-          <h4>💬 Slack</h4>
-          <p>Send team notifications</p>
-        </div>
-        <div class="skill-card">
-          <h4>⚡ Webhook</h4>
-          <p>Trigger Zapier, Make, custom URLs</p>
+      <div class="skill-category">
+        <h4>Automation</h4>
+        <div class="skills-row">
+          <span class="skill-tag"><strong>OpenRouter</strong> AI Images</span>
+          <span class="skill-tag"><strong>Google Sheets</strong> Export</span>
+          <span class="skill-tag"><strong>Slack</strong> Notifications</span>
+          <span class="skill-tag"><strong>Webhook</strong> Triggers</span>
         </div>
       </div>
       
-      <h3 style="margin: 30px 0 15px; color: #667eea;">Utilities</h3>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <h4>🌐 Browser</h4>
-          <p>Web scraping, screenshots</p>
-        </div>
-        <div class="skill-card">
-          <h4>📝 Notion</h4>
-          <p>Query databases, create pages</p>
-        </div>
-        <div class="skill-card">
-          <h4>📧 Email</h4>
-          <p>Send reports via Gmail/Outlook</p>
-        </div>
-        <div class="skill-card">
-          <h4>💾 Database</h4>
-          <p>Store analytics data</p>
+      <div class="skill-category">
+        <h4>Utilities</h4>
+        <div class="skills-row">
+          <span class="skill-tag"><strong>Browser</strong> Scraping</span>
+          <span class="skill-tag"><strong>Notion</strong> Docs</span>
+          <span class="skill-tag"><strong>Email</strong> Reports</span>
+          <span class="skill-tag"><strong>Database</strong> Storage</span>
         </div>
       </div>
-    </section>
-    
-    <section id="get-started">
-      <h2>🔌 Setup Guide</h2>
+    </div>
+  </section>
+  
+  <section id="get-started">
+    <div class="container">
+      <h2>Setup Guide</h2>
       
-      <div class="platform-tabs">
-        <div class="platform-tab active" onclick="showPlatform('kai')">Kai App</div>
-        <div class="platform-tab" onclick="showPlatform('claude')">Claude Desktop</div>
-        <div class="platform-tab" onclick="showPlatform('cli')">Claude Code CLI</div>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('kai')">Kai App</button>
+        <button class="tab" onclick="showTab('claude')">Claude Desktop</button>
+        <button class="tab" onclick="showTab('cli')">Claude CLI</button>
       </div>
       
-      <div id="kai" class="platform-content active">
+      <div id="kai" class="tab-content active">
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h4>Install Kai</h4>
-            <div class="code">npm install -g kai</div>
+            <h5>Install Kai</h5>
+            <div class="code-block">npm install -g kai</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h4>Start Kai</h4>
-            <div class="code">npx kai</div>
+            <h5>Start Kai</h5>
+            <div class="code-block">npx kai</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h4>Install skills</h4>
-            <div class="code">/skill install youtube<br>/skill install instagram<br>/skill install notion</div>
+            <h5>Install Skills</h5>
+            <div class="code-block">/skill install youtube instagram notion</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h4>Use them</h4>
-            <div class="code">Get my YouTube channel stats</div>
+            <h5>Use Them</h5>
+            <p>Just type what you want: "Get my YouTube channel stats"</p>
           </div>
         </div>
       </div>
       
-      <div id="claude" class="platform-content">
+      <div id="claude" class="tab-content">
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h4>Install the helper</h4>
-            <div class="code">npm install -g kai-mcp-setup</div>
+            <h5>Install Helper</h5>
+            <div class="code-block">npm install -g kai-mcp-setup</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h4>Add all skills</h4>
-            <div class="code">kai-mcp-setup all</div>
+            <h5>Add All Skills</h5>
+            <div class="code-block">kai-mcp-setup all</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h4>Restart Claude Desktop</h4>
-            <p>Completely quit and reopen the app</p>
+            <h5>Restart Claude</h5>
+            <p>Completely quit and reopen Claude Desktop</p>
           </div>
         </div>
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h4>Start using</h4>
-            <div class="code">"Get my YouTube stats"</div>
+            <h5>Start Using</h5>
+            <p>Ask Claude: "Analyze my social media performance"</p>
           </div>
         </div>
       </div>
       
-      <div id="cli" class="platform-content">
+      <div id="cli" class="tab-content">
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h4>Start Claude Code</h4>
-            <div class="code">claude</div>
+            <h5>Start Claude Code</h5>
+            <div class="code-block">claude</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h4>Export skills</h4>
-            <div class="code">/skill export-to-claude all</div>
+            <h5>Export Skills</h5>
+            <div class="code-block">/skill export-to-claude all</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h4>Restart Claude Code</h4>
-            <div class="code">exit<br>claude</div>
+            <h5>Restart</h5>
+            <div class="code-block">exit
+claude</div>
           </div>
         </div>
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h4>Ask anything</h4>
-            <div class="code">"Create a weekly social media report"</div>
+            <h5>Ask Anything</h5>
+            <p>"Create a weekly social media report with insights"</p>
           </div>
         </div>
       </div>
-    </section>
-    
-    <section id="api-keys">
-      <h2>🔑 API Key Setup</h2>
+    </div>
+  </section>
+  
+  <section id="api-keys">
+    <div class="container">
+      <h2>API Key Setup</h2>
+      <p>Get your free API keys from these services:</p>
       
       <div class="api-grid">
         <div class="api-card">
-          <h4>📺 YouTube</h4>
+          <h5>YouTube</h5>
           <ol>
             <li><a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
             <li>Create project → Enable YouTube Data API</li>
@@ -498,7 +580,7 @@
         </div>
         
         <div class="api-card">
-          <h4>📸 Instagram</h4>
+          <h5>Instagram</h5>
           <ol>
             <li><a href="https://developers.facebook.com" target="_blank">Meta for Developers</a></li>
             <li>Create app → Add Instagram Basic Display</li>
@@ -508,17 +590,17 @@
         </div>
         
         <div class="api-card">
-          <h4>🐦 Twitter/X</h4>
+          <h5>Twitter/X</h5>
           <ol>
             <li><a href="https://developer.twitter.com" target="_blank">Twitter Developer</a></li>
             <li>Create app → Get API Keys</li>
-            <li>Copy Key & Secret</li>
+            <li>Copy Key and Secret</li>
             <li><code>export X_API_KEY=xxx</code></li>
           </ol>
         </div>
         
         <div class="api-card">
-          <h4>🤖 OpenRouter (AI)</h4>
+          <h5>OpenRouter (AI)</h5>
           <ol>
             <li><a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></li>
             <li>Create free account</li>
@@ -528,79 +610,77 @@
         </div>
       </div>
       
-      <p style="margin-top: 30px; color: #666; text-align: center;">
-        💡 <strong>Tip:</strong> Add these exports to your <code>~/.bashrc</code> or <code>~/.zshrc</code> to persist them
-      </p>
-    </section>
-    
-    <section id="examples">
-      <h2>💡 Example Use Cases</h2>
+      <div class="tip">
+        <strong>Tip:</strong> Add these exports to your <code>~/.bashrc</code> or <code>~/.zshrc</code> file so they persist across terminal sessions.
+      </div>
+    </div>
+  </section>
+  
+  <section id="examples">
+    <div class="container">
+      <h2>Example Use Cases</h2>
       
       <div class="example">
-        <h4>Marketing Manager</h4>
-        <p>"Create a weekly report with YouTube views, Instagram engagement, and Twitter impressions. Export to Google Sheets and Slack it to #marketing."</p>
+        <h5>Marketing Manager</h5>
+        <p>"Create a weekly report with YouTube views, Instagram engagement, and Twitter impressions. Export to Google Sheets and send to the marketing Slack channel."</p>
       </div>
       
       <div class="example">
-        <h4>Content Creator</h4>
-        <p>"Analyze my top 10 YouTube videos. What's working? Generate a thumbnail for my next video about productivity tips."</p>
+        <h5>Content Creator</h5>
+        <p>"Analyze my top 10 YouTube videos. What's working best? Generate a thumbnail for my next video about productivity tips."</p>
       </div>
       
       <div class="example">
-        <h4>Social Media Agency</h4>
-        <p>"Monitor 5 client Instagram accounts. Alert me in Slack if any account loses followers this week."</p>
+        <h5>Social Media Agency</h5>
+        <p>"Monitor 5 client Instagram accounts. Alert me in Slack if any account loses more than 100 followers this week."</p>
       </div>
-    </section>
-    
-    <section id="troubleshooting">
-      <h2>❓ Troubleshooting</h2>
+    </div>
+  </section>
+  
+  <section id="troubleshooting">
+    <div class="container">
+      <h2>Troubleshooting</h2>
       
       <div class="step">
+        <div class="step-number">?</div>
         <div class="step-content">
-          <h4>"Claude can't find my skills"</h4>
-          <p>→ Restart Claude completely (quit and reopen)</p>
+          <h5>Claude cannot find my skills</h5>
+          <p>Restart Claude completely. Quit the application and reopen it.</p>
         </div>
       </div>
       
       <div class="step">
+        <div class="step-number">?</div>
         <div class="step-content">
-          <h4>"API key not working"</h4>
-          <p>→ Make sure you ran: <code>export KEY=value</code> in the same terminal</p>
+          <h5>API key not working</h5>
+          <p>Make sure you exported the key in the same terminal window: <code>export KEY=value</code></p>
         </div>
       </div>
       
       <div class="step">
+        <div class="step-number">?</div>
         <div class="step-content">
-          <h4>"Permission denied"</h4>
-          <p>→ Check that your API key has the right permissions enabled (e.g., YouTube Data API)</p>
+          <h5>Permission denied errors</h5>
+          <p>Check that your API key has the correct permissions enabled in the developer console.</p>
         </div>
       </div>
-    </section>
-    
-    <footer>
-      <div class="links">
-        <a href="https://github.com/tmoreton/kai-skills">GitHub</a>
-        <a href="https://docs.kai.dev">Docs</a>
-        <a href="https://discord.gg/kai">Discord</a>
-      </div>
-      <p>Made with ❤️ for marketers who want AI superpowers</p>
-    </footer>
-  </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <a href="https://github.com/tmoreton/kai-skills">GitHub</a>
+      <a href="https://docs.kai.dev">Documentation</a>
+      <a href="https://discord.gg/kai">Support</a>
+      <p style="margin-top: 16px;">Built for marketers who want AI superpowers.</p>
+    </div>
+  </footer>
   
   <script>
-    function showPlatform(platform) {
-      // Hide all content
-      document.querySelectorAll('.platform-content').forEach(el => {
-        el.classList.remove('active');
-      });
-      
-      // Remove active from tabs
-      document.querySelectorAll('.platform-tab').forEach(el => {
-        el.classList.remove('active');
-      });
-      
-      // Show selected
-      document.getElementById(platform).classList.add('active');
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
       event.target.classList.add('active');
     }
   </script>
