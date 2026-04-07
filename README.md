@@ -8,6 +8,24 @@ Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT. No coding r
 
 ---
 
+## Dashboard Example
+
+Want a visual dashboard? We've included a **local-only** example that displays your social media analytics with charts.
+
+```bash
+# From the kai-skills repo
+cd examples/social-media-dashboard
+npm install
+npm run setup
+npm start
+```
+
+Then open http://localhost:3000 and paste data from Kai skills to see charts.
+
+**Why local-only?** No data ever leaves your computer. No subscriptions. Full privacy.
+
+---
+
 ## Quick Start
 
 ### Option 1: Claude Desktop (Recommended)
