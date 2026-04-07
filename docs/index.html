@@ -585,18 +585,37 @@
     <div class="container">
       <div class="badge">
         <span class="badge-dot"></span>
-        20 AI-powered tools now available
+        21 AI-powered tools now available
       </div>
       
       <h1>Automation tools for<br>modern marketers</h1>
       <p>Connect YouTube, Instagram, Twitter, and more to Claude and ChatGPT.<br>No coding required.</p>
       
-      <a href="#get-started" class="hero-cta" id="get-started">
-        Get Started Free
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M4.167 10h11.666m0 0L10 4.167M15.833 10L10 15.833" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
+      <div style="margin: 32px 0; padding: 20px 24px; background: white; border: 1px solid var(--border); border-radius: var(--radius); display: inline-block; text-align: left;">
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">Works with</div>
+        <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap; justify-content: center;">
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+            <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
+            Claude Desktop
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+            <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
+            Claude Code
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+            <span style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%;"></span>
+            Kai CLI
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 8px;">
+        <a href="#get-started" class="hero-cta" id="get-started">
+          Get Started Free
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4.167 10h11.666m0 0L10 4.167M15.833 10L10 15.833" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       <a href="https://docs.kai.dev" class="hero-secondary">View Documentation →</a>
       
       <div class="code-window">
@@ -741,15 +760,81 @@
   <section id="setup">
     <div class="container">
       <div class="section-header">
+        <h2>Works with Claude</h2>
+        <p class="section-subtitle">Use natural language to manage your social media. Kai skills integrate directly with Claude via MCP.</p>
+      </div>
+      
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 48px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+          <div>
+            <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
+              Claude Desktop
+            </h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">GUI app with visual interface</p>
+            <div class="code-block" style="margin: 0;">claude mcp add kai-youtube -- node ~/.kai/skills/youtube/handler.js</div>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 8px;">Then ask: "Get my YouTube stats"</p>
+          </div>
+          
+          <div>
+            <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 8px; height: 8px; background: #cc785c; border-radius: 50%;"></span>
+              Claude Code
+            </h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">Terminal-based AI coding assistant</p>
+            <div class="code-block" style="margin: 0;">claude</div>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 8px;">Then type: "Show my Instagram analytics"</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-header" style="margin-top: 64px;">
         <h2>Simple setup</h2>
-        <p class="section-subtitle">Choose your platform and get started in minutes</p>
+        <p class="section-subtitle">Choose your preferred method</p>
       </div>
       
       <div class="tabs-wrapper">
         <div class="tabs">
-          <button class="tab active" onclick="showTab('claude')">Claude Desktop</button>
-          <button class="tab" onclick="showTab('kai')">Kai CLI</button>
+          <button class="tab active" onclick="showTab('dashboard')">Dashboard (Easiest)</button>
+          <button class="tab" onclick="showTab('claude')">Claude Desktop</button>
           <button class="tab" onclick="showTab('code')">Claude Code</button>
+          <button class="tab" onclick="showTab('kai')">Kai CLI</button>
+        </div>
+        
+        <div id="dashboard" class="tab-content active">
+          <div class="setup-card">
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                  <h4>Install dashboard</h4>
+                  <p>One command installs everything</p>
+                  <div class="code-block">kai-skill dashboard install</div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                  <h4>Start the server</h4>
+                  <div class="code-block">kai-skill dashboard start</div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                  <h4>Open dashboard</h4>
+                  <p>Visit http://localhost:3000 and connect your accounts</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-text">
+                  <h4>Auto-fetches data</h4>
+                  <p>Dashboard automatically pulls stats from all connected platforms</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div id="claude" class="tab-content active">

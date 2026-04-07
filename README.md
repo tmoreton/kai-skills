@@ -29,6 +29,48 @@ Then open http://localhost:3000 — dashboard auto-fetches from all connected pl
 
 ---
 
+## Works With Claude
+
+Kai skills integrate directly with **Claude Desktop** and **Claude Code** via MCP (Model Context Protocol).
+
+### Claude Desktop (GUI App)
+
+Add skills to Claude and use natural language:
+
+```bash
+# Add dashboard skill
+claude mcp add kai-dashboard -- node ~/.kai/skills/dashboard/handler.js
+
+# Add individual platform skills  
+claude mcp add kai-youtube -- node ~/.kai/skills/youtube/handler.js
+claude mcp add kai-instagram -- node ~/.kai/skills/instagram/handler.js
+claude mcp add kai-twitter -- node ~/.kai/skills/twitter/handler.js
+```
+
+Then in Claude Desktop, just ask:
+- *"Get my YouTube stats for this week"*
+- *"Show my Instagram follower growth"*
+- *"Create a social media report comparing all platforms"*
+- *"Start my dashboard and add my YouTube account"*
+
+Claude automatically:
+- Calls the right skill
+- Handles API authentication
+- Formats the response
+- Suggests next steps
+
+### Claude Code (CLI)
+
+Same skills work in your terminal:
+
+```bash
+claude
+# Then type: "Fetch my Twitter analytics"
+# Or: "Add my Instagram account to the dashboard"
+```
+
+---
+
 ## Quick Start
 
 ### Option 1: Dashboard (Easiest)
