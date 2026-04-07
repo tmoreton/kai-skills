@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
+      /* Kai Web UI Theme */
       --bg: #faf9f7;
       --bg-elevated: #ffffff;
       --bg-card: #ffffff;
@@ -25,15 +26,8 @@
       --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 10px 40px rgba(0,0,0,0.08);
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
@@ -44,12 +38,12 @@
     }
     
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 0 24px;
     }
     
-    /* Navigation */
+    /* Navigation - Shared with Homepage */
     nav {
       position: fixed;
       top: 0;
@@ -97,11 +91,42 @@
       color: var(--text);
     }
     
+    .nav-cta {
+      padding: 10px 20px;
+      background: var(--accent);
+      color: white;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .nav-cta:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
     /* Hero */
     .hero {
-      padding: 120px 0 60px;
+      padding: 140px 0 60px;
       text-align: center;
       border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-card) 100%);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-weight: 500;
     }
     
     h1 {
@@ -119,27 +144,59 @@
       margin: 0 auto;
     }
     
+    /* Quick Actions Bar */
+    .quick-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .quick-action:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    
     /* Content */
     .content {
       padding: 60px 0;
     }
     
-    /* Method Tabs */
-    .method-tabs {
+    /* Method Selector */
+    .method-selector {
       display: flex;
       gap: 8px;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
       background: var(--bg-card);
       padding: 6px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
     }
     
-    .method-tab {
-      padding: 10px 20px;
+    .method-btn {
+      padding: 12px 24px;
       border-radius: var(--radius-sm);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
@@ -148,11 +205,11 @@
       transition: all 0.2s;
     }
     
-    .method-tab:hover {
+    .method-btn:hover {
       color: var(--text);
     }
     
-    .method-tab.active {
+    .method-btn.active {
       background: var(--accent);
       color: white;
     }
@@ -183,24 +240,25 @@
     .platform-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 24px;
-      padding-bottom: 16px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--border);
     }
     
     .platform-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--accent-light);
-      border: 1px solid var(--accent);
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 1rem;
-      color: var(--accent);
+      flex-shrink: 0;
+    }
+    
+    .platform-icon svg {
+      width: 28px;
+      height: 28px;
     }
     
     .platform-title {
@@ -209,8 +267,15 @@
       color: var(--text);
     }
     
-    .difficulty {
+    .platform-meta {
       margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    
+    .difficulty {
       padding: 6px 12px;
       background: var(--accent-light);
       color: var(--accent);
@@ -219,11 +284,21 @@
       font-weight: 500;
     }
     
+    .skill-link {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    
+    .skill-link:hover {
+      color: var(--accent);
+    }
+    
     /* Steps */
     .steps {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
     
     .step {
@@ -233,15 +308,15 @@
     }
     
     .step-number {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       background: var(--accent-light);
       border: 1px solid var(--accent);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--accent);
       flex-shrink: 0;
@@ -257,21 +332,27 @@
     .step-content p {
       color: var(--text-muted);
       font-size: 0.9rem;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     
     .step-link {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       color: var(--accent);
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 500;
+      padding: 8px 0;
     }
     
     .step-link:hover {
       text-decoration: underline;
+    }
+    
+    .step-link svg {
+      width: 16px;
+      height: 16px;
     }
     
     .code-block {
@@ -289,56 +370,58 @@
       color: #64748b;
     }
     
-    .screenshot-placeholder {
-      background: var(--bg);
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-sm);
-      padding: 32px;
-      text-align: center;
-      color: var(--text-muted);
-      margin-top: 12px;
-      font-size: 0.85rem;
-    }
-    
-    /* Help Box */
-    .help-box {
+    /* Tip Box */
+    .tip-box {
       background: var(--accent-light);
       border-left: 3px solid var(--accent);
-      padding: 16px;
+      padding: 16px 20px;
       border-radius: 0 var(--radius) var(--radius) 0;
       margin-top: 24px;
     }
     
-    .help-box h4 {
+    .tip-box h4 {
       font-size: 0.9rem;
       color: var(--text);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .help-box p {
+    .tip-box p {
       font-size: 0.85rem;
       color: var(--text-muted);
       margin: 0;
     }
     
-    .help-box a {
-      color: var(--accent);
-      text-decoration: none;
+    /* Wizard CTA */
+    .wizard-cta {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
     }
     
-    /* Alternative */
-    .alternative {
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-    
-    .alternative h5 {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .wizard-cta h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
       margin-bottom: 12px;
+    }
+    
+    .wizard-cta p {
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+    
+    .wizard-code {
+      background: rgba(0,0,0,0.2);
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      display: inline-block;
     }
     
     /* Footer */
@@ -365,23 +448,32 @@
         flex-wrap: wrap;
       }
       
-      .difficulty {
+      .platform-meta {
         margin-left: 0;
-        margin-top: 8px;
-      }
-      
-      .method-tabs {
-        flex-wrap: wrap;
+        margin-top: 12px;
+        align-items: flex-start;
         width: 100%;
       }
       
       .nav-links {
         display: none;
       }
+      
+      .quick-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .method-selector {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Shared Navigation -->
   <nav>
     <div class="container">
       <a href="index.html" class="logo">Kai<span>.</span></a>
@@ -389,32 +481,70 @@
         <a href="index.html#skills">Skills</a>
         <a href="index.html#setup">Setup</a>
         <a href="api-setup.html">API Keys</a>
-        <a href="https://docs.kai.dev">Docs</a>
+        <a href="https://github.com/tmoreton/kai-skills">GitHub</a>
       </div>
+      <a href="index.html#get-started" class="nav-cta">Get Started</a>
     </div>
   </nav>
   
+  <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1>API Key Setup</h1>
-      <p class="subtitle">Get your API keys from social media platforms</p>
+      <div class="badge">Setup Guide</div>
+      <h1>Get Your API Keys</h1>
+      <p class="subtitle">Step-by-step instructions for connecting social media platforms</p>
+      
+      <div class="quick-actions">
+        <a href="#youtube" class="quick-action">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          YouTube
+        </a>
+        <a href="#instagram" class="quick-action">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="url(#ig-grad)"><defs><linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f09433"/><stop offset="25%" style="stop-color:#e6683c"/><stop offset="50%" style="stop-color:#dc2743"/><stop offset="75%" style="stop-color:#cc2366"/><stop offset="100%" style="stop-color:#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          Instagram
+        </a>
+        <a href="#twitter" class="quick-action">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Twitter/X
+        </a>
+        <a href="#openrouter" class="quick-action">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#5D5FEF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          OpenRouter
+        </a>
+      </div>
     </div>
   </section>
   
+  <!-- Content -->
   <section class="content">
     <div class="container">
-      <div class="method-tabs">
-        <button class="method-tab active" onclick="showMethod('guided')">Guided Setup</button>
-        <button class="method-tab" onclick="showMethod('manual')">Manual Setup</button>
+      <!-- Wizard CTA -->
+      <div class="wizard-cta">
+        <h3>⚡ Easiest Option: Interactive Wizard</h3>
+        <p>Let the wizard guide you through setup with automatic browser opening and validation.</p>
+        <div class="wizard-code">npx kai-api-setup</div>
+      </div>
+      
+      <!-- Method Selector -->
+      <div class="method-selector">
+        <button class="method-btn active" onclick="showMethod('guided')">📖 Guided Setup</button>
+        <button class="method-btn" onclick="showMethod('manual')">🔧 Manual Setup</button>
       </div>
       
       <!-- GUIDED SETUP -->
       <div id="guided" class="method-content active">
-        <div class="platform-card">
+        
+        <!-- YouTube -->
+        <div id="youtube" class="platform-card">
           <div class="platform-header">
-            <div class="platform-icon">YT</div>
+            <div class="platform-icon" style="background: #FF0000;">
+              <svg viewBox="0 0 24 24" fill="white" style="width: 28px; height: 28px;"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
             <div class="platform-title">YouTube</div>
-            <div class="difficulty">Easy - 5 min</div>
+            <div class="platform-meta">
+              <span class="difficulty">⭐ Easy - 5 min</span>
+              <a href="https://github.com/tmoreton/kai-skills/tree/main/skills/youtube" class="skill-link" target="_blank">View skill →</a>
+            </div>
           </div>
           
           <div class="steps">
@@ -422,9 +552,10 @@
               <div class="step-number">1</div>
               <div class="step-content">
                 <h4>Go to Google Cloud Console</h4>
-                <p>Click the button below to open the console</p>
+                <p>Create a project and enable the YouTube Data API v3</p>
                 <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="step-link">
-                  Open Google Cloud Console →
+                  Open Google Cloud Console
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </a>
               </div>
             </div>
@@ -432,10 +563,11 @@
             <div class="step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4>Create a new project</h4>
-                <p>Click "Select a project" → "New Project" → Name it "My Social Analytics"</p>
-                <div class="screenshot-placeholder">
-                  Screenshot: Project selector dropdown
+                <h4>Create an API Key</h4>
+                <p>In Credentials → Create Credentials → API Key. Copy the key (starts with AIza...)</p>
+                <div class="code-block">
+                  <span class="comment"># Add to your environment</span><br>
+                  export YOUTUBE_API_KEY=your_key_here
                 </div>
               </div>
             </div>
@@ -443,57 +575,40 @@
             <div class="step">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4>Enable YouTube API</h4>
-                <p>Search "YouTube Data API v3" and click "Enable"</p>
-                <div class="screenshot-placeholder">
-                  Screenshot: API Library search
-                </div>
-              </div>
-            </div>
-            
-            <div class="step">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h4>Create API Key</h4>
-                <p>Go to "Credentials" → "Create Credentials" → "API Key"</p>
-                <div class="screenshot-placeholder">
-                  Screenshot: Create credentials button
-                </div>
-              </div>
-            </div>
-            
-            <div class="step">
-              <div class="step-number">5</div>
-              <div class="step-content">
-                <h4>Copy your key</h4>
-                <p>A popup will show your key. Copy it and run this in your terminal:</p>
-                <div class="code-block">
-                  export YOUTUBE_API_KEY=your_key_here
-                </div>
+                <h4>Start Using</h4>
+                <p>In Claude, just ask: <em>"Get my YouTube stats for channel UC..."</em></p>
               </div>
             </div>
           </div>
           
-          <div class="help-box">
-            <h4>Stuck?</h4>
-            <p>Use the interactive wizard: <span class="code-block" style="display: inline; padding: 4px 8px; font-size: 0.8rem;">npx kai-api-setup</span></p>
+          <div class="tip-box">
+            <h4>💡 Tip</h4>
+            <p>The interactive wizard <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">npx kai-api-setup</code> can do steps 1-2 automatically.</p>
           </div>
         </div>
         
-        <div class="platform-card">
+        <!-- Instagram -->
+        <div id="instagram" class="platform-card">
           <div class="platform-header">
-            <div class="platform-icon">IG</div>
+            <div class="platform-icon" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
+              <svg viewBox="0 0 24 24" fill="white" style="width: 24px; height: 24px;"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </div>
             <div class="platform-title">Instagram</div>
-            <div class="difficulty">Medium - 10 min</div>
+            <div class="platform-meta">
+              <span class="difficulty">⭐⭐ Medium - 10 min</span>
+              <a href="https://github.com/tmoreton/kai-skills/tree/main/skills/instagram" class="skill-link" target="_blank">View skill →</a>
+            </div>
           </div>
           
           <div class="steps">
             <div class="step">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h4>Go to Meta for Developers</h4>
+                <h4>Create Meta Developer App</h4>
+                <p>Go to Meta for Developers and create a new app</p>
                 <a href="https://developers.facebook.com/apps/" target="_blank" class="step-link">
-                  Open Meta Developer Portal →
+                  Open Meta Developer Portal
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </a>
               </div>
             </div>
@@ -501,37 +616,77 @@
             <div class="step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4>Create an app</h4>
-                <p>Click "Create App" → Select "Other" → Name it "Social Analytics"</p>
+                <h4>Add Instagram Basic Display</h4>
+                <p>In your app, click "Add Product" → "Instagram Basic Display" → "Set Up"</p>
               </div>
             </div>
             
             <div class="step">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4>Add Instagram Basic Display</h4>
-                <p>In the left sidebar, click "Add Product" → Find "Instagram Basic Display" → Click "Set Up"</p>
-              </div>
-            </div>
-            
-            <div class="step">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h4>Generate token</h4>
-                <p>Go to "Basic Display" → "User Token Generator" → Click "Generate Token"</p>
+                <h4>Generate Access Token</h4>
+                <p>Go to "User Token Generator" and click "Generate Token"</p>
                 <div class="code-block">
-                  export INSTAGRAM_TOKEN=your_token_here
+                  <span class="comment"># Add to your environment</span><br>
+                  export INSTAGRAM_ACCESS_TOKEN=your_token_here
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        <div class="platform-card">
+        <!-- Twitter/X -->
+        <div id="twitter" class="platform-card">
           <div class="platform-header">
-            <div class="platform-icon">OR</div>
-            <div class="platform-title">OpenRouter (AI)</div>
-            <div class="difficulty">Easiest - 2 min</div>
+            <div class="platform-icon" style="background: #000000;">
+              <svg viewBox="0 0 24 24" fill="white" style="width: 22px; height: 22px;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </div>
+            <div class="platform-title">Twitter / X</div>
+            <div class="platform-meta">
+              <span class="difficulty">⭐⭐ Medium - 10 min</span>
+              <a href="https://github.com/tmoreton/kai-skills/tree/main/skills/twitter" class="skill-link" target="_blank">View skill →</a>
+            </div>
+          </div>
+          
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Apply for Twitter Developer Account</h4>
+                <p>Sign up at the Twitter Developer Portal</p>
+                <a href="https://developer.twitter.com" target="_blank" class="step-link">
+                  Open Twitter Developer Portal
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                </a>
+              </div>
+            </div>
+            
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Create a Project and App</h4>
+                <p>Go to Dashboard → Create Project → Create App. Get your API Key and Secret.</p>
+                <div class="code-block">
+                  <span class="comment"># Add to your environment</span><br>
+                  export TWITTER_API_KEY=your_key<br>
+                  export TWITTER_API_SECRET=your_secret
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- OpenRouter -->
+        <div id="openrouter" class="platform-card">
+          <div class="platform-header">
+            <div class="platform-icon" style="background: #5D5FEF;">
+              <svg viewBox="0 0 24 24" fill="white" style="width: 24px; height: 24px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <div class="platform-title">OpenRouter (AI Image Generation)</div>
+            <div class="platform-meta">
+              <span class="difficulty">⭐ Easiest - 2 min</span>
+              <a href="https://github.com/tmoreton/kai-skills/tree/main/skills/openrouter" class="skill-link" target="_blank">View skill →</a>
+            </div>
           </div>
           
           <div class="steps">
@@ -539,8 +694,10 @@
               <div class="step-number">1</div>
               <div class="step-content">
                 <h4>Sign up on OpenRouter</h4>
+                <p>Create an account and get your API key</p>
                 <a href="https://openrouter.ai/keys" target="_blank" class="step-link">
-                  Go to OpenRouter →
+                  Get OpenRouter Key
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </a>
               </div>
             </div>
@@ -548,9 +705,9 @@
             <div class="step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4>Create API Key</h4>
-                <p>Click "Create API Key" → Name it "Kai" → Copy the key</p>
+                <h4>Copy your API Key</h4>
                 <div class="code-block">
+                  <span class="comment"># Add to your environment</span><br>
                   export OPENROUTER_API_KEY=your_key_here
                 </div>
               </div>
@@ -563,67 +720,71 @@
       <div id="manual" class="method-content">
         <div class="platform-card">
           <div class="platform-header">
-            <div class="platform-icon">YT</div>
-            <div class="platform-title">YouTube Data API</div>
+            <div class="platform-icon" style="background: var(--accent);">
+              <svg viewBox="0 0 24 24" fill="white" style="width: 24px; height: 24px;"><path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/></svg>
+            </div>
+            <div class="platform-title">Manual Environment Setup</div>
           </div>
-          <a href="https://developers.google.com/youtube/registering_an_application" target="_blank" class="step-link">
-            Official Google Documentation →
-          </a>
-        </div>
-        
-        <div class="platform-card">
-          <div class="platform-header">
-            <div class="platform-icon">IG</div>
-            <div class="platform-title">Instagram Basic Display API</div>
+          
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Create .env file</h4>
+                <p>Create a .env file in your project root or home directory</p>
+                <div class="code-block">
+                  <span class="comment"># ~/.kai/.env</span><br>
+                  YOUTUBE_API_KEY=your_key<br>
+                  INSTAGRAM_ACCESS_TOKEN=your_token<br>
+                  TWITTER_API_KEY=your_key<br>
+                  TWITTER_API_SECRET=your_secret<br>
+                  OPENROUTER_API_KEY=your_key
+                </div>
+              </div>
+            </div>
+            
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Or use shell exports</h4>
+                <div class="code-block">
+                  <span class="comment"># Add to ~/.zshrc or ~/.bashrc</span><br>
+                  export YOUTUBE_API_KEY=xxx<br>
+                  export INSTAGRAM_ACCESS_TOKEN=xxx
+                </div>
+              </div>
+            </div>
+            
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Reload shell</h4>
+                <div class="code-block">
+                  source ~/.zshrc  <span class="comment"># or ~/.bashrc</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <a href="https://developers.facebook.com/docs/instagram-basic-display-api/getting-started" target="_blank" class="step-link">
-            Official Meta Documentation →
-          </a>
-        </div>
-        
-        <div class="platform-card">
-          <div class="platform-header">
-            <div class="platform-icon">TW</div>
-            <div class="platform-title">Twitter/X API</div>
-          </div>
-          <a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api" target="_blank" class="step-link">
-            Official Twitter Documentation →
-          </a>
-        </div>
-        
-        <div class="platform-card">
-          <div class="platform-header">
-            <div class="platform-icon">LI</div>
-            <div class="platform-title">LinkedIn API</div>
-          </div>
-          <a href="https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow" target="_blank" class="step-link">
-            Official LinkedIn Documentation →
-          </a>
-        </div>
-      </div>
-      
-      <div class="alternative">
-        <h5>Alternative</h5>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Use the interactive terminal wizard that guides you through each step automatically:
-        </p>
-        <div class="code-block" style="margin-top: 12px;">
-          npx kai-api-setup
         </div>
       </div>
     </div>
   </section>
   
+  <!-- Footer -->
   <footer>
     <div class="container">
-      <p>Need help? <a href="https://discord.gg/kai">Join our Discord</a></p>
+      <p>Need help? <a href="https://discord.gg/kai">Join our Discord</a> or <a href="https://github.com/tmoreton/kai-skills/issues">open an issue</a></p>
+      <p style="margin-top: 8px;"><a href="index.html">← Back to Homepage</a></p>
     </div>
   </footer>
   
   <script>
     function showMethod(method) {
+      // Hide all methods
       document.querySelectorAll('.method-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.method-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.method-btn').forEach(el => el.classList.remove('active'));
+      
+      // Show selected method
       document.getElementById(method).classList.add('active');
       event.target.classList.add('active');
     }
