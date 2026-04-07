@@ -1,6 +1,6 @@
 {
   "name": "kai-skills",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Quickly connect Kai skills to Claude Desktop/Code - 21 AI-powered social media tools",
   "type": "module",
   "bin": {

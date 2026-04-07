@@ -54,7 +54,7 @@ tools:
         required: true
         description: Twitter/X username
   - name: post_tweet
-    description: Post a tweet to Twitter/X (Free tier: 500/month)
+    description: "Post a tweet to Twitter/X (Free tier: 500/month)"
     parameters:
       text:
         type: string
