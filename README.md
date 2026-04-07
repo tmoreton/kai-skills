@@ -106,7 +106,7 @@ claude
 
 ## API Key Setup
 
-Three ways to get API keys:
+Two ways to get API keys:
 
 ### 1. Interactive Wizard (Easiest)
 ```bash
@@ -114,10 +114,7 @@ npx kai-api-setup
 ```
 Step-by-step guide that opens browsers and validates keys automatically.
 
-### 2. One-Click OAuth (Coming Soon)
-No API keys needed. Just click approve on Google/Instagram login.
-
-### 3. Manual Setup
+### 2. Manual Setup
 Visit our [setup guide](https://tmoreton.github.io/kai-skills/api-setup.html) for platform-specific instructions.
 
 **Quick links for API keys:**
