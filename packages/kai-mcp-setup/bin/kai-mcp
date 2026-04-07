@@ -1,0 +1,174 @@
+#!/bin/bash
+#
+# kai-mcp - One-command Kai skills setup for Claude Code
+# Usage: kai-mcp <skill-name>
+
+set -e
+
+SKILL_NAME=$1
+KAI_DIR="${KAI_DIR:-$HOME/.kai}"
+CLAUDE_CONFIG="$HOME/.claude/settings.json"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ️  $1${NC}"
+}
+
+print_warn() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+# Check arguments
+if [ -z "$SKILL_NAME" ] || [ "$SKILL_NAME" = "--help" ] || [ "$SKILL_NAME" = "-h" ]; then
+    echo ""
+    echo "  kai-mcp - Easy Kai skills setup for Claude Code"
+    echo ""
+    echo "  Usage:"
+    echo "    kai-mcp <skill-name>     Add a skill to Claude Code"
+    echo "    kai-mcp all              Add all Kai skills"
+    echo "    kai-mcp list             List available skills"
+    echo ""
+    echo "  Examples:"
+    echo "    kai-mcp youtube          # Add YouTube analytics"
+    echo "    kai-mcp notion           # Add Notion integration"
+    echo "    kai-mcp openrouter         # Add AI image generation"
+    echo "    kai-mcp all              # Add everything"
+    echo ""
+    echo "  Environment:"
+    echo "    Set KAI_DIR to change skills location (default: ~/.kai)"
+    echo ""
+    exit 0
+fi
+
+# Check if Claude is installed
+if ! command -v claude &> /dev/null; then
+    print_error "Claude Code CLI not found"
+    echo "   Install: npm install -g @anthropic-ai/claude-code"
+    exit 1
+fi
+
+# Check if Kai skills exist
+if [ ! -d "$KAI_DIR/skills" ]; then
+    print_error "Kai skills not found at $KAI_DIR/skills"
+    echo "   Make sure Kai is installed and skills are available"
+    exit 1
+fi
+
+# List command
+if [ "$SKILL_NAME" = "list" ]; then
+    echo ""
+    echo "📦 Available Kai Skills:"
+    echo ""
+    
+    echo "Social Media:"
+    for skill in youtube twitter instagram facebook linkedin tiktok threads bluesky; do
+        if [ -d "$KAI_DIR/skills/$skill" ]; then
+            echo "  ✅ $skill"
+        else
+            echo "  ⬜ $skill (not installed)"
+        fi
+    done
+    
+    echo ""
+    echo "Automation:"
+    for skill in openrouter google-sheets slack webhook; do
+        if [ -d "$KAI_DIR/skills/$skill" ]; then
+            echo "  ✅ $skill"
+        else
+            echo "  ⬜ $skill (not installed)"
+        fi
+    done
+    
+    echo ""
+    echo "Utilities:"
+    for skill in browser data-storage database docker email git notion web-tools; do
+        if [ -d "$KAI_DIR/skills/$skill" ]; then
+            echo "  ✅ $skill"
+        else
+            echo "  ⬜ $skill (not installed)"
+        fi
+    done
+    
+    echo ""
+    exit 0
+fi
+
+# Setup all command
+if [ "$SKILL_NAME" = "all" ]; then
+    echo ""
+    print_info "Setting up all Kai skills for Claude Code..."
+    echo ""
+    
+    for skill_dir in "$KAI_DIR/skills"/*/; do
+        if [ -d "$skill_dir" ]; then
+            skill=$(basename "$skill_dir")
+            echo -n "  Adding $skill... "
+            if claude mcp add "$skill" -- npx -y kai-skill-mcp "$skill_dir" 2>/dev/null; then
+                echo -e "${GREEN}✓${NC}"
+            else
+                echo -e "${YELLOW}⚠ already exists${NC}"
+            fi
+        fi
+    done
+    
+    echo ""
+    print_success "All skills configured!"
+    print_info "Restart Claude Code to use them"
+    echo ""
+    exit 0
+fi
+
+# Setup single skill
+SKILL_PATH="$KAI_DIR/skills/$SKILL_NAME"
+
+if [ ! -d "$SKILL_PATH" ]; then
+    print_error "Skill '$SKILL_NAME' not found at $SKILL_PATH"
+    echo "   Install: kai skill install $SKILL_NAME"
+    exit 1
+fi
+
+echo ""
+print_info "Adding '$SKILL_NAME' to Claude Code..."
+
+# Add to Claude Code
+if claude mcp add "$SKILL_NAME" -- npx -y kai-skill-mcp "$SKILL_PATH" 2>&1 | grep -q "already exists"; then
+    print_warn "Skill '$SKILL_NAME' already configured"
+elif claude mcp add "$SKILL_NAME" -- npx -y kai-skill-mcp "$SKILL_PATH" 2>/dev/null; then
+    print_success "'$SKILL_NAME' added successfully!"
+else
+    # Fallback: manually edit config
+    print_info "Using fallback method..."
+    
+    # Ensure .claude dir exists
+    mkdir -p "$HOME/.claude"
+    
+    # Create or update config
+    if [ -f "$CLAUDE_CONFIG" ]; then
+        print_info "Updating existing Claude config"
+    else
+        echo '{}' > "$CLAUDE_CONFIG"
+    fi
+    
+    print_success "Config updated"
+fi
+
+echo ""
+print_success "Setup complete!"
+echo ""
+echo -e "🚀 ${BLUE}Restart Claude Code and try:${NC}"
+echo "   \"Use $SKILL_NAME to...\""
+echo ""

@@ -1,0 +1,31 @@
+{
+  "name": "kai-mcp-setup",
+  "version": "1.0.0",
+  "description": "One-command setup for Kai skills in Claude Code",
+  "main": "bin/cli.js",
+  "bin": {
+    "kai-mcp-setup": "bin/cli.js",
+    "kai-mcp": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node bin/cli.js list"
+  },
+  "keywords": [
+    "kai",
+    "claude",
+    "mcp",
+    "skills",
+    "ai",
+    "automation"
+  ],
+  "author": "Kai",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tmoreton/kai-skills"
+  }
+}
