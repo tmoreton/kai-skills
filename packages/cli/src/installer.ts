@@ -1,5 +1,5 @@
 /**
- * Skill installer - handles installation to different targets
+ * Skill installer - handles installation and management of Kai skills
  */
 
 import { execSync } from "child_process";
@@ -7,8 +7,10 @@ import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync, 
 import { homedir } from "os";
 import path from "path";
 import https from "https";
+import { fileURLToPath } from "url";
 
-const REGISTRY_URL = "https://raw.githubusercontent.com/tim-moreton/kai-skills/main/registry/skills.json";
+const REGISTRY_URL = "https://raw.githubusercontent.com/tmoreton/kai-skills/main/registry/skills.json";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export interface SkillInfo {
   id: string;
@@ -43,10 +45,29 @@ export async function listSkills(): Promise<SkillInfo[]> {
 }
 
 /**
- * Load skills from local filesystem (development mode)
+ * Load skills from local filesystem (development mode or when bundled with skills)
  */
 function loadLocalSkills(): SkillInfo[] {
-  const skillsDir = path.join(process.cwd(), "..", "..", "skills");
+  // Try to find skills relative to the package installation
+  const possiblePaths = [
+    path.join(__dirname, "..", "..", "..", "skills"), // Development: cli/dist/ -> packages/cli/ -> root
+    path.join(__dirname, "..", "skills"),            // Global install: cli/dist/ -> kai-skills/skills
+    path.join(process.cwd(), "skills"),              // Local project with kai-skills installed
+  ];
+
+  let skillsDir: string | null = null;
+  for (const dir of possiblePaths) {
+    if (existsSync(dir)) {
+      skillsDir = dir;
+      break;
+    }
+  }
+
+  if (!skillsDir) {
+    console.error("Could not find skills directory. Checked:", possiblePaths);
+    return [];
+  }
+
   const skills: SkillInfo[] = [];
 
   try {
