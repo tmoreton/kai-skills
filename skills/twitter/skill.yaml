@@ -1,9 +1,9 @@
 id: twitter
 name: Twitter/X
 version: 2.1.0
-description: Twitter/X API v2 — real Twitter API for search, user analysis, and posting
+description: Twitter/X social media management — post tweets, create threads, analyze engagement, search tweets, monitor mentions, track followers. Complete Twitter API v2 integration for social media marketing, content publishing, audience analytics, and community management. Essential for social media managers and content creators.
 author: Kai
-tags: ["social-media", "twitter", "x", "analytics", "posting"]
+tags: ["social-media", "twitter", "x", "analytics", "posting", "tweets"]
 config_schema:
   - key: api_key
     type: string
@@ -27,7 +27,7 @@ config_schema:
     description: Twitter Access Token Secret
 tools:
   - name: search_tweets
-    description: Search recent tweets using Twitter API v2 (requires Basic tier or higher for full search)
+    description: "Search, find tweets on Twitter/X by keywords, hashtags, mentions. Discover trending topics, monitor brand mentions, research conversations. Use for social listening, trend analysis, competitive research, content discovery."
     parameters:
       query:
         type: string

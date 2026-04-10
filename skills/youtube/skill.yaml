@@ -1,9 +1,9 @@
 id: youtube
 name: YouTube
-description: YouTube analytics — channel stats, video metrics, comments, trending
+description: YouTube content management and analytics — upload videos, manage channel, analyze performance metrics, track comments, monitor engagement. Complete YouTube creator tools for video publishing, SEO optimization, audience analytics, and channel growth. Essential for content creators and video marketing.
 version: 1.0.0
 author: Kai
-tags: ["social-media", "youtube", "analytics", "video"]
+tags: ["social-media", "youtube", "analytics", "video", "content-creation", "upload"]
 
 config_schema:
   - key: YOUTUBE_API_KEY
@@ -13,7 +13,7 @@ config_schema:
 
 tools:
   - name: setup
-    description: Set up YouTube API credentials. Ask user for their YouTube Data API key and store it securely.
+    description: Configure, authenticate YouTube API credentials. Set up YouTube Data API access for uploading videos, reading analytics, managing channel. Required before using any YouTube features.
     parameters:
       api_key:
         type: string

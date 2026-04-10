@@ -1,13 +1,13 @@
 id: docker
-name: docker
-description: Docker containers — build images, run containers, compose
+name: Docker
+description: Build, deploy, and manage Docker containers and images. Create containerized applications, run microservices, manage container lifecycle, docker-compose orchestration. Essential for deployment, DevOps workflows, and container management.
 version: 1.0.0
 author: Kai
-tags: ["docker", "containers", "devops", "deployment"]
+tags: ["docker", "containers", "devops", "deployment", "microservices", "containerization"]
 
 tools:
   - name: docker_build
-    description: Build Docker image with intelligent tagging
+    description: "Build, create Docker container images from Dockerfiles. Compile applications into portable containers with intelligent tagging. Use for building production images, creating deployment artifacts, packaging applications. Supports build args, custom tags, and registry push."
     parameters:
       tag:
         type: string
@@ -30,7 +30,7 @@ tools:
         default: false
 
   - name: docker_run
-    description: Run Docker container with smart defaults
+    description: "Launch, start, execute Docker containers from images. Deploy applications in isolated environments with smart defaults. Use for running microservices, testing containers, launching apps, development environments. Supports port mapping, environment variables, volume mounts."
     parameters:
       image:
         type: string

@@ -1,10 +1,10 @@
 id: instagram
 name: Instagram
 version: 1.0.0
-description: Instagram content — profiles, posts, hashtags, insights
+description: Instagram social media management — post photos, schedule content, analyze engagement, track hashtags, monitor insights. Instagram Graph API integration for content publishing, audience analytics, hashtag research, and brand monitoring. Essential for social media marketers and Instagram content creators.
 author: Kai
 icon: instagram
-tags: ["social-media", "instagram", "photos", "analytics", "content"]
+tags: ["social-media", "instagram", "photos", "analytics", "content", "scheduling"]
 config_schema:
   - key: access_token
     type: string
@@ -35,7 +35,7 @@ dependencies:
       description: Optional library for private API features (not required for basic usage)
 tools:
   - name: setup
-    description: Set up Instagram API credentials
+    description: Configure, authenticate Instagram API credentials. Set up Instagram Graph API access for posting content, reading analytics, managing business accounts. Required before using Instagram features.
     parameters:
       access_token:
         type: string

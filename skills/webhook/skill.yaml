@@ -1,15 +1,15 @@
 id: webhook
-name: webhook
+name: Webhook
 version: 1.0.0
-description: Webhook triggers — POST to Zapier, Make, custom endpoints
+description: Webhook automation and integrations — send HTTP requests to Zapier, Make, Slack, Discord, custom endpoints. Trigger automated workflows, send notifications, connect apps. POST JSON payloads with authentication, custom headers, retries. Essential for no-code automation, app integrations, and event-driven workflows.
 author: Kai
-tags: ["webhook", "automation", "zapier", "make", "api", "integration"]
+tags: ["webhook", "automation", "zapier", "make", "api", "integration", "notifications"]
 config_schema: []  # No required configuration - all params passed per-action
 dependencies:
   # No npm dependencies - uses native fetch
 tools:
   - name: setup
-    description: Set up webhook configuration
+    description: Configure webhook defaults and signing secrets. Set global webhook settings, authentication tokens for verification. Optional setup before sending webhooks.
     parameters:
       secret:
         type: string
@@ -17,7 +17,7 @@ tools:
         description: Webhook signing secret for verification
 
   - name: send_webhook
-    description: Send a POST request with JSON payload to any webhook URL
+    description: "Send, dispatch, trigger webhooks via HTTP POST. Send JSON payloads to Zapier, Make, Slack, custom APIs. Use for automation triggers, notifications, app integrations, event forwarding. Supports custom headers and auth."
     parameters:
       url:
         type: string

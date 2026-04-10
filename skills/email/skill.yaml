@@ -1,6 +1,6 @@
 id: email
 name: email
-description: Send and read emails — SMTP/IMAP support for all providers
+description: Send, receive, and manage emails via SMTP and IMAP. Send newsletters, marketing emails, transactional messages. Read inbox, search emails, check notifications. Works with Gmail, Outlook, and all email providers. Essential for communication workflows and automated messaging.
 author: kai
 
 dependencies:
@@ -42,7 +42,7 @@ config_schema:
     description: IMAP password (defaults to SMTP_PASS if not set)
 tools:
   - name: setup
-    description: Set up email SMTP credentials
+    description: Configure, authenticate email SMTP and IMAP credentials. Set up Gmail, Outlook, or custom email provider connection. Required before sending or reading emails.
     parameters:
       smtp_host:
         type: string
@@ -62,7 +62,7 @@ tools:
         required: true
         description: Email password or app-specific password
   - name: send
-    description: Send an email to one or more recipients. Supports plain text and HTML bodies, CC, BCC, and reply-to.
+    description: "Send, dispatch, deliver emails to recipients. Send newsletters, marketing campaigns, transactional emails, notifications. Supports HTML, plain text, attachments, CC, BCC, reply-to headers. Use for email automation, newsletters, alerts, confirmations."
     parameters:
       to:
         type: string

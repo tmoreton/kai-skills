@@ -1,12 +1,13 @@
 id: database
-name: database
-description: Database operations — migrations, queries, schema, backups
+name: Database
+description: Database management and operations — run SQL queries, execute migrations, inspect schema, create backups, manage data. Supports PostgreSQL, MySQL, SQLite, and all major databases. Works with Prisma, TypeORM, Sequelize, Knex, Alembic. Essential for data operations, schema changes, and database administration.
 version: 1.0.0
 author: Kai
+tags: ["database", "sql", "postgres", "mysql", "sqlite", "migrations", "backup"]
 
 tools:
   - name: db_migrate_run
-    description: Run database migrations with auto-detection of framework
+    description: "Execute, run database schema migrations. Update database structure, apply schema changes, roll forward or backward. Auto-detects migration frameworks. Use for deploying schema updates, reverting changes, managing database versions."
     parameters:
       framework:
         type: string

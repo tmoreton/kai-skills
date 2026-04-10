@@ -1,9 +1,9 @@
 id: browser
 name: Browser
-description: Browse the web — navigate, click, fill forms, take screenshots
+description: Web browser automation and scraping — navigate websites, click elements, fill forms, take screenshots, extract data. Headless Chromium browser for web scraping, form automation, visual testing, JavaScript-heavy sites, and web research. Essential for interacting with modern web apps, dashboards, and SPAs that need JavaScript rendering.
 version: 1.0.0
 author: Kai
-tags: ["browser", "web", "playwright", "automation"]
+tags: ["browser", "web", "playwright", "automation", "scraping", "screenshots"]
 
 dependencies:
   - name: playwright
@@ -31,7 +31,7 @@ config_schema:
 
 tools:
   - name: setup
-    description: Set up browser automation credentials (optional)
+    description: Configure browser automation settings. Set headless mode, timeouts, output directories for screenshots. Optional initial setup before browsing.
     parameters:
       headless:
         type: boolean
