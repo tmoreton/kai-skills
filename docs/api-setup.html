@@ -63,15 +63,15 @@
     }
     
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
       text-decoration: none;
     }
     
-    .logo span {
-      color: var(--accent);
+    .logo img {
+      width: 40px;
+      height: 40px;
+      display: block;
     }
     
     .nav-links {
@@ -476,7 +476,7 @@
   <!-- Shared Navigation -->
   <nav>
     <div class="container">
-      <a href="index.html" class="logo">Kai<span>.</span></a>
+      <a href="index.html" class="logo"><img src="favicon.svg" alt="Kai" width="40" height="40"></a>
       <div class="nav-links">
         <a href="index.html#skills">Skills</a>
         <a href="index.html#setup">Setup</a>
