@@ -1,6 +1,6 @@
 id: youtube
 name: YouTube
-description: YouTube content management and analytics — upload videos, manage channel, analyze performance metrics, track comments, monitor engagement. Complete YouTube creator tools for video publishing, SEO optimization, audience analytics, and channel growth. Essential for content creators and video marketing.
+description: YouTube management — upload videos, channel analytics, comments, engagement tracking. Creator tools and SEO.
 version: 1.0.0
 author: Kai
 tags: ["social-media", "youtube", "analytics", "video", "content-creation", "upload"]

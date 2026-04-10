@@ -1,6 +1,6 @@
 id: docker
 name: Docker
-description: Build, deploy, and manage Docker containers and images. Create containerized applications, run microservices, manage container lifecycle, docker-compose orchestration. Essential for deployment, DevOps workflows, and container management.
+description: Build and manage Docker containers, images, and docker-compose. Deployment and DevOps workflows.
 version: 1.0.0
 author: Kai
 tags: ["docker", "containers", "devops", "deployment", "microservices", "containerization"]

@@ -1,7 +1,7 @@
 id: twitter
 name: Twitter/X
 version: 2.1.0
-description: Twitter/X social media management — post tweets, create threads, analyze engagement, search tweets, monitor mentions, track followers. Complete Twitter API v2 integration for social media marketing, content publishing, audience analytics, and community management. Essential for social media managers and content creators.
+description: Twitter/X management — post tweets, threads, analyze engagement, search, track followers. API v2 integration.
 author: Kai
 tags: ["social-media", "twitter", "x", "analytics", "posting", "tweets"]
 config_schema:

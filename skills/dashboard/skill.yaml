@@ -1,7 +1,7 @@
 id: dashboard
 name: Social Media Dashboard
 version: 1.0.0
-description: Local social media analytics dashboard — auto-installs, stores API keys securely, fetches data, and displays visual charts. No cloud, 100% private.
+description: Local social media analytics dashboard — auto-installs, fetches data, displays charts. 100% private.
 author: Kai
 tags: ["dashboard", "analytics", "social-media", "visualization", "local"]
 

@@ -1,6 +1,6 @@
 id: database
 name: Database
-description: Database management and operations — run SQL queries, execute migrations, inspect schema, create backups, manage data. Supports PostgreSQL, MySQL, SQLite, and all major databases. Works with Prisma, TypeORM, Sequelize, Knex, Alembic. Essential for data operations, schema changes, and database administration.
+description: Database management — run SQL queries, migrations, backups. Supports PostgreSQL, MySQL, SQLite.
 version: 1.0.0
 author: Kai
 tags: ["database", "sql", "postgres", "mysql", "sqlite", "migrations", "backup"]

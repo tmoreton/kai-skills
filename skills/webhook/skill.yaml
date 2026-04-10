@@ -1,7 +1,7 @@
 id: webhook
 name: Webhook
 version: 1.0.0
-description: Webhook automation and integrations — send HTTP requests to Zapier, Make, Slack, Discord, custom endpoints. Trigger automated workflows, send notifications, connect apps. POST JSON payloads with authentication, custom headers, retries. Essential for no-code automation, app integrations, and event-driven workflows.
+description: Webhook automation — send HTTP requests to Zapier, Slack, Discord. POST JSON with auth and retries.
 author: Kai
 tags: ["webhook", "automation", "zapier", "make", "api", "integration", "notifications"]
 config_schema: []  # No required configuration - all params passed per-action

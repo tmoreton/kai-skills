@@ -1,6 +1,6 @@
 id: email
 name: email
-description: Send, receive, and manage emails via SMTP and IMAP. Send newsletters, marketing emails, transactional messages. Read inbox, search emails, check notifications. Works with Gmail, Outlook, and all email providers. Essential for communication workflows and automated messaging.
+description: Send and receive emails via SMTP/IMAP. Newsletters, transactional messages, inbox search.
 author: kai
 
 dependencies:

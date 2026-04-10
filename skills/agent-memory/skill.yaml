@@ -1,0 +1,29 @@
+id: agent-memory
+name: agent-memory
+description: Read and update agent memory (goals, scratchpad, personality) during workflow execution. Access agent context and store working notes.
+author: kai
+
+tools:
+  - name: read
+    description: Read the agent's memory including goals, scratchpad, and personality. Use this at the start of workflows to understand agent context and stored knowledge.
+    parameters:
+      block:
+        type: string
+        required: false
+        description: Specific memory block to read - 'goals', 'scratchpad', 'personality', or omit for all. Default reads all memory.
+  - name: update
+    description: Update the agent's memory (goals or scratchpad). Use scratchpad to store working notes, learnings, or progress during workflow execution.
+    parameters:
+      block:
+        type: string
+        required: true
+        description: Memory block to update - 'goals' or 'scratchpad'
+      content:
+        type: string
+        required: true
+        description: New content to store
+      operation:
+        type: string
+        required: false
+        default: replace
+        description: 'replace' to overwrite, 'append' to add to existing content

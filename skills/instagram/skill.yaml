@@ -1,7 +1,7 @@
 id: instagram
 name: Instagram
 version: 1.0.0
-description: Instagram social media management — post photos, schedule content, analyze engagement, track hashtags, monitor insights. Instagram Graph API integration for content publishing, audience analytics, hashtag research, and brand monitoring. Essential for social media marketers and Instagram content creators.
+description: Instagram management — post photos, schedule content, analyze engagement, hashtags. Graph API integration.
 author: Kai
 icon: instagram
 tags: ["social-media", "instagram", "photos", "analytics", "content", "scheduling"]

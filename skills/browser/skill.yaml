@@ -1,6 +1,6 @@
 id: browser
 name: Browser
-description: Web browser automation and scraping — navigate websites, click elements, fill forms, take screenshots, extract data. Headless Chromium browser for web scraping, form automation, visual testing, JavaScript-heavy sites, and web research. Essential for interacting with modern web apps, dashboards, and SPAs that need JavaScript rendering.
+description: Web browser automation — navigate, click, fill forms, take screenshots. Headless Chromium for JS-heavy sites.
 version: 1.0.0
 author: Kai
 tags: ["browser", "web", "playwright", "automation", "scraping", "screenshots"]
