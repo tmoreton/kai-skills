@@ -1,20 +1,16 @@
 # Twitter/X Skill for Kai
 
-Full Twitter/X integration with research tools (via web search) and posting tools (via X API v2).
+Full Twitter/X integration with X API v2. Search, analyze users, and post tweets.
 
 ## Features
 
-### Research Tools (No API key required - uses web search)
-- `search_tweets` - Search for recent tweets by keyword, topic, or hashtag
+- `search_tweets` - Search for recent tweets by keyword, topic, or hashtag (requires Basic tier or higher)
 - `get_user_tweets` - Get recent tweets from a specific user handle
 - `analyze_user` - Analyze a Twitter user's profile, stats, and engagement
-- `find_influencers` - Find popular accounts in a specific niche/topic
-- `track_topic_sentiment` - Track sentiment around a topic
-
-### Posting Tools (X API v2 OAuth 1.0a required)
 - `post_tweet` - Post a tweet to Twitter/X
-- `post_thread` - Post a thread of connected tweets
 - `get_rate_limits` - Check API quota status
+
+**Note:** Twitter/X Free tier has limited access. Full search requires Basic tier ($100/month).
 
 ## Claude Desktop Installation
 
@@ -27,10 +23,7 @@ npm install
 
 ### 2. Get API credentials
 
-**For research tools only:**
-- Get a [Tavily API key](https://tavily.com) for web search
-
-**For posting tools:**
+**Required for all tools:**
 - Apply for [X Developer access](https://developer.x.com)
 - Create a project and app
 - Generate OAuth 1.0a credentials (Consumer Keys + Access Tokens)
@@ -47,7 +40,6 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
       "command": "node",
       "args": ["/Users/YOUR_USERNAME/Code/kai-skills/skills/twitter/handler.js"],
       "env": {
-        "TAVILY_API_KEY": "your_tavily_key_here",
         "X_API_KEY": "your_x_api_key_here",
         "X_API_SECRET": "your_x_api_secret_here",
         "X_ACCESS_TOKEN": "your_x_access_token_here",
@@ -64,14 +56,13 @@ Quit and reopen Claude Desktop to load the new skill.
 
 ## Environment Variables
 
-| Variable | Required For | Description |
-|----------|--------------|-------------|
-| `TAVILY_API_KEY` | Research tools | Tavily web search API key |
-| `X_API_KEY` | Posting tools | X API Consumer Key |
-| `X_API_SECRET` | Posting tools | X API Consumer Secret |
-| `X_ACCESS_TOKEN` | Posting tools | X API Access Token |
-| `X_ACCESS_TOKEN_SECRET` | Posting tools | X API Access Token Secret |
-| `X_BEARER_TOKEN` | Optional | X API Bearer Token (for read operations) |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `X_API_KEY` | Yes | X API Consumer Key |
+| `X_API_SECRET` | Yes | X API Consumer Secret |
+| `X_ACCESS_TOKEN` | Yes | X API Access Token |
+| `X_ACCESS_TOKEN_SECRET` | Yes | X API Access Token Secret |
+| `X_BEARER_TOKEN` | Optional | X API Bearer Token (alternative auth) |
 
 ## Usage Examples
 

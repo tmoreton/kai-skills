@@ -14,20 +14,24 @@ dependencies:
 config_schema:
   - key: BROWSER_HEADLESS
     type: boolean
-    description: Run browser in headless mode
+    description: Run browser in headless mode (default true, set to false to see browser window)
     default: true
+    required: false
   - key: BROWSER_TIMEOUT_MS
     type: number
-    description: Navigation timeout in milliseconds
+    description: Navigation timeout in milliseconds (default 30000)
     default: 30000
+    required: false
   - key: BROWSER_CONTENT_LIMIT
     type: number
-    description: Max characters to return from page content
+    description: Max characters to return from page content (default 80000)
     default: 80000
+    required: false
   - key: BROWSER_OUTPUT_DIR
     type: string
-    description: Directory for screenshots and downloads
+    description: Directory for screenshots and downloads (default ~/.kai/agent-output/browser)
     default: ~/.kai/agent-output/browser
+    required: false
 
 tools:
   - name: setup

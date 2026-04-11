@@ -7,6 +7,8 @@ config_schema:
   - key: tavily_api_key
     type: string
     env: TAVILY_API_KEY
+    required: false
+    description: Tavily API key for web search (optional - fetch tool works without it)
 tools:
   - name: fetch
     description: Fetch content from a URL and return the response
