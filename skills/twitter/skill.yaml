@@ -1,25 +1,30 @@
 id: twitter
 name: Twitter/X
 version: 2.1.0
-description: Twitter/X management — post tweets, threads, analyze engagement, search, track followers. API v2 integration.
+description: Twitter/X management — post tweets, threads, analyze engagement, search, track followers. API v2 with OAuth 1.0a.
 author: Kai
 tags: ["social-media", "twitter", "x", "analytics", "posting", "tweets"]
 config_schema:
-  - key: client_id
+  - key: api_key
     type: string
     required: true
-    env: X_CLIENT_ID
-    description: Twitter/X OAuth 2.0 Client ID from developer.x.com
-  - key: client_secret
+    env: X_API_KEY
+    description: Twitter/X API Key (Consumer Key) from developer.x.com
+  - key: api_secret
     type: string
     required: true
-    env: X_CLIENT_SECRET
-    description: Twitter/X OAuth 2.0 Client Secret
+    env: X_API_SECRET
+    description: Twitter/X API Secret (Consumer Secret)
   - key: access_token
     type: string
     required: true
     env: X_ACCESS_TOKEN
-    description: Twitter/X OAuth 2.0 Access Token (User context)
+    description: Twitter/X Access Token
+  - key: access_token_secret
+    type: string
+    required: true
+    env: X_ACCESS_TOKEN_SECRET
+    description: Twitter/X Access Token Secret
 tools:
   - name: search_tweets
     description: "Search, find tweets on Twitter/X by keywords, hashtags, mentions. Discover trending topics, monitor brand mentions, research conversations. Use for social listening, trend analysis, competitive research, content discovery."

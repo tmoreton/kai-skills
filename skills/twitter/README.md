@@ -1,107 +1,61 @@
-# Twitter/X Skill for Kai
+# Twitter/X Skill
 
-Full Twitter/X integration with X API v2. Search, analyze users, and post tweets.
+Post tweets, analyze users, search content, and manage your Twitter/X presence.
 
-## Features
+## Setup
 
-- `search_tweets` - Search for recent tweets by keyword, topic, or hashtag (requires Basic tier or higher)
-- `get_user_tweets` - Get recent tweets from a specific user handle
-- `analyze_user` - Analyze a Twitter user's profile, stats, and engagement
-- `post_tweet` - Post a tweet to Twitter/X
-- `get_rate_limits` - Check API quota status
+Get credentials from https://developer.x.com:
 
-**Note:** Twitter/X Free tier has limited access. Full search requires Basic tier ($100/month).
+1. Go to your app → **"Keys and Tokens"** tab
+2. Under **"Consumer Keys"** section, copy:
+   - **API Key** → `X_API_KEY`
+   - **API Secret** → `X_API_SECRET`
+3. Under **"Authentication Tokens"** section, click **"Generate"**:
+   - **Access Token** → `X_ACCESS_TOKEN`
+   - **Access Token Secret** → `X_ACCESS_TOKEN_SECRET`
 
-## Claude Desktop Installation
-
-### 1. Clone or copy this skill
+### Option 1: Environment Variables
 
 ```bash
-cd ~/Code/kai-skills/skills/twitter
-npm install
+export X_API_KEY="your_api_key"
+export X_API_SECRET="your_api_secret"
+export X_ACCESS_TOKEN="your_access_token"
+export X_ACCESS_TOKEN_SECRET="your_token_secret"
 ```
 
-### 2. Get API credentials
+### Option 2: Kai CLI Config
 
-**Required for all tools:**
-- Apply for [X Developer access](https://developer.x.com)
-- Create a project and app
-- Generate OAuth 1.0a credentials (Consumer Keys + Access Tokens)
-- Free tier: 500 posts/month
-
-### 3. Configure Claude Desktop
-
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "node",
-      "args": ["/Users/YOUR_USERNAME/Code/kai-skills/skills/twitter/handler.js"],
-      "env": {
-        "X_API_KEY": "your_x_api_key_here",
-        "X_API_SECRET": "your_x_api_secret_here",
-        "X_ACCESS_TOKEN": "your_x_access_token_here",
-        "X_ACCESS_TOKEN_SECRET": "your_x_access_token_secret_here"
-      }
-    }
-  }
-}
+```bash
+kai-skills config set twitter api_key your_key
+kai-skills config set twitter api_secret your_secret
+kai-skills config set twitter access_token your_token
+kai-skills config set twitter access_token_secret your_secret
+kai-skills sync-config
 ```
 
-### 4. Restart Claude Desktop
+## Tools
 
-Quit and reopen Claude Desktop to load the new skill.
+- **search_tweets** - Search tweets by keyword/hashtag
+- **get_user_tweets** - Get a user's recent tweets
+- **analyze_user** - Get user profile and follower metrics
+- **post_tweet** - Post a new tweet
+- **get_rate_limits** - Check credentials and tier info
 
-## Environment Variables
+## API Limits
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `X_API_KEY` | Yes | X API Consumer Key |
-| `X_API_SECRET` | Yes | X API Consumer Secret |
-| `X_ACCESS_TOKEN` | Yes | X API Access Token |
-| `X_ACCESS_TOKEN_SECRET` | Yes | X API Access Token Secret |
-| `X_BEARER_TOKEN` | Optional | X API Bearer Token (alternative auth) |
+- **Free tier**: 500 posts/month, limited read access
+- **Basic tier**: 10,000 posts/month, 10,000 read limit/month
+- **Search**: Requires Basic tier ($100/month) or higher
 
-## Usage Examples
+## Test
 
-### Search tweets
+```bash
+# Set your credentials
+export X_API_KEY="..."
+export X_API_SECRET="..."
+export X_ACCESS_TOKEN="..."
+export X_ACCESS_TOKEN_SECRET="..."
+
+# Run tests
+npm test
 ```
-Search for tweets about "AI coding tools"
-```
-
-### Analyze a user
-```
-Analyze the Twitter user @naval
-```
-
-### Find influencers
-```
-Find influencers in the "indie hacker" space with at least 10k followers
-```
-
-### Post a tweet
-```
-Post a tweet: "Just shipped a new feature! 🚀"
-```
-
-### Post a thread
-```
-Post a thread with these tweets:
-1. "Here's how I grew my SaaS to $10k MRR:"
-2. "Step 1: Focus on one channel..."
-3. "Step 2: Build in public..."
-```
-
-## Handler Format
-
-This skill returns MCP-compatible responses:
-
-```javascript
-{ content: JSON.stringify(result) }
-```
-
-## License
-
-MIT
