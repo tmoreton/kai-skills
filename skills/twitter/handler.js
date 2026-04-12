@@ -2,12 +2,29 @@
  * Twitter/X API Skill Handler - Real Twitter API v2
  * 
  * Uses official Twitter API v2 with OAuth 1.0a
- * Requires: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+ * Requires: X_CONSUMER_KEY, X_CONSUMER_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+ * Legacy support: X_API_KEY, X_API_SECRET (will be deprecated)
  */
 
 import { createRequire } from "module";
 import crypto from 'crypto';
 import { getCredential } from '../../lib/credentials.js';
+
+// Helper to get OAuth 1.0a credentials with backward compatibility
+function getOAuthCredentials(config) {
+  // Try new naming first
+  let consumerKey = getCredential('twitter', 'X_CONSUMER_KEY', config);
+  let consumerSecret = getCredential('twitter', 'X_CONSUMER_SECRET', config);
+  
+  // Fall back to legacy naming
+  if (!consumerKey) consumerKey = getCredential('twitter', 'X_API_KEY', config);
+  if (!consumerSecret) consumerSecret = getCredential('twitter', 'X_API_SECRET', config);
+  
+  const accessToken = getCredential('twitter', 'X_ACCESS_TOKEN', config);
+  const accessTokenSecret = getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', config);
+  
+  return { consumerKey, consumerSecret, accessToken, accessTokenSecret };
+}
 
 function loadOAuth() {
   try {
@@ -58,14 +75,18 @@ let _bearerToken = null;
 async function getBearerToken() {
   if (_bearerToken) return _bearerToken;
   
-  const apiKey = getCredential('twitter', 'X_API_KEY', _config);
-  const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
+  // Try new naming first, fall back to legacy
+  let consumerKey = getCredential('twitter', 'X_CONSUMER_KEY', _config);
+  let consumerSecret = getCredential('twitter', 'X_CONSUMER_SECRET', _config);
   
-  if (!apiKey || !apiSecret) {
+  if (!consumerKey) consumerKey = getCredential('twitter', 'X_API_KEY', _config);
+  if (!consumerSecret) consumerSecret = getCredential('twitter', 'X_API_SECRET', _config);
+  
+  if (!consumerKey || !consumerSecret) {
     throw getCredentialsError();
   }
   
-  const credentials = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+  const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
   
   const response = await fetch('https://api.twitter.com/oauth2/token', {
     method: 'POST',
@@ -87,18 +108,15 @@ async function getBearerToken() {
 }
 
 async function xApiRequest(method, endpoint, data) {
-  const apiKey = getCredential('twitter', 'X_API_KEY', _config);
-  const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
-  const accessToken = getCredential('twitter', 'X_ACCESS_TOKEN', _config);
-  const accessTokenSecret = getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', _config);
+  const { consumerKey, consumerSecret, accessToken, accessTokenSecret } = getOAuthCredentials(_config);
 
-  if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
+  if (!consumerKey || !consumerSecret || !accessToken || !accessTokenSecret) {
     throw getCredentialsError();
   }
 
   const OAuth = loadOAuth();
   const oauth = OAuth({
-    consumer: { key: apiKey, secret: apiSecret },
+    consumer: { key: consumerKey, secret: consumerSecret },
     signature_method: 'HMAC-SHA1',
     hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64')
   });
