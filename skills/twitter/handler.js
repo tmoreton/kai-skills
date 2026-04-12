@@ -53,6 +53,39 @@ For full search access, you need Basic tier ($100/month).
   return error;
 }
 
+let _bearerToken = null;
+
+async function getBearerToken() {
+  if (_bearerToken) return _bearerToken;
+  
+  const apiKey = getCredential('twitter', 'X_API_KEY', _config);
+  const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
+  
+  if (!apiKey || !apiSecret) {
+    throw getCredentialsError();
+  }
+  
+  const credentials = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+  
+  const response = await fetch('https://api.twitter.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    body: 'grant_type=client_credentials'
+  });
+  
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Failed to get Bearer token: ${err}`);
+  }
+  
+  const data = await response.json();
+  _bearerToken = data.access_token;
+  return _bearerToken;
+}
+
 async function xApiRequest(method, endpoint, data) {
   const apiKey = getCredential('twitter', 'X_API_KEY', _config);
   const apiSecret = getCredential('twitter', 'X_API_SECRET', _config);
@@ -107,6 +140,46 @@ async function xApiRequest(method, endpoint, data) {
   return response.json();
 }
 
+// OAuth 2.0 Bearer token request (for search endpoints)
+async function xApiRequestBearer(method, endpoint, data) {
+  const bearerToken = await getBearerToken();
+  
+  let url;
+  if (method === 'GET') {
+    url = new URL(X_API_BASE + endpoint);
+    for (const [key, value] of Object.entries(data || {})) {
+      if (value !== undefined && value !== null) {
+        url.searchParams.set(key, String(value));
+      }
+    }
+  } else {
+    url = X_API_BASE + endpoint;
+  }
+
+  const options = {
+    method,
+    headers: { 
+      'Authorization': `Bearer ${bearerToken}`,
+      'Content-Type': 'application/json'
+    }
+  };
+
+  if (method === 'POST' && data) {
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(url.toString(), options);
+
+  if (!response.ok) {
+    const err = await response.text();
+    if (response.status === 403) {
+      throw new Error(`Twitter API access denied. Your API tier may not have search access. Error: ${err}`);
+    }
+    throw new Error(`Twitter API error (${response.status}): ${err}`);
+  }
+  return response.json();
+}
+
 export default {
   install: async (config) => {
     _config = config;
@@ -132,8 +205,8 @@ export default {
       const maxResults = params.max_results || DEFAULT_MAX_RESULTS;
 
       try {
-        // Try real Twitter API search (requires elevated access)
-        const result = await xApiRequest('GET', '/tweets/search/recent', {
+        // Use OAuth 2.0 Bearer token for search (paid tiers get full access)
+        const result = await xApiRequestBearer('GET', '/tweets/search/recent', {
           query: query,
           max_results: Math.min(maxResults, 100),
           'tweet.fields': 'created_at,author_id,public_metrics'
@@ -151,12 +224,11 @@ export default {
 
         return { content: JSON.stringify({ tweets, total: tweets.length, query, source: 'twitter_api' }) };
       } catch (error) {
-        // If API fails (likely due to access tier), return helpful message
         return { 
           content: JSON.stringify({ 
             error: error.message,
             query,
-            note: 'Twitter search requires Basic tier ($100/month) or higher for full search. Free tier has limited access.',
+            note: 'Twitter search requires elevated API access. Check your API tier at developer.x.com.',
             docs: 'https://developer.x.com/en/docs/twitter-api'
           }),
           isError: true
