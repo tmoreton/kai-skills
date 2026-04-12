@@ -1088,6 +1088,29 @@
           "description": "Service Account JSON key (G Suite only)"
         }
       }
+    },
+    {
+      "id": "reddit",
+      "name": "reddit",
+      "version": "1.0.0",
+      "description": "Reddit research and analysis — search posts, browse subreddits, analyze discussions, track topics. Great for market research, trend analysis, and understanding community sentiment.",
+      "author": "Kai",
+      "tags": ["social-media", "reddit", "research", "analytics", "market-research", "sentiment", "community"],
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/reddit/skill.yaml",
+      "npmPackage": "@kai-skills/reddit",
+      "tools": [
+        { "name": "search_posts", "description": "Search Reddit posts by keywords, topics, or phrases" },
+        { "name": "get_subreddit_posts", "description": "Get trending posts from a specific subreddit" },
+        { "name": "get_post_comments", "description": "Get comments and discussion from a Reddit post" },
+        { "name": "analyze_subreddit", "description": "Analyze a subreddit's stats, activity, and top content" },
+        { "name": "get_user_profile", "description": "Analyze a Reddit user's recent posts and activity" },
+        { "name": "get_rate_limits", "description": "Check Reddit API credentials and rate limits" }
+      ],
+      "configSchema": {
+        "REDDIT_CLIENT_ID": { "type": "string", "description": "Reddit Client ID from reddit.com/prefs/apps", "required": true },
+        "REDDIT_CLIENT_SECRET": { "type": "string", "description": "Reddit Client Secret", "required": true },
+        "REDDIT_USER_AGENT": { "type": "string", "description": "Optional custom user agent", "required": false }
+      }
     }
   ]
 }
