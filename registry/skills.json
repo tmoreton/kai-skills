@@ -292,8 +292,8 @@
     {
       "id": "twitter",
       "name": "Twitter/X",
-      "version": "2.1.0",
-      "description": "Twitter/X management \u2014 post tweets, threads, analyze engagement, search, track followers. API v2 integration.",
+      "version": "2.2.0",
+      "description": "Twitter/X management \u2014 post tweets, threads, analyze engagement, search, track followers. API v2 with OAuth 1.0a.",
       "author": "Kai",
       "tags": [
         "social-media",
@@ -319,20 +319,8 @@
           "description": "Analyze a Twitter user's profile, stats, and recent engagement"
         },
         {
-          "name": "find_influencers",
-          "description": "Find popular accounts in a specific niche/topic"
-        },
-        {
-          "name": "track_topic_sentiment",
-          "description": "Track sentiment and trending discussion around a topic"
-        },
-        {
           "name": "post_tweet",
-          "description": "Post a tweet to Twitter/X using API v2"
-        },
-        {
-          "name": "post_thread",
-          "description": "Post a thread of connected tweets"
+          "description": "Post a tweet to Twitter/X using API v2 with OAuth 1.0a"
         },
         {
           "name": "get_rate_limits",
@@ -340,19 +328,24 @@
         }
       ],
       "configSchema": {
-        "X_CLIENT_ID": {
+        "X_API_KEY": {
           "type": "string",
-          "description": "Twitter/X OAuth 2.0 Client ID from developer.x.com",
+          "description": "Twitter/X API Key (Consumer Key from developer.x.com)",
           "required": true
         },
-        "X_CLIENT_SECRET": {
+        "X_API_SECRET": {
           "type": "string",
-          "description": "Twitter/X OAuth 2.0 Client Secret",
+          "description": "Twitter/X API Secret (Consumer Secret)",
           "required": true
         },
         "X_ACCESS_TOKEN": {
           "type": "string",
-          "description": "Twitter/X OAuth 2.0 Access Token (User context)",
+          "description": "Twitter/X Access Token",
+          "required": true
+        },
+        "X_ACCESS_TOKEN_SECRET": {
+          "type": "string",
+          "description": "Twitter/X Access Token Secret",
           "required": true
         }
       }
@@ -941,13 +934,12 @@
         }
       ],
       "configSchema": {}
-    }
-    ,
+    },
     {
       "id": "dashboard",
       "name": "Social Media Dashboard",
       "version": "1.0.0",
-      "description": "Local social media analytics dashboard — auto-installs, stores API keys securely, fetches data, and displays visual charts. No cloud, 100% private.",
+      "description": "Local social media analytics dashboard \u2014 auto-installs, stores API keys securely, fetches data, and displays visual charts. No cloud, 100% private.",
       "author": "Kai",
       "tags": [
         "dashboard",
@@ -1004,7 +996,7 @@
       "id": "gmail",
       "name": "Gmail",
       "version": "1.0.0",
-      "description": "Gmail API integration — send, read, search, and manage emails with full Gmail features",
+      "description": "Gmail API integration \u2014 send, read, search, and manage emails with full Gmail features",
       "author": "Kai",
       "tags": [
         "gmail",
@@ -1093,23 +1085,61 @@
       "id": "reddit",
       "name": "reddit",
       "version": "1.0.0",
-      "description": "Reddit research and analysis — search posts, browse subreddits, analyze discussions, track topics. Great for market research, trend analysis, and understanding community sentiment.",
+      "description": "Reddit research and analysis \u2014 search posts, browse subreddits, analyze discussions, track topics. Great for market research, trend analysis, and understanding community sentiment.",
       "author": "Kai",
-      "tags": ["social-media", "reddit", "research", "analytics", "market-research", "sentiment", "community"],
+      "tags": [
+        "social-media",
+        "reddit",
+        "research",
+        "analytics",
+        "market-research",
+        "sentiment",
+        "community"
+      ],
       "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/reddit/skill.yaml",
       "npmPackage": "@kai-skills/reddit",
       "tools": [
-        { "name": "search_posts", "description": "Search Reddit posts by keywords, topics, or phrases" },
-        { "name": "get_subreddit_posts", "description": "Get trending posts from a specific subreddit" },
-        { "name": "get_post_comments", "description": "Get comments and discussion from a Reddit post" },
-        { "name": "analyze_subreddit", "description": "Analyze a subreddit's stats, activity, and top content" },
-        { "name": "get_user_profile", "description": "Analyze a Reddit user's recent posts and activity" },
-        { "name": "get_rate_limits", "description": "Check Reddit API credentials and rate limits" }
+        {
+          "name": "search_posts",
+          "description": "Search Reddit posts by keywords, topics, or phrases"
+        },
+        {
+          "name": "get_subreddit_posts",
+          "description": "Get trending posts from a specific subreddit"
+        },
+        {
+          "name": "get_post_comments",
+          "description": "Get comments and discussion from a Reddit post"
+        },
+        {
+          "name": "analyze_subreddit",
+          "description": "Analyze a subreddit's stats, activity, and top content"
+        },
+        {
+          "name": "get_user_profile",
+          "description": "Analyze a Reddit user's recent posts and activity"
+        },
+        {
+          "name": "get_rate_limits",
+          "description": "Check Reddit API credentials and rate limits"
+        }
       ],
       "configSchema": {
-        "REDDIT_CLIENT_ID": { "type": "string", "description": "Reddit Client ID from reddit.com/prefs/apps", "required": true },
-        "REDDIT_CLIENT_SECRET": { "type": "string", "description": "Reddit Client Secret", "required": true },
-        "REDDIT_USER_AGENT": { "type": "string", "description": "Optional custom user agent", "required": false }
+        "REDDIT_CLIENT_ID": {
+          "type": "string",
+          "description": "Reddit Client ID from reddit.com/prefs/apps",
+          "required": true
+        },
+        "REDDIT_CLIENT_SECRET": {
+          "type": "string",
+          "description": "Reddit Client Secret",
+          "required": true
+        },
+        "REDDIT_USER_AGENT": {
+          "type": "string",
+          "description": "Optional custom user agent",
+          "required": false
+        }
       }
     }
   ]
