@@ -1,0 +1,13 @@
+{
+  "name": "@kai-skills/gmail",
+  "version": "1.0.0",
+  "description": "Gmail API integration — send, read, search, and manage emails with full Gmail features",
+  "type": "module",
+  "main": "handler.js",
+  "keywords": ["kai-skill", "gmail", "google", "email", "api"],
+  "author": "Kai",
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^144.0.0"
+  }
+}

@@ -1,0 +1,230 @@
+id: gmail
+name: gmail
+version: 1.0.0
+description: Gmail API integration — send, read, search, and manage emails with full Gmail features
+author: Kai
+tags: ["gmail", "google", "email", "api", "messages", "inbox", "communication"]
+
+dependencies:
+  - name: googleapis
+    version: "^144.0.0"
+    optional: false
+    description: "Required. Google's official Node.js client library for Gmail API"
+
+config_schema:
+  # OAuth 2.0 Authentication (recommended for personal Gmail)
+  - key: client_id
+    type: string
+    required: false
+    env: GOOGLE_CLIENT_ID
+    description: OAuth 2.0 Client ID from Google Cloud Console > APIs & Services > Credentials
+
+  - key: client_secret
+    type: string
+    required: false
+    env: GOOGLE_CLIENT_SECRET
+    description: OAuth 2.0 Client Secret
+
+  - key: refresh_token
+    type: string
+    required: false
+    env: GOOGLE_REFRESH_TOKEN
+    description: OAuth 2.0 Refresh Token (obtained after OAuth consent flow)
+
+  # Service Account Authentication (G Suite/Workspace only)
+  - key: service_account_json
+    type: string
+    required: false
+    env: GOOGLE_SERVICE_ACCOUNT_JSON
+    description: Service Account JSON key. Only works with G Suite/Workspace with domain-wide delegation enabled.
+
+  - key: redirect_uri
+    type: string
+    required: false
+    env: GOOGLE_REDIRECT_URI
+    description: "OAuth redirect URI (default: http://localhost)"
+    default: "http://localhost"
+
+tools:
+  - name: setup
+    description: Configure Gmail API credentials via OAuth 2.0 or Service Account
+    parameters:
+      client_id:
+        type: string
+        required: false
+        description: OAuth 2.0 Client ID
+      client_secret:
+        type: string
+        required: false
+        description: OAuth 2.0 Client Secret
+      refresh_token:
+        type: string
+        required: false
+        description: OAuth 2.0 Refresh Token (get via OAuth flow)
+      service_account_json:
+        type: string
+        required: false
+        description: Service Account JSON key (G Suite only)
+      redirect_uri:
+        type: string
+        required: false
+        default: "http://localhost"
+        description: OAuth redirect URI
+
+  - name: send
+    description: Send emails via Gmail API with HTML support, CC, BCC
+    parameters:
+      to:
+        type: string
+        required: true
+        description: Recipient email address(es), comma-separated for multiple
+      subject:
+        type: string
+        required: true
+        description: Email subject line
+      body:
+        type: string
+        required: false
+        description: Plain text email body
+      html:
+        type: string
+        required: false
+        description: HTML email body (preferred over plain text)
+      cc:
+        type: string
+        required: false
+        description: CC recipients, comma-separated
+      bcc:
+        type: string
+        required: false
+        description: BCC recipients, comma-separated
+      from:
+        type: string
+        required: false
+        description: From address (defaults to authenticated account)
+
+  - name: list
+    description: List recent emails from inbox with optional filters
+    parameters:
+      max_results:
+        type: number
+        required: false
+        default: 10
+        description: Maximum number of messages to return (max 100)
+      label_ids:
+        type: array
+        required: false
+        description: Filter by label IDs (e.g., ["INBOX", "UNREAD"])
+      query:
+        type: string
+        required: false
+        description: Gmail search query string
+      page_token:
+        type: string
+        required: false
+        description: Page token for pagination
+      include_headers:
+        type: boolean
+        required: false
+        default: false
+        description: Include full message headers (slower)
+
+  - name: search
+    description: Advanced Gmail search with full query syntax support
+    parameters:
+      query:
+        type: string
+        required: true
+        description: "Gmail search query. Examples: from:sender@example.com, subject:hello, after:2024/01/01, has:attachment, is:unread, in:sent"
+      max_results:
+        type: number
+        required: false
+        default: 20
+        description: Maximum results (max 50)
+      include_body:
+        type: boolean
+        required: false
+        default: false
+        description: Include full message body (slower)
+
+  - name: get
+    description: Get full email content by message ID
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID
+      format:
+        type: string
+        required: false
+        enum: [minimal, metadata, full, raw]
+        default: full
+        description: Message format level
+
+  - name: mark_read
+    description: Mark an email as read (remove UNREAD label)
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID to mark as read
+
+  - name: mark_unread
+    description: Mark an email as unread (add UNREAD label)
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID to mark as unread
+
+  - name: archive
+    description: Archive an email (remove from INBOX)
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID to archive
+
+  - name: trash
+    description: Move email to trash
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID to trash
+
+  - name: untrash
+    description: Restore email from trash
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID to restore
+
+  - name: labels.list
+    description: List all Gmail labels
+    parameters: {}
+
+  - name: labels.add
+    description: Add a label to a message
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID
+      label_id:
+        type: string
+        required: true
+        description: Label ID to add (use labels.list to get IDs)
+
+  - name: labels.remove
+    description: Remove a label from a message
+    parameters:
+      message_id:
+        type: string
+        required: true
+        description: Gmail message ID
+      label_id:
+        type: string
+        required: true
+        description: Label ID to remove
