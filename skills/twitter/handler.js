@@ -1,22 +1,24 @@
 /**
- * Twitter/X API Skill Handler - X API v2
+ * Twitter/X API Skill Handler - X API v2 with OAuth 2.0
  * 
- * Supports OAuth 2.0 (preferred) and OAuth 1.0a (legacy) for all endpoints:
- * - Search tweets (OAuth 2.0 Bearer or OAuth 1.0a)
- * - Get user tweets (OAuth 2.0 Bearer or OAuth 1.0a)
- * - Post tweets (OAuth 2.0 User context or OAuth 1.0a)
+ * Uses OAuth 2.0 for all endpoints:
+ * - OAuth 2.0 Bearer Token (Client Credentials) for app-only endpoints like search
+ * - OAuth 2.0 Access Token (Authorization Code with user context) for posting tweets
  * 
- * OAuth 2.0 credentials from X Developer Portal:
- * - Client ID, Client Secret (from "OAuth 2.0 Keys")
- * - Access Token (click "Generate" button)
+ * Required credentials from X Developer Portal (https://developer.x.com):
+ * 1. Go to your app → "Keys and Tokens" tab
+ * 2. Under "OAuth 2.0 Keys", copy:
+ *    - Client ID
+ *    - Client Secret (click to reveal)
+ * 3. Scroll to "Access Token and Secret" section, click "Generate" for your account
+ * 4. Copy the Access Token (it will start with your numeric user ID)
  * 
- * Legacy OAuth 1.0a also supported:
- * - Consumer Key, Consumer Secret (from "OAuth 1.0 Keys")
- * - Access Token, Access Token Secret
+ * Environment variables:
+ *   X_CLIENT_ID=your_oauth2_client_id
+ *   X_CLIENT_SECRET=your_oauth2_client_secret  
+ *   X_ACCESS_TOKEN=your_user_access_token
  */
 
-import { createRequire } from "module";
-import crypto from 'crypto';
 import { getCredential } from '../../lib/credentials.js';
 
 const DEFAULT_MAX_RESULTS = 20;
@@ -25,74 +27,40 @@ const X_API_BASE = 'https://api.twitter.com/2';
 let _config = {};
 let _appBearerToken = null;
 
-function loadOAuth() {
-  try {
-    const require = createRequire(process.cwd() + "/package.json");
-    return require('oauth-1.0a');
-  } catch (e) {
-    return null;
-  }
-}
-
-// Get credentials with OAuth 2.0 priority, OAuth 1.0a fallback
-function getCredentials(config) {
-  // Try OAuth 2.0 first
-  const oauth2 = {
+// Get OAuth 2.0 credentials
+function getOAuth2Credentials(config) {
+  return {
     clientId: getCredential('twitter', 'X_CLIENT_ID', config),
     clientSecret: getCredential('twitter', 'X_CLIENT_SECRET', config),
     accessToken: getCredential('twitter', 'X_ACCESS_TOKEN', config),
   };
-  
-  // Try OAuth 1.0a as fallback
-  const oauth1 = {
-    consumerKey: getCredential('twitter', 'X_CONSUMER_KEY', config) || getCredential('twitter', 'X_API_KEY', config),
-    consumerSecret: getCredential('twitter', 'X_CONSUMER_SECRET', config) || getCredential('twitter', 'X_API_SECRET', config),
-    accessToken: getCredential('twitter', 'X_ACCESS_TOKEN', config),
-    accessTokenSecret: getCredential('twitter', 'X_ACCESS_TOKEN_SECRET', config),
-  };
-  
-  // Detect which version based on what credentials are available
-  const hasOAuth2 = oauth2.clientId && oauth2.clientSecret;
-  const hasOAuth1 = oauth1.consumerKey && oauth1.consumerSecret && oauth1.accessToken && oauth1.accessTokenSecret;
-  
-  if (hasOAuth2) {
-    return { type: 'oauth2', ...oauth2 };
-  }
-  if (hasOAuth1) {
-    return { type: 'oauth1', ...oauth1 };
-  }
-  
-  // Return partial to trigger error
-  return { type: hasOAuth2 ? 'oauth2' : hasOAuth1 ? 'oauth1' : null };
 }
 
 // Helper for missing credentials error
 function getCredentialsError() {
   const error = new Error(`
-Twitter/X API Credentials Required
-===================================
+Twitter/X API OAuth 2.0 Credentials Required
+=============================================
 
-Option 1: OAuth 2.0 (Recommended)
---------------------------------
-From X Developer Portal → your app → "Keys and Tokens":
+Get your credentials from https://developer.x.com:
 
-1. Copy from "OAuth 2.0 Keys":
-   X_CLIENT_ID=your_client_id
-   X_CLIENT_SECRET=your_client_secret
-
-2. Click "Generate" to create access token:
-   X_ACCESS_TOKEN=your_access_token
-
-Option 2: OAuth 1.0a (Legacy)
-------------------------------
-X_CONSUMER_KEY=your_consumer_key
-X_CONSUMER_SECRET=your_consumer_secret
-X_ACCESS_TOKEN=your_access_token
-X_ACCESS_TOKEN_SECRET=your_access_token_secret
+1. Go to your app → "Keys and Tokens" tab
+2. Under "OAuth 2.0 Keys", copy:
+   - Client ID
+   - Client Secret (click to reveal)
+3. Click "Generate" to create an access token for your account:
+   - Copy the Access Token (starts with your numeric user ID)
 
 Set via kai-skills:
-  kai-skills config set twitter client_id your_value
+  kai-skills config set twitter client_id your_client_id
+  kai-skills config set twitter client_secret your_client_secret
+  kai-skills config set twitter access_token your_access_token
   kai-skills sync-config
+
+Environment variables:
+  X_CLIENT_ID=your_client_id
+  X_CLIENT_SECRET=your_client_secret
+  X_ACCESS_TOKEN=your_access_token
 
 Note: Free tier = 500 posts/month. Search requires Basic tier ($100/month).
 `);
@@ -100,43 +68,42 @@ Note: Free tier = 500 posts/month. Search requires Basic tier ($100/month).
   return error;
 }
 
-// Get OAuth 2.0 Bearer Token for app-only endpoints
+// Get OAuth 2.0 Bearer Token for app-only endpoints (search, public data)
 async function getAppBearerToken() {
   if (_appBearerToken) return _appBearerToken;
   
-  const creds = getCredentials(_config);
+  const { clientId, clientSecret } = getOAuth2Credentials(_config);
   
-  if (creds.type === 'oauth2') {
-    // Exchange client credentials for Bearer token
-    const credentials = Buffer.from(`${creds.clientId}:${creds.clientSecret}`).toString('base64');
-    
-    const response = await fetch('https://api.twitter.com/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: 'grant_type=client_credentials'
-    });
-    
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Failed to get Bearer token: ${err}`);
-    }
-    
-    const data = await response.json();
-    _appBearerToken = data.access_token;
-    return _appBearerToken;
-  } else {
+  if (!clientId || !clientSecret) {
     throw getCredentialsError();
   }
+  
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  
+  const response = await fetch('https://api.twitter.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    body: 'grant_type=client_credentials'
+  });
+  
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Failed to get Bearer token: ${err}`);
+  }
+  
+  const data = await response.json();
+  _appBearerToken = data.access_token;
+  return _appBearerToken;
 }
 
-// Generic API request handler (auto-detects auth type)
+// Make API request with OAuth 2.0
 async function xApiRequest(method, endpoint, data, requireUserContext = false) {
-  const creds = getCredentials(_config);
+  const { clientId, clientSecret, accessToken } = getOAuth2Credentials(_config);
   
-  if (!creds.type) {
+  if (!clientId || !clientSecret) {
     throw getCredentialsError();
   }
   
@@ -153,39 +120,24 @@ async function xApiRequest(method, endpoint, data, requireUserContext = false) {
     url = X_API_BASE + endpoint;
   }
   
-  let options;
-  
-  if (creds.type === 'oauth2') {
-    // OAuth 2.0 authentication
-    const token = requireUserContext ? creds.accessToken : await getAppBearerToken();
-    options = {
-      method,
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    };
-  } else {
-    // OAuth 1.0a authentication
-    const OAuth = loadOAuth();
-    if (!OAuth) {
-      throw new Error('oauth-1.0a not installed. Run: npm install oauth-1.0a');
+  // Get appropriate token
+  let token;
+  if (requireUserContext) {
+    if (!accessToken) {
+      throw new Error('User access token required. Generate one in X Developer Portal by clicking "Generate" under "Access Token and Secret".');
     }
-    
-    const oauth = OAuth({
-      consumer: { key: creds.consumerKey, secret: creds.consumerSecret },
-      signature_method: 'HMAC-SHA1',
-      hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64')
-    });
-    
-    const token = { key: creds.accessToken, secret: creds.accessTokenSecret };
-    const authHeader = oauth.toHeader(oauth.authorize({ url: url.toString(), method }, token));
-    
-    options = {
-      method,
-      headers: { 'Authorization': authHeader.Authorization }
-    };
+    token = accessToken;
+  } else {
+    token = await getAppBearerToken();
   }
+  
+  const options = {
+    method,
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  };
   
   if (method === 'POST' && data) {
     options.body = JSON.stringify(data);
@@ -196,13 +148,14 @@ async function xApiRequest(method, endpoint, data, requireUserContext = false) {
   if (!response.ok) {
     const err = await response.text();
     if (response.status === 401) {
-      throw new Error(`Twitter API unauthorized. Check your credentials. Error: ${err}`);
+      throw new Error(`Twitter API unauthorized. Check your credentials and that your access token has the required scopes. Error: ${err}`);
     }
     if (response.status === 403) {
-      throw new Error(`Twitter API access denied. Your API tier may not have this feature. Error: ${err}`);
+      throw new Error(`Twitter API access denied. Your API tier may not have this feature, or your token lacks required permissions. Error: ${err}`);
     }
     throw new Error(`Twitter API error (${response.status}): ${err}`);
   }
+  
   return response.json();
 }
 
@@ -211,19 +164,14 @@ export default {
     _config = config;
     _appBearerToken = null;
     
-    const creds = getCredentials(config);
+    const { clientId, clientSecret, accessToken } = getOAuth2Credentials(config);
     
-    if (creds.type === 'oauth2') {
-      if (creds.clientId) process.env.X_CLIENT_ID = creds.clientId;
-      if (creds.clientSecret) process.env.X_CLIENT_SECRET = creds.clientSecret;
-      if (creds.accessToken) process.env.X_ACCESS_TOKEN = creds.accessToken;
-    } else if (creds.type === 'oauth1') {
-      if (creds.consumerKey) process.env.X_CONSUMER_KEY = creds.consumerKey;
-      if (creds.consumerSecret) process.env.X_CONSUMER_SECRET = creds.consumerSecret;
-      if (creds.accessToken) process.env.X_ACCESS_TOKEN = creds.accessToken;
-      if (creds.accessTokenSecret) process.env.X_ACCESS_TOKEN_SECRET = creds.accessTokenSecret;
-    } else {
-      console.warn("[twitter] Warning: Twitter credentials not configured. Twitter tools will fail until credentials are set.");
+    if (clientId) process.env.X_CLIENT_ID = clientId;
+    if (clientSecret) process.env.X_CLIENT_SECRET = clientSecret;
+    if (accessToken) process.env.X_ACCESS_TOKEN = accessToken;
+    
+    if (!clientId || !clientSecret || !accessToken) {
+      console.warn("[twitter] Warning: OAuth 2.0 credentials not configured. Set X_CLIENT_ID, X_CLIENT_SECRET, and X_ACCESS_TOKEN.");
     }
   },
 
@@ -364,11 +312,11 @@ export default {
     },
 
     get_rate_limits: async () => {
-      const creds = getCredentials(_config);
+      const { accessToken } = getOAuth2Credentials(_config);
       
       return { content: JSON.stringify({
-        credentials_configured: !!creds.type,
-        auth_type: creds.type || 'none',
+        credentials_configured: !!accessToken,
+        auth_type: 'OAuth 2.0',
         tier: 'Configured (tier depends on your Twitter plan)',
         free_limits: '500 posts/month, limited read access',
         basic_limits: '10,000 posts/month, 10,000 read limit/month',
