@@ -26,9 +26,6 @@ import crypto from 'crypto';
 const DEFAULT_MAX_RESULTS = 20;
 const X_API_BASE = 'https://api.twitter.com/2';
 
-let _config = {};
-let _appBearerToken = null;
-
 // Get OAuth 1.0a credentials
 function getCredentials(config) {
   return {
@@ -77,10 +74,8 @@ Note: Free tier = 500 posts/month. Search requires Basic tier ($100/month).
 }
 
 // Get app-only Bearer Token for read-only endpoints
-async function getAppBearerToken() {
-  if (_appBearerToken) return _appBearerToken;
-  
-  const { apiKey, apiSecret } = getCredentials(_config);
+async function getAppBearerToken(config) {
+  const { apiKey, apiSecret } = getCredentials(config);
   
   if (!apiKey || !apiSecret) {
     throw getCredentialsError();
@@ -102,17 +97,16 @@ async function getAppBearerToken() {
   }
   
   const data = await response.json();
-  _appBearerToken = data.access_token;
-  return _appBearerToken;
+  return data.access_token;
 }
 
 // Make API request
-async function xApiRequest(method, endpoint, data = {}, requireUserContext = false) {
-  if (!hasCredentials(_config)) {
+async function xApiRequest(config, method, endpoint, data = {}, requireUserContext = false) {
+  if (!hasCredentials(config)) {
     throw getCredentialsError();
   }
   
-  const { apiKey, apiSecret, accessToken, accessTokenSecret } = getCredentials(_config);
+  const { apiKey, apiSecret, accessToken, accessTokenSecret } = getCredentials(config);
   const url = new URL(X_API_BASE + endpoint);
   
   // Add query params for GET
@@ -155,7 +149,7 @@ async function xApiRequest(method, endpoint, data = {}, requireUserContext = fal
     }
   } else {
     // App-only Bearer token for read operations
-    const bearerToken = await getAppBearerToken();
+    const bearerToken = await getAppBearerToken(config);
     headers['Authorization'] = `Bearer ${bearerToken}`;
     
     if (method === 'POST') {
@@ -175,128 +169,130 @@ async function xApiRequest(method, endpoint, data = {}, requireUserContext = fal
   return await response.json();
 }
 
+// Export actions object for skill system
+export const actions = {
+  search_tweets: async (params, config) => {
+    const query = params.query || params.q;
+    if (!query) return { content: JSON.stringify({ error: 'Query required' }) };
+    
+    try {
+      const result = await xApiRequest(config, 'GET', '/tweets/search/recent', {
+        query,
+        max_results: Math.max(10, Math.min(params.max_results || 20, 100)),
+        'tweet.fields': 'created_at,public_metrics,author_id'
+      });
+      
+      return { content: JSON.stringify({
+        tweets: result.data?.map(t => ({
+          id: t.id,
+          text: t.text,
+          created_at: t.created_at,
+          url: `https://twitter.com/i/web/status/${t.id}`
+        })) || [],
+        meta: result.meta
+      }) };
+    } catch (e) {
+      return { content: JSON.stringify({ error: e.message }), isError: true };
+    }
+  },
+  
+  get_user_tweets: async (params, config) => {
+    const username = (params.username || '').replace(/^@/, '');
+    if (!username) return { content: JSON.stringify({ error: 'Username required' }) };
+    
+    try {
+      const user = await xApiRequest(config, 'GET', `/users/by/username/${username}`);
+      if (!user.data) return { content: JSON.stringify({ error: 'User not found' }) };
+      
+      const tweets = await xApiRequest(config, 'GET', `/users/${user.data.id}/tweets`, {
+        max_results: Math.max(5, Math.min(params.max_results || 20, 100)),
+        'tweet.fields': 'created_at,public_metrics'
+      });
+      
+      return { content: JSON.stringify({
+        username,
+        tweets: tweets.data?.map(t => ({
+          id: t.id,
+          text: t.text,
+          created_at: t.created_at,
+          url: `https://twitter.com/i/web/status/${t.id}`
+        })) || [],
+        meta: tweets.meta
+      }) };
+    } catch (e) {
+      return { content: JSON.stringify({ error: e.message }), isError: true };
+    }
+  },
+  
+  analyze_user: async (params, config) => {
+    const username = (params.username || '').replace(/^@/, '');
+    if (!username) return { content: JSON.stringify({ error: 'Username required' }) };
+    
+    try {
+      const result = await xApiRequest(config, 'GET', `/users/by/username/${username}`, {
+        'user.fields': 'public_metrics,description,verified,created_at,location,url,profile_image_url'
+      });
+      
+      if (!result.data) return { content: JSON.stringify({ error: 'User not found' }) };
+      const u = result.data, m = u.public_metrics || {};
+      
+      return { content: JSON.stringify({
+        username: u.username,
+        display_name: u.name,
+        description: u.description,
+        verified: u.verified,
+        created_at: u.created_at,
+        location: u.location,
+        website: u.url,
+        profile_image: u.profile_image_url,
+        followers: m.followers_count || 0,
+        following: m.following_count || 0,
+        tweets: m.tweet_count || 0,
+        url: `https://twitter.com/${u.username}`
+      }) };
+    } catch (e) {
+      return { content: JSON.stringify({ error: e.message }), isError: true };
+    }
+  },
+  
+  post_tweet: async (params, config) => {
+    const text = params.text || params.tweet || '';
+    if (!text) return { content: JSON.stringify({ error: 'Text required' }) };
+    if (text.length > 280) return { content: JSON.stringify({ error: 'Too long', length: text.length }) };
+    
+    try {
+      const result = await xApiRequest(config, 'POST', '/tweets', { text }, true);
+      return { content: JSON.stringify({
+        posted: true,
+        id: result.data?.id,
+        url: `https://twitter.com/i/web/status/${result.data?.id}`,
+        text: result.data?.text
+      }) };
+    } catch (e) {
+      return { content: JSON.stringify({ error: e.message }), isError: true };
+    }
+  },
+  
+  get_rate_limits: async (params, config) => {
+    const configured = hasCredentials(config);
+    return { content: JSON.stringify({
+      credentials_configured: !!configured,
+      auth_type: configured ? 'OAuth 1.0a' : 'None',
+      required_env: ['X_API_KEY', 'X_API_SECRET', 'X_ACCESS_TOKEN', 'X_ACCESS_TOKEN_SECRET'],
+      tier: 'Configured (Free: 500 posts/month, Basic: 10K posts/month)',
+      search_note: 'Search requires Basic tier ($100/month)'
+    }) };
+  }
+};
+
+// Default export for backward compatibility
 export default async function handler(request) {
   const { name, parameters, config } = request;
-  _config = config || {};
-  _appBearerToken = null;
+  const action = actions[name];
   
-  const handlers = {
-    search_tweets: async (params) => {
-      const query = params.query || params.q;
-      if (!query) return { content: JSON.stringify({ error: 'Query required' }) };
-      
-      try {
-        const result = await xApiRequest('GET', '/tweets/search/recent', {
-          query,
-          max_results: Math.max(10, Math.min(params.max_results || 20, 100)),
-          'tweet.fields': 'created_at,public_metrics,author_id'
-        });
-        
-        return { content: JSON.stringify({
-          tweets: result.data?.map(t => ({
-            id: t.id,
-            text: t.text,
-            created_at: t.created_at,
-            url: `https://twitter.com/i/web/status/${t.id}`
-          })) || [],
-          meta: result.meta
-        }) };
-      } catch (e) {
-        return { content: JSON.stringify({ error: e.message }), isError: true };
-      }
-    },
-    
-    get_user_tweets: async (params) => {
-      const username = (params.username || '').replace(/^@/, '');
-      if (!username) return { content: JSON.stringify({ error: 'Username required' }) };
-      
-      try {
-        const user = await xApiRequest('GET', `/users/by/username/${username}`);
-        if (!user.data) return { content: JSON.stringify({ error: 'User not found' }) };
-        
-        const tweets = await xApiRequest('GET', `/users/${user.data.id}/tweets`, {
-          max_results: Math.max(5, Math.min(params.max_results || 20, 100)),
-          'tweet.fields': 'created_at,public_metrics'
-        });
-        
-        return { content: JSON.stringify({
-          username,
-          tweets: tweets.data?.map(t => ({
-            id: t.id,
-            text: t.text,
-            created_at: t.created_at,
-            url: `https://twitter.com/i/web/status/${t.id}`
-          })) || [],
-          meta: tweets.meta
-        }) };
-      } catch (e) {
-        return { content: JSON.stringify({ error: e.message }), isError: true };
-      }
-    },
-    
-    analyze_user: async (params) => {
-      const username = (params.username || '').replace(/^@/, '');
-      if (!username) return { content: JSON.stringify({ error: 'Username required' }) };
-      
-      try {
-        const result = await xApiRequest('GET', `/users/by/username/${username}`, {
-          'user.fields': 'public_metrics,description,verified,created_at,location,url,profile_image_url'
-        });
-        
-        if (!result.data) return { content: JSON.stringify({ error: 'User not found' }) };
-        const u = result.data, m = u.public_metrics || {};
-        
-        return { content: JSON.stringify({
-          username: u.username,
-          display_name: u.name,
-          description: u.description,
-          verified: u.verified,
-          created_at: u.created_at,
-          location: u.location,
-          website: u.url,
-          profile_image: u.profile_image_url,
-          followers: m.followers_count || 0,
-          following: m.following_count || 0,
-          tweets: m.tweet_count || 0,
-          url: `https://twitter.com/${u.username}`
-        }) };
-      } catch (e) {
-        return { content: JSON.stringify({ error: e.message }), isError: true };
-      }
-    },
-    
-    post_tweet: async (params) => {
-      const text = params.text || params.tweet || '';
-      if (!text) return { content: JSON.stringify({ error: 'Text required' }) };
-      if (text.length > 280) return { content: JSON.stringify({ error: 'Too long', length: text.length }) };
-      
-      try {
-        const result = await xApiRequest('POST', '/tweets', { text }, true);
-        return { content: JSON.stringify({
-          posted: true,
-          id: result.data?.id,
-          url: `https://twitter.com/i/web/status/${result.data?.id}`,
-          text: result.data?.text
-        }) };
-      } catch (e) {
-        return { content: JSON.stringify({ error: e.message }), isError: true };
-      }
-    },
-    
-    get_rate_limits: async () => {
-      const configured = hasCredentials(_config);
-      return { content: JSON.stringify({
-        credentials_configured: !!configured,
-        auth_type: configured ? 'OAuth 1.0a' : 'None',
-        required_env: ['X_API_KEY', 'X_API_SECRET', 'X_ACCESS_TOKEN', 'X_ACCESS_TOKEN_SECRET'],
-        tier: 'Configured (Free: 500 posts/month, Basic: 10K posts/month)',
-        search_note: 'Search requires Basic tier ($100/month)'
-      }) };
-    }
-  };
+  if (!action) {
+    return { content: JSON.stringify({ error: `Unknown action: ${name}` }), isError: true };
+  }
   
-  const op = handlers[name];
-  if (!op) return { content: JSON.stringify({ error: `Unknown: ${name}` }), isError: true };
-  
-  return await op(parameters || {});
+  return await action(parameters || {}, config || {});
 }
