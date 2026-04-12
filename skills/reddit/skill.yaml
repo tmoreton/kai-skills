@@ -1,0 +1,93 @@
+id: reddit
+name: Reddit
+version: 1.0.0
+description: Reddit research and analysis — search posts, browse subreddits, analyze discussions, track topics. Great for market research, trend analysis, and understanding community sentiment.
+author: Kai
+tags: ["social-media", "reddit", "research", "analytics", "market-research", "sentiment", "community"]
+config_schema:
+  - key: client_id
+    type: string
+    required: true
+    env: REDDIT_CLIENT_ID
+    description: Reddit Client ID from reddit.com/prefs/apps (under the app name)
+  - key: client_secret
+    type: string
+    required: true
+    env: REDDIT_CLIENT_SECRET
+    description: Reddit Client Secret (labeled "secret" in your app)
+  - key: user_agent
+    type: string
+    required: false
+    env: REDDIT_USER_AGENT
+    description: User agent string identifying your app (default: KaiResearch/1.0)
+tools:
+  - name: search_posts
+    description: "Search Reddit posts by keywords, topics, or phrases. Research products, trends, competitors, or community sentiment. Use for market research, product validation, and finding discussions on any topic."
+    parameters:
+      query:
+        type: string
+        required: true
+        description: Search query (keywords, phrases, topics)
+      subreddit:
+        type: string
+        description: Limit search to specific subreddit (without r/)
+      sort:
+        type: string
+        description: Sort by relevance, hot, top, new, comments (default: relevance)
+      time:
+        type: string
+        description: Time filter - hour, day, week, month, year, all (default: all)
+      limit:
+        type: number
+        description: Maximum results (default 25, max 100)
+  - name: get_subreddit_posts
+    description: Get trending posts from a specific subreddit
+    parameters:
+      subreddit:
+        type: string
+        required: true
+        description: Subreddit name (without r/)
+      sort:
+        type: string
+        description: Sort by hot, new, top, rising (default: hot)
+      time:
+        type: string
+        description: Time filter for top posts - hour, day, week, month, year, all (default: day)
+      limit:
+        type: number
+        description: Maximum posts (default 25, max 100)
+  - name: get_post_comments
+    description: Get comments and discussion from a Reddit post
+    parameters:
+      post_id:
+        type: string
+        description: Reddit post ID (e.g., "1a2b3c")
+      permalink:
+        type: string
+        description: Full Reddit permalink (e.g., "/r/subreddit/comments/1a2b3c/title/")
+      subreddit:
+        type: string
+        description: Subreddit name (if using post_id without full permalink)
+      limit:
+        type: number
+        description: Maximum comments to fetch (default 50, max 100)
+      depth:
+        type: number
+        description: Comment thread depth (default 3, max 10)
+  - name: analyze_subreddit
+    description: Analyze a subreddit's stats, activity, and top content
+    parameters:
+      subreddit:
+        type: string
+        required: true
+        description: Subreddit name (without r/)
+  - name: get_user_profile
+    description: Analyze a Reddit user's recent posts and activity
+    parameters:
+      username:
+        type: string
+        required: true
+        description: Reddit username (without u/)
+  - name: get_rate_limits
+    description: Check Reddit API credentials and rate limits
+    parameters: {}
