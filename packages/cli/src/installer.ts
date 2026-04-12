@@ -49,10 +49,18 @@ export async function listSkills(): Promise<SkillInfo[]> {
  */
 function loadLocalSkills(): SkillInfo[] {
   // Try to find skills relative to the package installation
+  // Order matters - check most specific paths first
   const possiblePaths = [
-    path.join(__dirname, "..", "..", "..", "skills"), // Development: cli/dist/ -> packages/cli/ -> root
-    path.join(__dirname, "..", "skills"),            // Global install: cli/dist/ -> kai-skills/skills
-    path.join(process.cwd(), "skills"),              // Local project with kai-skills installed
+    // When running from root of kai-skills repo
+    path.join(process.cwd(), "skills"),
+    // Development: cli/dist/ -> packages/cli/ -> root
+    path.join(__dirname, "..", "..", "..", "..", "skills"),
+    // Packages structure: cli/dist/ -> packages/cli/dist -> packages/cli -> packages/
+    path.join(__dirname, "..", "..", "..", "skills"),
+    // Global install: cli/dist/ -> kai-skills/skills
+    path.join(__dirname, "..", "skills"),
+    // When CLI is installed in node_modules
+    path.join(__dirname, "..", "..", "kai-skills", "skills"),
   ];
 
   let skillsDir: string | null = null;
@@ -64,7 +72,7 @@ function loadLocalSkills(): SkillInfo[] {
   }
 
   if (!skillsDir) {
-    console.error("Could not find skills directory. Checked:", possiblePaths);
+    // Silent fail - registry will be used as primary source
     return [];
   }
 
@@ -86,11 +94,11 @@ function loadLocalSkills(): SkillInfo[] {
         description: manifest.description || "",
         author: manifest.author || "unknown",
         tags: manifest.tags || [],
-        downloadUrl: `file://${manifestPath}`,
-        tools: manifest.tools.map((t: any) => ({
+        downloadUrl: `file://${path.join(skillsDir, entry.name)}`,
+        tools: manifest.tools?.map((t: any) => ({
           name: t.name,
           description: t.description,
-        })),
+        })) || [],
       });
     }
   } catch {
@@ -211,6 +219,11 @@ async function installLocal(skill: SkillInfo): Promise<void> {
 }
 
 /**
+ * Skill files to download
+ */
+const SKILL_FILES = ["skill.yaml", "handler.js", "package.json", "README.md"];
+
+/**
  * Download skill files from URL
  */
 async function downloadSkill(skill: SkillInfo, targetDir: string): Promise<void> {
@@ -219,9 +232,65 @@ async function downloadSkill(skill: SkillInfo, targetDir: string): Promise<void>
     const sourceDir = path.dirname(skill.downloadUrl.replace("file://", ""));
     copyDirectory(sourceDir, targetDir);
   } else {
-    // Remote URL - download tarball
-    await downloadAndExtract(skill.downloadUrl, targetDir);
+    // Remote URL - download individual files from GitHub raw
+    await downloadFilesFromGitHub(skill.downloadUrl, targetDir);
   }
+}
+
+/**
+ * Download skill files from GitHub raw URL
+ * The URL points to skill.yaml, we derive other file URLs from it
+ */
+async function downloadFilesFromGitHub(skillYamlUrl: string, targetDir: string): Promise<void> {
+  mkdirSync(targetDir, { recursive: true });
+  
+  // Base URL is the skill folder (remove /skill.yaml)
+  const baseUrl = skillYamlUrl.replace(/\/skill\.yaml$/, "");
+  
+  for (const file of SKILL_FILES) {
+    const fileUrl = `${baseUrl}/${file}`;
+    const targetPath = path.join(targetDir, file);
+    
+    try {
+      await downloadFile(fileUrl, targetPath);
+    } catch {
+      // README is optional, ignore if not found
+      if (file !== "README.md") {
+        // Attempt to continue anyway - skill.yaml and handler.js might still work
+        if (file === "skill.yaml" || file === "handler.js") {
+          throw new Error(`Required file missing: ${file}`);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Download a single file
+ */
+async function downloadFile(url: string, targetPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      if (response.statusCode === 404) {
+        reject(new Error(`File not found: ${url}`));
+        return;
+      }
+      if (response.statusCode !== 200) {
+        reject(new Error(`Failed to download (${response.statusCode}): ${url}`));
+        return;
+      }
+
+      const fileStream = createWriteStream(targetPath);
+      response.pipe(fileStream);
+
+      fileStream.on("finish", () => {
+        fileStream.close();
+        resolve();
+      });
+
+      fileStream.on("error", reject);
+    }).on("error", reject);
+  });
 }
 
 /**
@@ -241,33 +310,6 @@ function copyDirectory(source: string, target: string): void {
       writeFileSync(targetPath, readFileSync(sourcePath));
     }
   }
-}
-
-/**
- * Download and extract tarball
- */
-async function downloadAndExtract(url: string, targetDir: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    https.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download: ${response.statusCode}`));
-        return;
-      }
-
-      // For now, just download - in production, use tar library
-      const tarballPath = path.join(targetDir, "skill.tar.gz");
-      const fileStream = createWriteStream(tarballPath);
-      response.pipe(fileStream);
-
-      fileStream.on("finish", () => {
-        fileStream.close();
-        // TODO: Extract tarball - requires tar dependency
-        resolve();
-      });
-
-      fileStream.on("error", reject);
-    }).on("error", reject);
-  });
 }
 
 /**

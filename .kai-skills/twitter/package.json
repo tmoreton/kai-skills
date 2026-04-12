@@ -1,0 +1,13 @@
+{
+  "name": "twitter",
+  "version": "2.0.0",
+  "description": "Twitter/X API skill with research and posting capabilities",
+  "main": "handler.js",
+  "type": "module",
+  "dependencies": {
+    "oauth-1.0a": "^2.2.6"
+  },
+  "scripts": {
+    "test": "echo 'Run tests with your test runner'"
+  }
+}
