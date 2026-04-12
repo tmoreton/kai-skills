@@ -340,25 +340,20 @@
         }
       ],
       "configSchema": {
-        "X_API_KEY": {
+        "X_CLIENT_ID": {
           "type": "string",
-          "description": "Twitter API Key (Consumer Key from developer.x.com)",
-          "required": false
+          "description": "Twitter/X OAuth 2.0 Client ID from developer.x.com",
+          "required": true
         },
-        "X_API_SECRET": {
+        "X_CLIENT_SECRET": {
           "type": "string",
-          "description": "Twitter API Secret (Consumer Secret)",
-          "required": false
+          "description": "Twitter/X OAuth 2.0 Client Secret",
+          "required": true
         },
         "X_ACCESS_TOKEN": {
           "type": "string",
-          "description": "Twitter Access Token",
-          "required": false
-        },
-        "X_ACCESS_TOKEN_SECRET": {
-          "type": "string",
-          "description": "Twitter Access Token Secret",
-          "required": false
+          "description": "Twitter/X OAuth 2.0 Access Token (User context)",
+          "required": true
         }
       }
     },
