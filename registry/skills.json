@@ -292,15 +292,16 @@
     {
       "id": "twitter",
       "name": "Twitter/X",
-      "version": "1.0.0",
-      "description": "Twitter/X tools \u2014 search tweets, analyze users, post threads",
+      "version": "2.1.0",
+      "description": "Twitter/X management \u2014 post tweets, threads, analyze engagement, search, track followers. API v2 integration.",
       "author": "Kai",
       "tags": [
         "social-media",
         "twitter",
         "x",
         "analytics",
-        "posting"
+        "posting",
+        "tweets"
       ],
       "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/twitter/skill.yaml",
       "npmPackage": "@kai-skills/twitter",
@@ -339,29 +340,24 @@
         }
       ],
       "configSchema": {
-        "TAVILY_API_KEY": {
-          "type": "string",
-          "description": "Tavily API key for research tools",
-          "required": false
-        },
         "X_API_KEY": {
           "type": "string",
-          "description": "X API Key for posting",
+          "description": "Twitter API Key (Consumer Key from developer.x.com)",
           "required": false
         },
         "X_API_SECRET": {
           "type": "string",
-          "description": "X API Secret",
+          "description": "Twitter API Secret (Consumer Secret)",
           "required": false
         },
         "X_ACCESS_TOKEN": {
           "type": "string",
-          "description": "X Access Token",
+          "description": "Twitter Access Token",
           "required": false
         },
         "X_ACCESS_TOKEN_SECRET": {
           "type": "string",
-          "description": "X Access Token Secret",
+          "description": "Twitter Access Token Secret",
           "required": false
         }
       }
