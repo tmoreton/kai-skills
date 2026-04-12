@@ -19,7 +19,7 @@ config_schema:
     type: string
     required: false
     env: REDDIT_USER_AGENT
-    description: User agent string identifying your app (default: KaiResearch/1.0)
+    description: Optional custom user agent (default: KaiResearch/1.0)
 tools:
   - name: search_posts
     description: "Search Reddit posts by keywords, topics, or phrases. Research products, trends, competitors, or community sentiment. Use for market research, product validation, and finding discussions on any topic."

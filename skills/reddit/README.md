@@ -25,11 +25,17 @@ Research and analyze Reddit discussions. Perfect for market research, sentiment 
 
 ## Environment Variables
 
+**Required:**
 ```bash
 REDDIT_CLIENT_ID=your_client_id_here
 REDDIT_CLIENT_SECRET=your_client_secret_here
+```
+
+**Optional:**
+```bash
 REDDIT_USER_AGENT="KaiResearch/1.0 by u/your_username"
 ```
+Defaults to `KaiResearch/1.0` if not set. Custom user agents are recommended by Reddit's API rules.
 
 Set via kai-skills:
 ```bash
