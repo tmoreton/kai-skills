@@ -1,8 +1,0 @@
-{
-  "name": "data-storage",
-  "version": "1.0.0",
-  "description": "Read and write JSON, Markdown, and other data files",
-  "type": "module",
-  "author": "kai",
-  "license": "MIT"
-}

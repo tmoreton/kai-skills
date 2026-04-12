@@ -11,7 +11,7 @@
         "git",
         "github"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/git.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/git/skill.yaml",
       "npmPackage": "@kai-skills/git",
       "tools": [
         {
@@ -49,7 +49,7 @@
         "devops",
         "deployment"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/docker.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/docker/skill.yaml",
       "npmPackage": "@kai-skills/docker",
       "tools": [
         {
@@ -91,7 +91,7 @@
         "playwright",
         "automation"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/browser.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/browser/skill.yaml",
       "npmPackage": "@kai-skills/browser",
       "tools": [
         {
@@ -148,7 +148,7 @@
         "imap",
         "communication"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/email.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/email/skill.yaml",
       "npmPackage": "@kai-skills/email",
       "tools": [
         {
@@ -198,7 +198,7 @@
         "migrations",
         "prisma"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/database.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/database/skill.yaml",
       "npmPackage": "@kai-skills/database",
       "tools": [
         {
@@ -245,7 +245,7 @@
         "analytics",
         "video"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/youtube.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/youtube/skill.yaml",
       "npmPackage": "@kai-skills/youtube",
       "tools": [
         {
@@ -302,7 +302,7 @@
         "analytics",
         "posting"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/twitter.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/twitter/skill.yaml",
       "npmPackage": "@kai-skills/twitter",
       "tools": [
         {
@@ -379,7 +379,7 @@
         "markdown",
         "storage"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/data-storage.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/data-storage/skill.yaml",
       "npmPackage": "@kai-skills/data-storage",
       "tools": [
         {
@@ -433,7 +433,7 @@
         "search",
         "tavily"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/web-tools.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/web-tools/skill.yaml",
       "npmPackage": "@kai-skills/web-tools",
       "tools": [
         {
@@ -466,7 +466,7 @@
         "database",
         "productivity"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/notion.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/notion/skill.yaml",
       "npmPackage": "@kai-skills/notion",
       "tools": [
         {
@@ -526,7 +526,7 @@
         "photos",
         "analytics"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/instagram.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/instagram/skill.yaml",
       "npmPackage": "@kai-skills/instagram",
       "tools": [
         {
@@ -570,7 +570,7 @@
         "pages",
         "publishing"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/facebook.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/facebook/skill.yaml",
       "npmPackage": "@kai-skills/facebook",
       "tools": [
         {
@@ -614,7 +614,7 @@
         "professional",
         "b2b"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/linkedin.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/linkedin/skill.yaml",
       "npmPackage": "@kai-skills/linkedin",
       "tools": [
         {
@@ -658,7 +658,7 @@
         "video",
         "short-form"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/tiktok.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/tiktok/skill.yaml",
       "npmPackage": "@kai-skills/tiktok",
       "tools": [
         {
@@ -702,7 +702,7 @@
         "meta",
         "text"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/threads.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/threads/skill.yaml",
       "npmPackage": "@kai-skills/threads",
       "tools": [
         {
@@ -747,7 +747,7 @@
         "chat",
         "models"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/openrouter.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/openrouter/skill.yaml",
       "npmPackage": "@kai-skills/openrouter",
       "tools": [
         {
@@ -792,7 +792,7 @@
         "at-protocol",
         "decentralized"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/bluesky.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/bluesky/skill.yaml",
       "npmPackage": "@kai-skills/bluesky",
       "tools": [
         {
@@ -849,7 +849,7 @@
         "spreadsheets",
         "export"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/google-sheets.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/google-sheets/skill.yaml",
       "npmPackage": "@kai-skills/google-sheets",
       "tools": [
         {
@@ -893,7 +893,7 @@
         "messaging",
         "alerts"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/slack.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/slack/skill.yaml",
       "npmPackage": "@kai-skills/slack",
       "tools": [
         {
@@ -933,7 +933,7 @@
         "zapier",
         "http"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/webhook.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/webhook/skill.yaml",
       "npmPackage": "@kai-skills/webhook",
       "tools": [
         {
@@ -965,7 +965,7 @@
         "visualization",
         "local"
       ],
-      "downloadUrl": "https://github.com/kai-skills/skills/releases/download/v1.0.0/dashboard.tar.gz",
+      "downloadUrl": "https://raw.githubusercontent.com/tmoreton/kai-skills/main/skills/dashboard/skill.yaml",
       "npmPackage": "@kai-skills/dashboard",
       "tools": [
         {
